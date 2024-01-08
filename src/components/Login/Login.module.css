@@ -1,0 +1,82 @@
+.container {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.logo {
+    display: grid;
+    place-items: center;
+    height: 100vh;
+    background: black;
+}
+
+.x-color {
+    color: rgb(0, 255, 255);
+    font-size: 300px;
+}
+
+.authentication {
+    /* display: grid;
+    place-items: center; */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.button {
+    display: flex;
+    padding: 0.5rem;
+    padding-left: 3rem;
+    padding-right: 3rem;
+    gap: 1rem;
+    align-items: center;
+    background-color: #ffffff;
+    cursor: pointer;
+    font-family: "Google Sans",arial,sans-serif;
+    border-radius: 9999px;
+    margin-bottom: 8px;
+}
+.create-account {
+    display: flex;
+    padding: 1rem;
+    padding-left: 5rem;
+    padding-right: 5.5rem;
+    gap: 1rem;
+    align-items: center;
+    background-color: #1a8cd8;
+    color: #ffffff;
+    cursor: pointer;
+    font-weight: bold;
+    font-family: "Google Sans",arial,sans-serif;
+    border-radius: 9999px;
+    margin-bottom: 8px;
+}
+.sign-in-header{
+    color: white;
+    margin-top: 2rem;
+    margin-right: 2rem;
+}
+.sign-in {
+    display: flex;
+    padding: 1rem;
+    padding-left: 7rem;
+    padding-right: 7rem;
+    gap: 1rem;
+    align-items: center;
+    background-color: #1a8cd8;
+    color: #ffffff;
+    cursor: pointer;
+    font-weight: bold;
+    font-family: "Google Sans",arial,sans-serif;
+    border-radius: 9999px;
+    margin-bottom: 8px;
+}
+.or{
+    color: #ffffff;
+    margin-bottom: 5px;
+}
+
+.button-icon{
+    font-size: 30px;
+}

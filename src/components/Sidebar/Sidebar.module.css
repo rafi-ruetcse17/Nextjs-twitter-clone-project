@@ -1,0 +1,157 @@
+.container {
+    display: none;
+    border-right: 1px solid #ccc;
+    width: 70px;
+    /*hidden on small screen*/
+}
+
+.sidebar-logo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 3.5rem;
+    height: 3.5rem;
+    padding: 0;
+    margin-bottom: 2rem;
+}
+
+.sidebar-logo:hover {
+    background-color: #181818;
+    border-radius: 9999px;
+    cursor: pointer;
+    transition-duration: 300ms;
+}
+
+.sidebar {
+    margin-bottom: 0.625rem;
+    margin-top: 1rem;
+    margin-top: 0.5rem;
+}
+
+.x-color {
+    color: rgb(0, 255, 255);
+    font-size: 300px;
+}
+
+.btn {
+    display: none;
+    border-radius: 9999px;
+    margin-left: 6rem;
+    width: 13rem;
+    font-size: 1.125rem;
+    line-height: 1.75rem;
+    font-weight: bold;
+    color: #ffffff;
+    background: #1d9bf0;
+    height: 52px;
+
+}
+
+.btn:hover {
+    background-color: #1a8cd8;
+}
+
+.profile-icon {
+    display: flex;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    margin-bottom: 5px;
+    margin-top: 1rem;
+    margin-left: 5rem;
+    justify-content: center;
+    align-items: center;
+    color: #d9d9d9;
+}
+
+.profile-icon:hover {
+    background-color: #181818;
+    border-radius: 9999px;
+    cursor: pointer;
+    transition-duration: 300ms;
+}
+
+.profile-icon img {
+    border-radius: 9999px;
+    width: 2.5rem;
+    height: 2.5rem;
+}
+
+.user {
+    display: none;
+    line-height: 1.25rem;
+}
+
+.user h4 {
+    font-weight: bold;
+}
+
+.user p {
+    color: #6e767d;
+    margin-top: -1rem;
+}
+
+.three-dots {
+    display: none;
+    margin-left: 2.5rem;
+    height: 1.25rem;
+
+}
+
+@media (min-width: 640px) {
+    .container {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        border-right: 1px solid #ccc;
+    }
+}
+
+@media (max-width: 1280px){
+    .profile-icon{
+        margin-left: -1rem;
+        margin-right: 0;
+    }
+}
+
+@media (min-width: 1280px) {
+    .container {
+        display: flex;
+        align-items: flex-start;
+        position: fixed;
+        width: 320px;
+        padding: 8px;
+        height: 100%;
+        /* padding-right: 2rem; */
+        border-right: 1px solid #ccc;
+    }
+
+    .sidebar-logo {
+        margin-left: 6rem;
+    }
+
+    .sidebar {
+        margin-left: 6rem;
+    }
+
+    .btn {
+        display: inline;
+    }
+
+    .profile-icon {
+        margin-right: -1.25rem;
+    }
+
+    .profile-icon img {
+        margin-right: 0.625rem;
+    }
+
+    .user {
+        display: inline;
+    }
+    .three-dots{
+        display: inline;
+    }
+
+}

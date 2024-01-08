@@ -1,0 +1,38 @@
+.container {
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    border-right: 1px solid;
+    border-color: #9CA3AF;
+    min-height: 100vh;
+    color: #ffffff;
+    width: 600px;
+}
+
+.home {
+    display: flex;
+    position: sticky;
+    top: 0;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    justify-content: space-between;
+    font-weight: bold;
+    background-color: #000000;
+    color: 20px;
+}
+
+@media (min-width: 640px) {
+    .container {
+        margin-left: auto;
+    }
+
+}
+
+
+@media (min-width: 1280px) {
+    .container {
+        margin-left: 340px;
+    }
+
+}

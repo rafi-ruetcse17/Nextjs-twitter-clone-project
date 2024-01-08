@@ -1,0 +1,31 @@
+.sidebar-icon{
+    color: #d9d9d9;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.25rem;
+    line-height: 1.75rem;
+    gap:0.75rem;
+    padding: 0.5rem 1rem 1rem 0.5rem;
+    width: fit-content;
+}
+.sidebar-icon:hover {
+    background-color: #181818;
+    border-radius: 9999px;
+    cursor: pointer;
+    transition-duration: 300ms;
+}
+
+.icon-name{
+    display: none;
+    font-family: "Google Sans",arial,sans-serif;
+}
+
+@media (min-width: 1280px) {
+    .sidebar-icon{
+        justify-content: flex-start;
+    }
+    .icon-name{
+        display: inline;
+    }
+}
