@@ -33,7 +33,7 @@ const Sidebar = () => {
         <img src={session?.user?.image} alt="" />
         <div className={styles["user"]}>
           <h4>{session?.user?.name}</h4>
-          <p>@{session?.user?.tag}</p>
+          <p>@{session?.user?.name}</p>
         </div>
         <BsThreeDots className={styles["three-dots"]} />
       </div>

@@ -26,18 +26,28 @@ const getPost = async (data ) => {
 };
 const getAllPosts = async (data ) => {
   try {
-    const response = await Post.find({data}).sort({ timestamp: -1 });
+    const response = await Post.find({email:data}).sort({ timestamp: -1 });
     return response;
   } catch (error) {
     throw new Error(error.message);
   }
 };
 
+const deletePost = async (data)=>{
+  try{
+    const response = await Post.findByIdAndDelete(data)
+    return response
+  }catch (error) {
+    throw new Error(error.message);
+  }
+}
+
 const postRepository = {
   createPost,
   updatePost,
   getPost,
-  getAllPosts
+  getAllPosts,
+  deletePost,
 };
 
 export default postRepository;

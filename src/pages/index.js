@@ -31,7 +31,7 @@ export default function Home({user}) {
       <main className={styles["main"]}>
         <Sidebar/>
         <div className={styles["feed"]}>
-          <Feed/>
+          <Feed user={user}/>
         </div>
       </main>
     </>

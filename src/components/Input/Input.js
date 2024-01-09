@@ -9,9 +9,12 @@ import { useSession } from "next-auth/react";
 
 import data from "@emoji-mart/data";
 import Picker from "@emoji-mart/react";
-import { createPost, getPost, updatePost } from "@/libs/actions/postAction";
+import { createPost, getAllPosts, getPost, updatePost } from "@/libs/actions/postAction";
+import { useDispatch } from "react-redux";
+import { setPosts } from "@/libs/redux/action";
 
-const Input = ({ callback }) => {
+const Input = ({user}) => {
+  const dispatch = useDispatch()
   const { data: session } = useSession();
   const [loading, setLoading] = useState(false);
   const [input, setInput] = useState("");
@@ -60,8 +63,9 @@ const Input = ({ callback }) => {
       const Url = await res.json();
       await updatePost({ _id: response, image: Url });
     }
+    const updatedPosts = await getAllPosts(user?.email);
+    dispatch({ type: 'SET_POSTS', payload: updatedPosts })
 
-    callback();
     setLoading(false);
     setInput("");
     setSelectedFile(null);

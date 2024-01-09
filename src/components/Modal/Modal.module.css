@@ -1,0 +1,159 @@
+.modal-surrounding {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 20;
+    height: 100vh;
+    width: 100vw;
+    background-color: rgba(36, 45, 52, 0.73);
+}
+
+.modal-container {
+    background-color: #181818;
+    width: 350px;
+    color: #fff;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-top: 40px;
+    padding: 1rem;
+    border-radius: 20px
+}
+
+.close-icon {
+    font-size: 22px;
+    cursor: pointer;
+}
+
+.contents {
+    position: relative;
+    margin-top: 2rem;
+    display: grid;
+    grid-template-columns: 48px 1fr;
+    gap: 3.5rem;
+
+}
+
+.rounded {
+    border-radius: 50%;
+    height: 5rem;
+}
+
+.post-details {
+    display: flex;
+    gap: 2px;
+    font-size: 12px;
+
+}
+
+.timestamp {
+    color: #a0aec0;
+    margin-left: 3px;
+}
+
+.text {
+    font-size: 14px;
+    margin-top: -4px;
+}
+
+.post-image {
+    margin-top: 2rem;
+    max-height: 250px;
+    border-radius: 15px;
+    object-fit: cover;
+}
+
+.comment {
+    margin-top: 1rem;
+    color: #a0aec0;
+}
+
+.username {
+    color: #1d9bf0;
+}
+
+.comment-user {
+    margin-top: 4px;
+}
+
+.textarea {
+    width: 100%;
+    background-color: rgb(22, 22, 22);
+    border: none;
+    border-radius: 10px;
+    outline: none;
+    font-size: 18px;
+    color: #fff;
+}
+.textarea::placeholder{
+    color: #a0aec0;
+}
+
+.options {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+}
+
+.icons {
+    display: flex;
+    gap: 1rem;
+    font-size: 20px;
+    color: #1d9bf0;
+
+}
+
+.gif {
+    border: 1px solid #1d9bf0;
+    border-radius: 0.25rem;
+    height: 18px;
+    font-size: 16px;
+    display: grid;
+    place-items: center;
+}
+
+.barchart {
+    transform: rotate(90deg);
+}
+
+.other-icons {
+    display: none;
+}
+
+.reply-btn {
+    background-color: #1d9bf0;
+    color: white;
+    border-radius: 9999px;
+    padding: 0.75rem 1rem;
+    font-weight: bold;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+}
+
+.reply-btn:hover {
+    background-color: #1a8cd8;
+}
+
+.reply-btn:disabled {
+    background-color: #1d9bf0;
+    opacity: 0.5;
+    cursor: default;
+}
+
+@media(min-width:768px) {
+    .modal-container {
+        width: 650px;
+    }
+
+    .post-details {
+        font-size: 16px;
+    }
+
+    .textarea {
+        font-size: 16px;
+    }
+
+    .other-icons {
+        display: block;
+    }
+}

@@ -20,5 +20,6 @@ export const getExistingUser = (payload) =>API.get(api_endpoint, payload);
 
 export const createNewPost = (payload) =>API.post(post_endpoint, payload)
 export const updatePrevPost = (payload) =>API.patch(post_endpoint, payload)
-export const getPrevPost = (payload) =>API.get(post_endpoint, {params:{id: payload}})
+export const getPrevPost = (payload) =>API.get(`api/post/${payload}`, {params:{id: payload}})
 export const getAllPrevPosts = (payload) =>API.get(post_endpoint, {params:{email: payload}})
+export const deleteClickedPost = (payload) =>API.delete(post_endpoint, {params:{_id: payload}})

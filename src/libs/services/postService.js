@@ -35,3 +35,12 @@ export const getAllPosts = async(req , res) =>{
     return res.status(500).json(error.message);
   }
 }
+
+export const deletePost = async(req, res)=>{
+  try{
+    const response = await postRepository.deletePost(req.query._id)
+    return res.status(200).json(response);
+  } catch (error) {
+    return res.status(500).json(error.message);
+  }
+}

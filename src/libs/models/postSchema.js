@@ -15,6 +15,14 @@ const postSchema = new mongoose.Schema({
   image: {
     type: String,
   },
+  likes: {
+    type: [String], 
+    default: [],
+  },
+  showModal:{
+    type: Boolean,
+    default:false,
+  },
   timestamp: {
     type: Date,
     default: Date.now,

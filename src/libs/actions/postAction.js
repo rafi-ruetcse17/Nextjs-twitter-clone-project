@@ -2,7 +2,8 @@ import {
   createNewPost,
   updatePrevPost,
   getPrevPost,
-  getAllPrevPosts
+  getAllPrevPosts,
+  deleteClickedPost
 } from "../api-routes/user-api";
 
 async function createPost(data) {
@@ -23,7 +24,7 @@ async function updatePost(data) {
 }
 async function getPost(data) {
   try {
-    const response = await getPrevPost(data.response);
+    const response = await getPrevPost(data);
     return response.data;
   } catch (error) {
     throw Error(error.response.data);
@@ -39,4 +40,13 @@ async function getAllPosts(data){
   }
 }
 
-export { createPost, updatePost, getPost ,getAllPosts};
+async function deletePost(data){
+  try{
+    const response = await deleteClickedPost(data)
+    return response.data;
+  } catch (error) {
+    throw Error(error.response.data);
+  }
+}
+
+export { createPost, updatePost, getPost ,getAllPosts, deletePost};

@@ -27,16 +27,16 @@ export const authOptions = {
     }),
   ],
 
-  callbacks: {
-    async session({session, token, profile}){
-      //console.log(token);
-      if(profile){
-        session.user.tag = session.user.name.split("").join("").toLocaleLowerCase()
-        session.user.uid = token.sub
-      }
-      return session
-    }
-  },
+  // callbacks: {
+  //   async session({session, token, profile}){
+  //     //console.log(token);
+  //     if(profile){
+  //       session.user.tag = session.user.name.split("").join("").toLocaleLowerCase()
+  //       session.user.uid = token.sub
+  //     }
+  //     return session
+  //   }
+  // },
 
   secret: process.env.NEXTAUTH_SECRET,
 };
