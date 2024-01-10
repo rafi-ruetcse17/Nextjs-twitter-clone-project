@@ -10,6 +10,7 @@ import { FaRetweet } from "react-icons/fa";
 import { RiDeleteBin5Line } from "react-icons/ri";
 import { AiFillHeart, AiOutlineHeart, AiOutlineShareAlt } from "react-icons/ai";
 import { useDispatch, useSelector } from "react-redux";
+import Comment from "../Comment/Comment";
 
 const Post = ({ user }) => {
   const [showModal, setShowModal] = useState(false);
@@ -81,10 +82,12 @@ const Post = ({ user }) => {
       console.error("Error fetching posts:", error);
     }
   }
+  //console.log(posts.comments)
   return (
     <>
       {posts?.map((post)=>(
-        <div key={post._id} className={styles["container"]} onClick={() => router.push(`/${id}`)}>
+        <div key={post._id} className={styles["container"]} 
+        onClick={() => router.push(`/${id}`)}>
           <div className={styles["user-container"]}>
             <div>
               <img
@@ -114,6 +117,7 @@ const Post = ({ user }) => {
                 src={post?.image}
                 alt=""
               />
+              
               <div className={styles["icons-container"]}>
                 <div className={styles["comments"]}>
                   <BsChat
@@ -125,7 +129,8 @@ const Post = ({ user }) => {
                     }}
                   />
                   {post?.showModal && <Modal post={post} user={user}
-                    onClose={() => toggleModal(post._id,false)}/>}
+                    onClose={() => toggleModal(post._id,false)}
+                  />}
                   {comments.length > 0 && (
                     <span className={styles["comment-text"]}>{comments.length}</span>
                   )}
@@ -167,6 +172,20 @@ const Post = ({ user }) => {
               </div>
             </div>
           </div>
+          {post.comments?.length > 0 && <div>
+            <hr/>
+            <div className={styles["view-cmnts"]}>View comments</div>
+              </div>}
+          {post.comments?.length > 0 && post.comments.map((comment) => (
+            // <div key={comment._id}>
+            //   <p>{comment.username}</p>
+            //   <p>{comment.text}</p>
+            //   <p>{comment.timestamp}</p>
+            // </div>
+            
+            <Comment key={comment._id} comment={comment} user={user}/>
+            
+          ))}
         </div>
         ))}
     </>

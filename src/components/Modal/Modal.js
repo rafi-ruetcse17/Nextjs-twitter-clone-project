@@ -8,19 +8,46 @@ import { IoCalendarNumberOutline } from "react-icons/io5";
 import { MdClose } from "react-icons/md"
 import { RiBarChart2Line } from "react-icons/ri";
 import Moment from "react-moment";
+import { createComment, getAllPosts } from "@/libs/actions/postAction";
+import { useDispatch } from "react-redux";
 
 const Modal = ({ post, user, onClose}) => {
   const [input, setInput] = useState("")
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [selectedImage, setSelectedImage] = useState(null);
 //   const handleCloseClick = (e) => {
 //     e.preventDefault();
 //     onClose();
 //   };
+  const dispatch = useDispatch()
+
+  const addImageToComment = (e) => {
+    const reader = new FileReader();
+    if (e.target.files[0]) {
+      reader.readAsDataURL(e.target.files[0]);
+      setSelectedImage(e.target.files[0]);
+    }
+    reader.onload = (readerEvent) => {
+      setSelectedFile(readerEvent.target.result);
+    };
+  };
+
   const closeModal = (e)=>{
     e.preventDefault()
     onClose()
   }
-  const sendComment = ()=>{
+  const sendComment = async()=>{
+    try {
+      await(createComment({_id: post._id, 
+        newComment: {username:user.name, email:user.email, text:input}}))
 
+      const updatedPosts= await getAllPosts(user?.email)
+      dispatch({ type: 'SET_POSTS', payload: updatedPosts })
+    } catch (error) {
+      console.error("Error fetching posts:", error);
+    }
+
+    onClose()
   }
 
   const modalContent = (
@@ -74,7 +101,11 @@ const Modal = ({ post, user, onClose}) => {
 
             <div className={styles["options"]}>
               <div className={styles["icons"]}>
+              <label htmlFor="file">
                 <BsImage />
+                </label>
+
+                <input id="file" type="file" hidden onChange={addImageToComment} />
 
                 <div className={styles["gif"]}>
                   <AiOutlineGif />
@@ -87,7 +118,7 @@ const Modal = ({ post, user, onClose}) => {
 
               <button
                 className={styles["reply-btn"]}
-                disabled={!input.trim()}
+                disabled={!input.trim() && !selectedFile}
                 onClick={sendComment}
               >
                 Reply

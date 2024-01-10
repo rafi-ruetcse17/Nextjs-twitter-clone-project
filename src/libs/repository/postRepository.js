@@ -42,12 +42,31 @@ const deletePost = async (data)=>{
   }
 }
 
+const createComment = async (data) => {
+  const {_id, newComment} = data;
+  try {
+    const post = await Post.findById(_id);
+
+    if (!post) {
+      throw new Error('Post not found');
+    }
+    post.comments.push(newComment);
+
+    const updatedPost = await post.save();
+
+    return updatedPost;
+  } catch (error) {
+    throw new Error(error.message);
+  }
+};
+
 const postRepository = {
   createPost,
   updatePost,
   getPost,
   getAllPosts,
   deletePost,
+  createComment,
 };
 
 export default postRepository;

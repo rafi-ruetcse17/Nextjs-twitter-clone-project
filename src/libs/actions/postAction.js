@@ -3,7 +3,8 @@ import {
   updatePrevPost,
   getPrevPost,
   getAllPrevPosts,
-  deleteClickedPost
+  deleteClickedPost,
+  createNewComment,
 } from "../api-routes/user-api";
 
 async function createPost(data) {
@@ -48,5 +49,13 @@ async function deletePost(data){
     throw Error(error.response.data);
   }
 }
+async function createComment(data){
+  try {
+    const response = await createNewComment(data);
+    return response.data;
+  } catch (error) {
+    throw Error(error.response.data);
+  }
+}
 
-export { createPost, updatePost, getPost ,getAllPosts, deletePost};
+export { createPost, updatePost, getPost ,getAllPosts, deletePost,createComment};

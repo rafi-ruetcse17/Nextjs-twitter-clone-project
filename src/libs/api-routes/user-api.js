@@ -1,7 +1,8 @@
 import axios from "axios";
 
 const api_endpoint = '/api/user';
-const post_endpoint = '/api/post'
+const post_endpoint = '/api/post';
+const comment_endpoint = '/api/post/comment'
 const API = axios.create({ baseURL: "http://localhost:3000" })
 
 API.interceptors.request.use((req)=>{
@@ -23,3 +24,6 @@ export const updatePrevPost = (payload) =>API.patch(post_endpoint, payload)
 export const getPrevPost = (payload) =>API.get(`api/post/${payload}`, {params:{id: payload}})
 export const getAllPrevPosts = (payload) =>API.get(post_endpoint, {params:{email: payload}})
 export const deleteClickedPost = (payload) =>API.delete(post_endpoint, {params:{_id: payload}})
+
+
+export const createNewComment = (payload) =>API.post(comment_endpoint, payload)

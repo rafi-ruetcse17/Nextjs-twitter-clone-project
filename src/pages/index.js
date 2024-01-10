@@ -18,7 +18,6 @@ export default function Home({user}) {
   //   }else router.push("/")
   // }, [user, router])
   if(!user) return <Login/>
-  console.log(user);
 
 
   return (
