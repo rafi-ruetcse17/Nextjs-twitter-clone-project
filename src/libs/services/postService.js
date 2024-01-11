@@ -54,3 +54,11 @@ export const createComment = async(req, res)=>{
     return res.status(500).json(error.message);
   }
 }
+export const deleteComment = async(req, res)=>{
+  try{
+    const response = await postRepository.deleteComment(req.query)
+    return res.status(200).json(response);
+  } catch (error) {
+    return res.status(500).json(error.message);
+  }
+}

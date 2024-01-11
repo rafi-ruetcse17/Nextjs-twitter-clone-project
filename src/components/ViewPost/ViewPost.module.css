@@ -1,6 +1,30 @@
+.main-container {
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    border-right: 1px solid;
+    border-color: #9CA3AF;
+    min-height: 100vh;
+    color: #ffffff;
+    width: 600px;
+}
+
+.back-arrow {
+    position: sticky;
+    top: 0;
+    background-color: #000;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-weight: 500;
+    font-size: 20px;
+    padding: 0.75rem 1rem;
+}
+
+.back-icon {
+    cursor: pointer;
+}
+
 .container {
-    margin-top: 1rem;
-    border-top: 1px solid #8e8e93;
     padding-left: 1rem;
     padding-right: 1rem;
     padding-top: 1.5rem;
@@ -29,14 +53,12 @@
     display: block;
     transform: translate(0, -20%);
 }
-.name-edit{
-    display: flex;
-    justify-content: space-between;
-}
+
 
 .user-name {
     font-weight: 500;
-    padding-top: 5px;
+    display: flex;
+    justify-content: space-between;
 }
 
 .user-id {
@@ -61,12 +83,11 @@
 }
 
 .edit-post {
-    margin-right: 1rem;
-    margin-top: 1.5rem;
-    font-size: x-large;
+    margin-left: -2rem;
 }
 
 .edit-post:hover {
+    content: "edit post";
     background-color: #414040;
     border-radius: 9999px;
     cursor: pointer;
@@ -137,6 +158,13 @@
     font-weight: bold;
     margin-top: 1rem;
     margin-bottom: 1rem;
+}
+
+@media (min-width: 1280px) {
+    .main-container {
+        margin-left: 340px;
+    }
+
 }
 
 @media (max-width: 640px) {

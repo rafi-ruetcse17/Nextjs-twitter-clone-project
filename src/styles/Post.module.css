@@ -1,0 +1,11 @@
+.main {
+    display: flex;
+    position: relative;
+    max-width: 1400px;
+    margin: auto;
+}
+
+.feed {
+    display: flex;
+    gap: 1.5rem;
+}

@@ -5,9 +5,10 @@ import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
 import { deletePost, getAllPosts, getPost, updatePost } from "@/libs/actions/postAction";
 import Moment from "react-moment";
-import { BsChat } from "react-icons/bs";
-import { FaRetweet } from "react-icons/fa";
+import { BsChat, BsThreeDots } from "react-icons/bs";
+import { FaRegEdit, FaRetweet } from "react-icons/fa";
 import { RiDeleteBin5Line } from "react-icons/ri";
+import { FiEdit3 } from "react-icons/fi";
 import { AiFillHeart, AiOutlineHeart, AiOutlineShareAlt } from "react-icons/ai";
 import { useDispatch, useSelector } from "react-redux";
 import Comment from "../Comment/Comment";
@@ -87,7 +88,7 @@ const Post = ({ user }) => {
     <>
       {posts?.map((post)=>(
         <div key={post._id} className={styles["container"]} 
-        onClick={() => router.push(`/${id}`)}>
+        onClick={() => router.push(`/${user.email}/${post._id}`)}>
           <div className={styles["user-container"]}>
             <div>
               <img
@@ -99,7 +100,13 @@ const Post = ({ user }) => {
 
             <div>
               <div className={styles["user-details"]}>
+                <div className={styles["name-edit"]}>
                 <h3 className={styles["user-name"]}>{post?.username}</h3>
+                  <FaRegEdit className={styles["edit-post"]} />
+                </div>
+                {/* <h3 className={styles["user-name"]}>{post?.username}<span>
+                  <FaRegEdit className={styles["edit-post"]} /></span></h3> */}
+                
 
                 <div className={styles["user-id"]}>
                   <p className={styles["user-tag"]}>
@@ -108,7 +115,9 @@ const Post = ({ user }) => {
                   <p className={styles["post-tag"]}>
                     <Moment fromNow>{post?.timestamp}</Moment>
                   </p>
+                  
                 </div>
+                
               </div>
 
               <p className={styles["post-details"]}>{post?.text}</p>
@@ -118,7 +127,7 @@ const Post = ({ user }) => {
                 alt=""
               />
               
-              <div className={styles["icons-container"]}>
+              {/* <div className={styles["icons-container"]}>
                 <div className={styles["comments"]}>
                   <BsChat
                     className={styles["icon"]}
@@ -169,9 +178,64 @@ const Post = ({ user }) => {
                 </div>
 
                 <AiOutlineShareAlt className={styles["icon"]} />
-              </div>
+              </div> */}
             </div>
+            
           </div>
+
+          {post.comments?.length > 0 && <hr/>}
+          <div className={styles["icons-container"]}>
+                <div className={styles["comments"]}>
+                  <BsChat
+                    className={styles["icon"]}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      toggleModal(post._id, true)
+                      //openModal();
+                    }}
+                  />
+                  {post?.showModal && <Modal post={post} user={user}
+                    onClose={() => toggleModal(post._id,false)}
+                  />}
+                  {post.comments.length > 0 && (
+                    <span className={styles["comment-text"]}>{post.comments.length}</span>
+                  )}
+                </div>
+
+                {user?.email!== post?.email ? (
+                  <FaRetweet className={styles["icon"]} />
+                ) : (
+                  <RiDeleteBin5Line
+                    className={styles["icon"]}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleDelete(post._id)
+                    }}
+                  />
+                )}
+
+                <div
+                  className={styles["post-like"]}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    likePost(post._id, post.likes);
+                  }}
+                >
+                  {post?.likes?.includes(user?.email) ? (
+                    <AiFillHeart className={styles["liked"]} />
+                  ) : (
+                    <AiOutlineHeart className={styles["icon"]} />
+                  )}
+
+                  {post?.likes?.length > 0 && (
+                    <span className={styles[liked?"liked-color": "comment-text"]}>
+                      {post.likes.length}
+                    </span>
+                  )}
+                </div>
+
+                <AiOutlineShareAlt className={styles["icon"]} />
+              </div>
           {post.comments?.length > 0 && <div>
             <hr/>
             <div className={styles["view-cmnts"]}>View comments</div>
@@ -183,7 +247,7 @@ const Post = ({ user }) => {
             //   <p>{comment.timestamp}</p>
             // </div>
             
-            <Comment key={comment._id} comment={comment} user={user}/>
+            <Comment key={comment._id} comment={comment} postId={post._id} user={user}/>
             
           ))}
         </div>

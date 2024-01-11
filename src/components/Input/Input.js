@@ -93,7 +93,7 @@ const Input = ({user}) => {
                 <AiOutlineClose className={styles["selected-file-icon"]} />
               </div>
 
-              <img src={selectedFile} alt="" />
+              <img src={selectedFile} className={styles["input-img"]} alt="" />
             </div>
           )}
           {/* {imageUrl && <img src={imageUrl}/>} */}

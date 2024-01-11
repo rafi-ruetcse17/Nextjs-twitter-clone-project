@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import ReactDOM from "react-dom";
 import styles from "./Modal.module.css"
-import { AiOutlineGif } from "react-icons/ai";
+import { AiOutlineClose, AiOutlineGif } from "react-icons/ai";
 import { BsEmojiSmile, BsImage } from "react-icons/bs";
 import { HiOutlineLocationMarker } from "react-icons/hi";
 import { IoCalendarNumberOutline } from "react-icons/io5";
@@ -38,8 +38,25 @@ const Modal = ({ post, user, onClose}) => {
   }
   const sendComment = async()=>{
     try {
-      await(createComment({_id: post._id, 
-        newComment: {username:user.name, email:user.email, text:input}}))
+      let Url = null;
+      if (selectedImage) {
+        const body = new FormData();
+        body.append("file", selectedImage);
+        const res = await fetch("/api/upload", {
+          method: "POST",
+          body,
+        });
+        if (!res.ok) {
+          throw new Error("Failed to upload image!");
+        }
+        Url = await res.json();
+      }
+      if(Url)
+        await(createComment({_id: post._id, 
+          newComment: {username:user.name, email:user.email, text:input, image: Url}}))
+      else
+        await(createComment({_id: post._id, 
+          newComment: {username:user.name, email:user.email, text:input}}))
 
       const updatedPosts= await getAllPosts(user?.email)
       dispatch({ type: 'SET_POSTS', payload: updatedPosts })
@@ -98,14 +115,23 @@ const Modal = ({ post, user, onClose}) => {
               value={input}
               onChange={(e) => setInput(e.target.value)}
             />
+            {selectedFile && (
+              <div className={styles["selected-file"]}>
+                <div onClick={() => setSelectedFile(null)}>
+                  <AiOutlineClose className={styles["selected-file-icon"]} />
+                </div>
+
+                <img src={selectedFile} className={styles["input-img"]} alt="" />
+              </div>
+            )}
 
             <div className={styles["options"]}>
               <div className={styles["icons"]}>
-              <label htmlFor="file">
+              <label htmlFor="cmnt-file">
                 <BsImage />
                 </label>
 
-                <input id="file" type="file" hidden onChange={addImageToComment} />
+                <input id="cmnt-file" type="file" hidden onChange={addImageToComment} />
 
                 <div className={styles["gif"]}>
                   <AiOutlineGif />
