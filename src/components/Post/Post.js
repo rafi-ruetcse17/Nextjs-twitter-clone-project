@@ -30,6 +30,11 @@ const Post = ({ user }) => {
     if(Posts)
       setPosts(Posts)
   }, [Posts]);
+  // fetch("jn/sdkd", emaia{
+  //   header;
+  //   bdy:
+  //   authOptions;
+  // })
 
   const getFromDatabase = async () => {
     try {
@@ -228,7 +233,8 @@ const Post = ({ user }) => {
                   )}
 
                   {post?.likes?.length > 0 && (
-                    <span className={styles[liked?"liked-color": "comment-text"]}>
+                    <span className={styles[post?.likes?.includes(user?.email) ?
+                    "liked-color": "comment-text"]}>
                       {post.likes.length}
                     </span>
                   )}

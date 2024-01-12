@@ -3,6 +3,7 @@ import Comment from "../Comment/Comment";
 import { FaRegEdit, FaRetweet } from "react-icons/fa";
 import { BsArrowLeft, BsChat } from "react-icons/bs";
 import Modal from "../Modal/Modal";
+import UpdateModal from "../UpdateModal/UpdateModal";
 import { RiDeleteBin5Line } from "react-icons/ri";
 import { AiFillHeart, AiOutlineHeart, AiOutlineShareAlt } from "react-icons/ai";
 import styles from "./ViewPost.module.css";
@@ -50,7 +51,8 @@ const ViewPost = ({ user, post }) => {
                 </span>
               </h3>
 
-              {toggle && <Modal post={post} user={user}/>}
+              {toggle && <UpdateModal post={post} user={user}
+               onClose={()=>toggleModal(post._id, false)}/>}
 
               <div className={styles["user-id"]}>
                 <p className={styles["user-tag"]}>

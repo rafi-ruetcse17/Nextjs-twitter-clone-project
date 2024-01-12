@@ -6,6 +6,7 @@ import {
   deleteClickedPost,
   createNewComment,
   deleteClickedComment,
+  likeClickedComment
 } from "../api-routes/user-api";
 
 async function createPost(data) {
@@ -68,5 +69,13 @@ async function deleteComment(data){
   }
 }
 
+async function updateCommentLikes(data){
+  try {
+    const response = await likeClickedComment(data);
+    return response.data;
+  } catch (error) {
+    throw Error(error.response.data);
+  }
+}
 
-export { createPost, updatePost, getPost ,getAllPosts, deletePost,createComment, deleteComment};
+export { createPost, updatePost, getPost ,getAllPosts, deletePost,createComment, deleteComment, updateCommentLikes};

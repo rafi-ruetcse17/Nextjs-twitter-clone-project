@@ -5,10 +5,12 @@ import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
 import {
   deleteComment,
+  updateComment,
   deletePost,
   getAllPosts,
   getPost,
   updatePost,
+  updateCommentLikes,
 } from "@/libs/actions/postAction";
 import Moment from "react-moment";
 import { BsChat } from "react-icons/bs";
@@ -20,7 +22,8 @@ import { useDispatch, useSelector } from "react-redux";
 const Comment = ({ comment, postId, user }) => {
   const { data: session } = useSession();
 
-  //   const [showModal, setShowModal] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [liked, setLiked] = useState(false)
   //   const [likes, setLikes] = useState([]);
   //   const [liked, setLiked] = useState(false);
   //   const [comments, setComments] = useState([]);
@@ -50,22 +53,21 @@ const Comment = ({ comment, postId, user }) => {
     if (commentLikes.includes(user?.email)) {
       const updatedLikes = commentLikes.filter((email) => email !== user?.email);
       try {
-        await updateCommentLikes({postId, commentId, updatedLikes });
+        await updateCommentLikes({postId, commentId, likesArray:updatedLikes });
         const updatedPosts = await getAllPosts(user?.email);
         dispatch({ type: "SET_POSTS", payload: updatedPosts });
+        setLiked(false)
       } catch (error) {
         console.error("Error fetching posts:", error);
       }
       return;
     }
     try {
-      const response = await getPost(postId);
-      let likes_array = response.likes;
-      likes_array.push(user.email);
-      setLikes(likes_array);
-      await updatePost({ _id: postId, likes: likes_array });
+      const updatedLikes = [...commentLikes, user?.email];
+      await updateCommentLikes({postId, commentId, likesArray: updatedLikes });
       const updatedPosts = await getAllPosts(user?.email);
       dispatch({ type: "SET_POSTS", payload: updatedPosts });
+      setLiked(true)
     } catch (error) {
       console.error("Error fetching posts:", error);
     }
@@ -80,15 +82,16 @@ const Comment = ({ comment, postId, user }) => {
       console.error("Error fetching posts:", error);
     }
   };
-  // const toggleModal = async (postId, state) => {
-  //   try {
-  //     await updatePost({ _id: postId, showModal: state });
-  //     const updatedPosts = await getAllPosts(user?.email);
-  //     dispatch({ type: "SET_POSTS", payload: updatedPosts });
-  //   } catch (error) {
-  //     console.error("Error fetching posts:", error);
-  //   }
-  // };
+  const toggleModal = async (postId, state) => {
+    setShowModal(state)
+    // try {
+    //   await updatePost({ _id: postId, showModal: state });
+    //   const updatedPosts = await getAllPosts(user?.email);
+    //   dispatch({ type: "SET_POSTS", payload: updatedPosts });
+    // } catch (error) {
+    //   console.error("Error fetching posts:", error);
+    // }
+  };
   //console.log(posts.comments)
   return (
     <>
@@ -127,11 +130,11 @@ const Comment = ({ comment, postId, user }) => {
                   className={styles["icon"]}
                   onClick={(e) => {
                     e.stopPropagation();
-                    // toggleModal(comment._id, true);
+                    toggleModal(comment._id, true);
                     //openModal();
                   }}
                 />
-                {comment?.showModal && (
+                {showModal && (
                   <Modal
                     post={comment}
                     user={user}
@@ -161,7 +164,7 @@ const Comment = ({ comment, postId, user }) => {
                 className={styles["post-like"]}
                 onClick={(e) => {
                   e.stopPropagation();
-                  //   likePost(post._id, post.likes);
+                  likeComment(comment.likes, comment._id);
                 }}
               >
                 {comment?.likes?.includes(user?.email) ? (

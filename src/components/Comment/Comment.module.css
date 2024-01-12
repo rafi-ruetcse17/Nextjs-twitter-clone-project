@@ -71,7 +71,7 @@
     /* margin-top: -1.5rem; */
     justify-content: space-between;
     font-size: 20px;
-    width: 80%;
+    width: 90%;
 }
 
 .comments {
@@ -106,7 +106,7 @@
 
 .liked {
     width: 28px;
-    height: 28px;
+    height: 20px;
     padding: 0.25rem;
     color: #BE185D;
 }
@@ -119,6 +119,8 @@
 }
 
 .liked-color {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
     color: #BE185D;
 }
 

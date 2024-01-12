@@ -1,0 +1,171 @@
+.modal-surrounding {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 20;
+    height: 100vh;
+    width: 100vw;
+    background-color: rgba(36, 45, 52, 0.73);
+}
+
+.modal-container {
+    background-color: #181818;
+    width: 300px;
+    color: #fff;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-top: 40px;
+    padding: 1rem;
+    border-radius: 20px;
+    box-sizing: content-box;
+    overflow: hidden;
+}
+
+.close-icon {
+    font-size: 22px;
+    cursor: pointer;
+}
+
+.contents {
+    position: relative;
+    margin-top: 1.5rem;
+    display: grid;
+    grid-template-columns: 48px 1fr;
+    gap: 1.5rem;
+
+}
+
+.rounded {
+    border-radius: 50%;
+    height: 3.5rem;
+}
+
+.post-details {
+    display: flex;
+    gap: 2px;
+    font-size: 12px;
+    margin-top: -1rem;
+}
+
+
+.timestamp {
+    color: #a0aec0;
+    margin-left: 3px;
+}
+
+.text {
+    font-size: 12px;
+    margin-top: -2px;
+}
+
+.post-image {
+    margin-top: 1rem;
+    max-height: 200px;
+    border-radius: 15px;
+    object-fit: cover;
+}
+
+.input-img {
+    max-width: 100%;
+    max-height: 100px;
+    object-fit: cover;
+}
+
+.comment {
+    color: #a0aec0;
+}
+
+.username {
+    margin-left: 5px;
+    font-weight: 500;
+    color: #1d9bf0;
+}
+
+.comment-user {
+    margin-top: -3rem;
+}
+
+.textarea {
+    width: 100%;
+    background-color: rgb(24, 24, 24);
+    border: none;
+    border-radius: 10px;
+    outline: none;
+    font-size: 14px;
+    color: #fff;
+    cursor: pointer;
+}
+
+.textarea::placeholder {
+    color: #a0aec0;
+}
+
+.options {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+}
+
+.icons {
+    display: flex;
+    gap: 1rem;
+    font-size: 20px;
+    color: #1d9bf0;
+
+}
+
+.gif {
+    border: 1px solid #1d9bf0;
+    border-radius: 0.25rem;
+    height: 18px;
+    font-size: 16px;
+    display: grid;
+    place-items: center;
+}
+
+.barchart {
+    transform: rotate(90deg);
+}
+
+.other-icons {
+    display: none;
+}
+
+.reply-btn {
+    background-color: #1d9bf0;
+    color: white;
+    border-radius: 9999px;
+    padding: 0.75rem 1rem;
+    font-weight: bold;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+}
+
+.reply-btn:hover {
+    background-color: #1a8cd8;
+}
+
+.reply-btn:disabled {
+    background-color: #1d9bf0;
+    opacity: 0.5;
+    cursor: default;
+}
+
+@media(min-width:768px) {
+    .modal-container {
+        width: 650px;
+    }
+
+    .post-details {
+        font-size: 16px;
+    }
+
+    .textarea {
+        font-size: 16px;
+    }
+
+    .other-icons {
+        display: block;
+    }
+}

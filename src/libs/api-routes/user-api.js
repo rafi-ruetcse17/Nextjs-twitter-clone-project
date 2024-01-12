@@ -29,3 +29,5 @@ export const deleteClickedPost = (payload) =>API.delete(post_endpoint, {params:{
 export const createNewComment = (payload) =>API.post(comment_endpoint, payload)
 export const deleteClickedComment = (payload) =>API.delete(comment_endpoint, {params: 
     payload})
+
+export const likeClickedComment = (payload)=>API.patch(comment_endpoint, payload);

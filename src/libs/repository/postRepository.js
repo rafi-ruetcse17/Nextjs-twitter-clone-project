@@ -80,12 +80,12 @@ const deleteComment = async ({ postId, commentId }) => {
   }
 };
 
-const updateCommentLikes = async ({ postId, commentId, userEmail }) => {
+const updateCommentLikes = async ({ postId, commentId, likesArray }) => {
   try {
     const updatedPost = await Post.findByIdAndUpdate(
       postId,
       {
-        $set: { "comments.$[comment].likes": userEmail },
+        $set: { "comments.$[comment].likes": likesArray },
       },
       {
         arrayFilters: [{ "comment._id": commentId }],
