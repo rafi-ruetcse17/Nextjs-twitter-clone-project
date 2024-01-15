@@ -3,10 +3,12 @@ import axios from "axios";
 const api_endpoint = '/api/user';
 const post_endpoint = '/api/post';
 const comment_endpoint = '/api/post/comment'
+const reply_endpoint = '/api/post/reply'
 const API = axios.create({ baseURL: "http://localhost:3000" })
 
 API.interceptors.request.use((req)=>{
-    req.headers["Content-Type"] = "application/json";
+    if(!req.url.includes(comment_endpoint))
+        req.headers["Content-Type"] = "application/json";
     return req;
 })
 
@@ -30,4 +32,21 @@ export const createNewComment = (payload) =>API.post(comment_endpoint, payload)
 export const deleteClickedComment = (payload) =>API.delete(comment_endpoint, {params: 
     payload})
 
-export const likeClickedComment = (payload)=>API.patch(comment_endpoint, payload);
+// export const likeClickedComment = (payload)=>API.patch(comment_endpoint, payload);
+export const likeClickedComment = (payload) => {
+    const headers = {
+        "Content-Type": "application/json",
+        "X-Api-Purpose": "LikeComment"
+    };
+    return API.patch(comment_endpoint, payload, { headers });
+};
+
+export const updateClickedComment = (payload) => {
+    const headers = {
+        "Content-Type": "application/json",
+        "X-Api-Purpose": "UpdateComment", 
+    };
+    return API.patch(comment_endpoint, payload, { headers });
+};
+
+export const createNewReply =(payload) =>API.patch(reply_endpoint, payload)

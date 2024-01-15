@@ -63,9 +63,27 @@ export const deleteComment = async(req, res)=>{
   }
 }
 
+export const updateComment = async(req, res)=>{
+  try{
+    const response = await postRepository.updateComment(req.body)
+    return res.status(200).json(response);
+  } catch (error) {
+    return res.status(500).json(error.message);
+  }
+}
+
 export const updateCommentLikes = async(req, res)=>{
   try{
     const response = await postRepository.updateCommentLikes(req.body)
+    return res.status(200).json(response);
+  } catch (error) {
+    return res.status(500).json(error.message);
+  }
+}
+
+export const createReply = async(req, res)=>{
+  try{
+    const response = await postRepository.createReply(req.body)
     return res.status(200).json(response);
   } catch (error) {
     return res.status(500).json(error.message);

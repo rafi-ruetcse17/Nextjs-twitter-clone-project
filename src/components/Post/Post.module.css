@@ -38,10 +38,27 @@
     font-weight: 500;
     padding-top: 5px;
 }
+.edit-icon {
+    width: 28px;
+    height: 28px;
+    
+}
+
+.edit-icon:hover {
+    background-color: #181818;
+    border-radius: 9999px;
+    cursor: pointer;
+    transition-duration: 300ms;
+}
 
 .user-id {
     display: flex;
     transform: translate(0, -60%);
+}
+
+.user-id span{
+    margin-left: auto;
+    transform: translate(0, -20%);
 }
 
 .post-img {
@@ -53,7 +70,8 @@
 }
 
 .post-details {
-    margin-top: -3rem;
+    margin-top: -3.5rem;
+    font-size: 17px;
 }
 
 .user-tag {
@@ -140,6 +158,13 @@
     margin-bottom: 1rem;
 }
 
+.reply{
+    margin-left: 3.3rem;
+    margin-top: -10px;
+}
+.rep-icon{
+    transform: rotate(180deg);
+}
 @media (max-width: 640px) {
     .user-details {
         display: flex;

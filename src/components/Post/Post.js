@@ -1,17 +1,24 @@
-import React, {useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import styles from "@/components/Post/Post.module.css";
 import Modal from "../Modal/Modal";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
-import { deletePost, getAllPosts, getPost, updatePost } from "@/libs/actions/postAction";
+import {
+  deletePost,
+  getAllPosts,
+  getPost,
+  updatePost,
+} from "@/libs/actions/postAction";
 import Moment from "react-moment";
 import { BsChat, BsThreeDots } from "react-icons/bs";
-import { FaRegEdit, FaRetweet } from "react-icons/fa";
+import { FaRegEdit, FaReply, FaRetweet } from "react-icons/fa";
 import { RiDeleteBin5Line } from "react-icons/ri";
 import { FiEdit3 } from "react-icons/fi";
 import { AiFillHeart, AiOutlineHeart, AiOutlineShareAlt } from "react-icons/ai";
 import { useDispatch, useSelector } from "react-redux";
 import Comment from "../Comment/Comment";
+import UpdateModal from "../UpdateModal/UpdateModal";
+import { BiReply } from "react-icons/bi";
 
 const Post = ({ user }) => {
   const [showModal, setShowModal] = useState(false);
@@ -20,21 +27,15 @@ const Post = ({ user }) => {
   const [comments, setComments] = useState([]);
   const [posts, setPosts] = useState(null);
 
-  const Posts = useSelector((state)=>state.posts)
+  const Posts = useSelector((state) => state.posts);
   const router = useRouter();
   const { data: session } = useSession();
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    getFromDatabase()
-    if(Posts)
-      setPosts(Posts)
+    getFromDatabase();
+    if (Posts) setPosts(Posts);
   }, [Posts]);
-  // fetch("jn/sdkd", emaia{
-  //   header;
-  //   bdy:
-  //   authOptions;
-  // })
 
   const getFromDatabase = async () => {
     try {
@@ -45,55 +46,60 @@ const Post = ({ user }) => {
     }
   };
 
-  const likePost = async(postId, postLikes) =>{
-    if(postLikes.includes(user?.email)){
-      const updatedLikes = postLikes.filter(email => email !== user?.email);
+  const likePost = async (postId, postLikes) => {
+    if (postLikes.includes(user?.email)) {
+      const updatedLikes = postLikes.filter((email) => email !== user?.email);
       try {
-        await updatePost({ _id: postId, likes:updatedLikes });
-        const updatedPosts= await getAllPosts(user?.email)
-        dispatch({ type: 'SET_POSTS', payload: updatedPosts })
+        await updatePost({ _id: postId, likes: updatedLikes });
+        const updatedPosts = await getAllPosts(user?.email);
+        dispatch({ type: "SET_POSTS", payload: updatedPosts });
       } catch (error) {
         console.error("Error fetching posts:", error);
       }
-      return
+      return;
     }
     try {
       const response = await getPost(postId);
       let likes_array = response.likes;
-      likes_array.push(user.email)
-      setLikes(likes_array)
-      await updatePost({ _id: postId, likes:likes_array });
-      const updatedPosts= await getAllPosts(user?.email)
-      dispatch({ type: 'SET_POSTS', payload: updatedPosts })
+      likes_array.push(user.email);
+      setLikes(likes_array);
+      await updatePost({ _id: postId, likes: likes_array });
+      const updatedPosts = await getAllPosts(user?.email);
+      dispatch({ type: "SET_POSTS", payload: updatedPosts });
     } catch (error) {
       console.error("Error fetching posts:", error);
     }
-  }
+  };
 
-  const handleDelete = async(postId) =>{
-    try{
-      await deletePost(postId);
-      const updatedPosts= await getAllPosts(user?.email)
-      dispatch({ type: 'SET_POSTS', payload: updatedPosts })
-    }catch(error){
-      console.error("Error fetching posts:", error);
-    }
-  }
-  const toggleModal = async(postId, state)=>{
+  const handleDelete = async (postId) => {
     try {
-      await updatePost({ _id: postId, showModal:state });
-      const updatedPosts= await getAllPosts(user?.email)
-      dispatch({ type: 'SET_POSTS', payload: updatedPosts })
+      await deletePost(postId);
+      const updatedPosts = await getAllPosts(user?.email);
+      dispatch({ type: "SET_POSTS", payload: updatedPosts });
     } catch (error) {
       console.error("Error fetching posts:", error);
     }
-  }
+  };
+  const toggleModal = async (postId, state, modal_to_show) => {
+    try {
+      modal_to_show === "update"
+        ? await updatePost({ _id: postId, showUpdateModal: state })
+        : await updatePost({ _id: postId, showModal: state });
+      const updatedPosts = await getAllPosts(user?.email);
+      dispatch({ type: "SET_POSTS", payload: updatedPosts });
+    } catch (error) {
+      console.error("Error fetching posts:", error);
+    }
+  };
   //console.log(posts.comments)
   return (
     <>
-      {posts?.map((post)=>(
-        <div key={post._id} className={styles["container"]} 
-        onClick={() => router.push(`/${user.email}/${post._id}`)}>
+      {posts?.map((post) => (
+        <div
+          key={post._id}
+          className={styles["container"]}
+          onClick={() => router.push(`/${user.email}/${post._id}`)}
+        >
           <div className={styles["user-container"]}>
             <div>
               <img
@@ -106,12 +112,23 @@ const Post = ({ user }) => {
             <div>
               <div className={styles["user-details"]}>
                 <div className={styles["name-edit"]}>
-                <h3 className={styles["user-name"]}>{post?.username}</h3>
-                  <FaRegEdit className={styles["edit-post"]} />
+                  <h3 className={styles["user-name"]}>{post?.username}</h3>
+                  {/* <FaRegEdit
+                    className={styles["icon"]}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      toggleModal(post._id, true, "update");
+                    }}
+                  /> */}
                 </div>
-                {/* <h3 className={styles["user-name"]}>{post?.username}<span>
-                  <FaRegEdit className={styles["edit-post"]} /></span></h3> */}
-                
+                {post?.showUpdateModal && (
+                  <UpdateModal
+                    post={post}
+                    user={user}
+                    onClose={() => toggleModal(post._id, false, "update")}
+                    comment={null}
+                  />
+                )}
 
                 <div className={styles["user-id"]}>
                   <p className={styles["user-tag"]}>
@@ -120,18 +137,19 @@ const Post = ({ user }) => {
                   <p className={styles["post-tag"]}>
                     <Moment fromNow>{post?.timestamp}</Moment>
                   </p>
-                  
+                  <span><FaRegEdit
+                    className={styles["edit-icon"]}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      toggleModal(post._id, true, "update");
+                    }} 
+                  /></span>
                 </div>
-                
               </div>
 
               <p className={styles["post-details"]}>{post?.text}</p>
-              <img
-                className={styles["post-img"]}
-                src={post?.image}
-                alt=""
-              />
-              
+              <img className={styles["post-img"]} src={post?.image} alt="" />
+
               {/* <div className={styles["icons-container"]}>
                 <div className={styles["comments"]}>
                   <BsChat
@@ -185,79 +203,115 @@ const Post = ({ user }) => {
                 <AiOutlineShareAlt className={styles["icon"]} />
               </div> */}
             </div>
-            
           </div>
 
-          {post.comments?.length > 0 && <hr/>}
+          {post.comments?.length > 0 && <hr />}
           <div className={styles["icons-container"]}>
-                <div className={styles["comments"]}>
-                  <BsChat
-                    className={styles["icon"]}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      toggleModal(post._id, true)
-                      //openModal();
-                    }}
-                  />
-                  {post?.showModal && <Modal post={post} user={user}
-                    onClose={() => toggleModal(post._id,false)}
-                  />}
-                  {post.comments.length > 0 && (
-                    <span className={styles["comment-text"]}>{post.comments.length}</span>
-                  )}
-                </div>
+            <div className={styles["comments"]}>
+              <BsChat
+                className={styles["icon"]}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  toggleModal(post._id, true, "comment");
+                  //openModal();
+                }}
+              />
+              {post?.showModal && (
+                <Modal
+                  post={post}
+                  user={user}
+                  onClose={() => toggleModal(post._id, false, "comment")}
+                  comment={null}
+                />
+              )}
+              {post.comments.length > 0 && (
+                <span className={styles["comment-text"]}>
+                  {post.comments.length}
+                </span>
+              )}
+            </div>
 
-                {user?.email!== post?.email ? (
-                  <FaRetweet className={styles["icon"]} />
-                ) : (
-                  <RiDeleteBin5Line
-                    className={styles["icon"]}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleDelete(post._id)
-                    }}
-                  />
-                )}
+            {user?.email !== post?.email ? (
+              <FaRetweet className={styles["icon"]} />
+            ) : (
+              <RiDeleteBin5Line
+                className={styles["icon"]}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleDelete(post._id);
+                }}
+              />
+            )}
 
-                <div
-                  className={styles["post-like"]}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    likePost(post._id, post.likes);
-                  }}
+            <div
+              className={styles["post-like"]}
+              onClick={(e) => {
+                e.stopPropagation();
+                likePost(post._id, post.likes);
+              }}
+            >
+              {post?.likes?.includes(user?.email) ? (
+                <AiFillHeart className={styles["liked"]} />
+              ) : (
+                <AiOutlineHeart className={styles["icon"]} />
+              )}
+
+              {post?.likes?.length > 0 && (
+                <span
+                  className={
+                    styles[
+                      post?.likes?.includes(user?.email)
+                        ? "liked-color"
+                        : "comment-text"
+                    ]
+                  }
                 >
-                  {post?.likes?.includes(user?.email) ? (
-                    <AiFillHeart className={styles["liked"]} />
-                  ) : (
-                    <AiOutlineHeart className={styles["icon"]} />
-                  )}
+                  {post.likes.length}
+                </span>
+              )}
+            </div>
 
-                  {post?.likes?.length > 0 && (
-                    <span className={styles[post?.likes?.includes(user?.email) ?
-                    "liked-color": "comment-text"]}>
-                      {post.likes.length}
-                    </span>
-                  )}
+            <AiOutlineShareAlt className={styles["icon"]} />
+          </div>
+          {post.comments?.length > 0 && (
+            <div>
+              <hr />
+              <div className={styles["view-cmnts"]}>View comments</div>
+            </div>
+          )}
+          {post?.comments?.length > 0 &&
+            post.comments.map((comment) => (
+              <div>
+                <Comment
+                  key={comment._id}
+                  post={post}
+                  comment={comment}
+                  postId={post._id}
+                  user={user}
+                  isReply={false}
+                />
+              
+              {comment?.replies?.length>0 && (
+                <div className={styles["reply"]}>
+                  <div className={styles["view-cmnts"]}> 
+                  <FaReply className={styles["rep-icon"]}/> &nbsp; 
+                    <span>replies</span></div>
+                  {comment.replies?.map((reply)=>(
+                    <Comment 
+                      key={reply._id}
+                      post={post}
+                      comment={reply}
+                      postId={post._id}
+                      user={user}
+                      isReply={true}
+                    />
+                  ))}
                 </div>
-
-                <AiOutlineShareAlt className={styles["icon"]} />
+              )}
               </div>
-          {post.comments?.length > 0 && <div>
-            <hr/>
-            <div className={styles["view-cmnts"]}>View comments</div>
-              </div>}
-          {post.comments?.length > 0 && post.comments.map((comment) => (
-            // <div key={comment._id}>
-            //   <p>{comment.username}</p>
-            //   <p>{comment.text}</p>
-            //   <p>{comment.timestamp}</p>
-            // </div>
-            
-            <Comment key={comment._id} comment={comment} postId={post._id} user={user}/>
-            
-          ))}
+            ))}
         </div>
-        ))}
+      ))}
     </>
   );
 };

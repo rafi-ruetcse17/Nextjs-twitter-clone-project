@@ -25,7 +25,10 @@ const ViewPost = ({ user, post }) => {
       <div className={styles["back-arrow"]}>
         <BsArrowLeft
           className={styles["back-icon"]}
-          onClick={() => router.push(`/`)}
+          onClick={(e) => {
+            router.push(`/home`);
+            e.stopPropagation();
+          }}
         />
         Post
       </div>
@@ -51,8 +54,13 @@ const ViewPost = ({ user, post }) => {
                 </span>
               </h3>
 
-              {toggle && <UpdateModal post={post} user={user}
-               onClose={()=>toggleModal(post._id, false)}/>}
+              {toggle && (
+                <UpdateModal
+                  post={post}
+                  user={user}
+                  onClose={() => toggleModal(post._id, false)}
+                />
+              )}
 
               <div className={styles["user-id"]}>
                 <p className={styles["user-tag"]}>

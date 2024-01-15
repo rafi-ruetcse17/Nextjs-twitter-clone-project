@@ -1,5 +1,30 @@
 const mongoose = require("mongoose");
 
+const replySchema = new mongoose.Schema({
+  username: {
+    type: String,
+    required: true,
+  },
+  email: {
+    type: String,
+    required: true,
+  },
+  text: {
+    type: String,
+  },
+  image: {
+    type: String,
+  },
+  likes: {
+    type: [String],
+    default: [],
+  },
+  timestamp: {
+    type: Date,
+    default: Date.now,
+  },
+});
+
 const commentSchema = new mongoose.Schema({
   username: {
     type: String,
@@ -27,6 +52,7 @@ const commentSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  replies: [replySchema], // Array of replies
 });
 
 const postSchema = new mongoose.Schema({
@@ -47,6 +73,10 @@ const postSchema = new mongoose.Schema({
   likes: {
     type: [String], 
     default: [],
+  },
+  showUpdateModal:{
+    type: Boolean,
+    default:false,
   },
   showModal: {
     type: Boolean,

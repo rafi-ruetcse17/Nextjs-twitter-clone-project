@@ -8,18 +8,16 @@ import { IoCalendarNumberOutline } from "react-icons/io5";
 import { MdClose } from "react-icons/md"
 import { RiBarChart2Line } from "react-icons/ri";
 import Moment from "react-moment";
-import { createComment, getAllPosts } from "@/libs/actions/postAction";
+import { createComment, getAllPosts , createReply} from "@/libs/actions/postAction";
 import { useDispatch } from "react-redux";
+import { useSession } from "next-auth/react";
 
-const Modal = ({ post, user, onClose}) => {
+const Modal = ({ post, user, onClose, comment}) => {
   const [input, setInput] = useState("")
   const [selectedFile, setSelectedFile] = useState(null);
   const [selectedImage, setSelectedImage] = useState(null);
-//   const handleCloseClick = (e) => {
-//     e.preventDefault();
-//     onClose();
-//   };
   const dispatch = useDispatch()
+  const {data: session} = useSession()
 
   const addImageToComment = (e) => {
     const reader = new FileReader();
@@ -51,12 +49,22 @@ const Modal = ({ post, user, onClose}) => {
         }
         Url = await res.json();
       }
-      if(Url)
-        await(createComment({_id: post._id, 
-          newComment: {username:user.name, email:user.email, text:input, image: Url}}))
-      else
-        await(createComment({_id: post._id, 
-          newComment: {username:user.name, email:user.email, text:input}}))
+      if(comment){
+        if(Url)
+          await(createReply({_id: post._id, commentId:comment._id,
+            newReply: {username:user.name, email:user.email, text:input, image: Url}}))
+        else
+          await(createReply({_id: post._id, commentId:comment._id,
+            newReply: {username:user.name, email:user.email, text:input}}))
+      }
+      else{
+        if(Url)
+          await(createComment({_id: post._id, 
+            newComment: {username:user.name, email:user.email, text:input, image: Url}}))
+        else
+          await(createComment({_id: post._id, 
+            newComment: {username:user.name, email:user.email, text:input}}))
+      }
 
       const updatedPosts= await getAllPosts(user?.email)
       dispatch({ type: 'SET_POSTS', payload: updatedPosts })
@@ -80,31 +88,31 @@ const Modal = ({ post, user, onClose}) => {
 
         <div className={styles["contents"]}>
           <div>
-            <img className={styles["rounded"]} src={user?.image} alt="" />
+            <img className={styles["rounded"]} src={session?.user?.image} alt="" />
           </div>
 
           <div>
             <div className={styles["post-details"]}>
-              <h3>{post?.username}</h3>
+              <h3>{comment?comment.username:post?.username}</h3>
               <h4 className={styles["timestamp"]}>
-                . <Moment fromNow>{post?.timestamp}</Moment>
+                . <Moment fromNow>{comment?comment.timestamp:post?.timestamp}</Moment>
               </h4>
             </div>
-            <p className={styles["text"]}>{post?.text}</p>
+            <p className={styles["text"]}>{comment?comment.text:post?.text}</p>
 
             <img
-              src={post?.image}
+              src={comment?comment.image:post?.image}
               className={styles["post-image"]}
               alt=""
             />
 
             <p className={styles["comment"]}>
-              Replying to: <span className={styles["username"]}>@{post?.username}</span>
+              Replying to: <span className={styles["username"]}>@{comment?comment.username:post?.username}</span>
             </p>
           </div>
 
           <div className={styles["comment-user"]}>
-            <img className={styles["rounded"]} src={user?.image} alt="" />
+            <img className={styles["rounded"]} src={session?.user?.image} alt="" />
           </div>
 
           <div className={styles["comment-user"]}>

@@ -45,7 +45,7 @@
     display: flex;
     gap: 2px;
     font-size: 12px;
-
+    margin-top: -1rem;
 }
 
 .timestamp {
@@ -60,7 +60,7 @@
 
 .post-image {
     margin-top: 1rem;
-    max-height: 200px;
+    max-height: 100px;
     border-radius: 15px;
     object-fit: cover;
 }

@@ -6,7 +6,9 @@ import {
   deleteClickedPost,
   createNewComment,
   deleteClickedComment,
-  likeClickedComment
+  likeClickedComment,
+  createNewReply,
+  updateClickedComment,
 } from "../api-routes/user-api";
 
 async function createPost(data) {
@@ -34,24 +36,24 @@ async function getPost(data) {
   }
 }
 
-async function getAllPosts(data){
-  try{
-    const response = await getAllPrevPosts(data)
+async function getAllPosts(data) {
+  try {
+    const response = await getAllPrevPosts(data);
     return response.data;
   } catch (error) {
     throw Error(error.response.data);
   }
 }
 
-async function deletePost(data){
-  try{
-    const response = await deleteClickedPost(data)
+async function deletePost(data) {
+  try {
+    const response = await deleteClickedPost(data);
     return response.data;
   } catch (error) {
     throw Error(error.response.data);
   }
 }
-async function createComment(data){
+async function createComment(data) {
   try {
     const response = await createNewComment(data);
     return response.data;
@@ -60,7 +62,7 @@ async function createComment(data){
   }
 }
 
-async function deleteComment(data){
+async function deleteComment(data) {
   try {
     const response = await deleteClickedComment(data);
     return response.data;
@@ -68,8 +70,16 @@ async function deleteComment(data){
     throw Error(error.response.data);
   }
 }
+async function updateComment(data) {
+  try {
+    const response = await updateClickedComment(data);
+    return response.data;
+  } catch (error) {
+    throw Error(error.response.data);
+  }
+}
 
-async function updateCommentLikes(data){
+async function updateCommentLikes(data) {
   try {
     const response = await likeClickedComment(data);
     return response.data;
@@ -78,4 +88,25 @@ async function updateCommentLikes(data){
   }
 }
 
-export { createPost, updatePost, getPost ,getAllPosts, deletePost,createComment, deleteComment, updateCommentLikes};
+async function createReply(data) {
+  try {
+    const response = await createNewReply(data);
+    return response.data;
+  } catch (error) {
+    throw Error(error.response.data);
+  }
+}
+
+
+export {
+  createPost,
+  updatePost,
+  getPost,
+  getAllPosts,
+  deletePost,
+  createComment,
+  deleteComment,
+  updateComment,
+  updateCommentLikes,
+  createReply,
+};

@@ -12,15 +12,11 @@ import { createComment, getAllPosts, updatePost } from "@/libs/actions/postActio
 import { useDispatch } from "react-redux";
 import { useSession } from "next-auth/react";
 
-const UpdateModal = ({ post, user, onClose}) => {
+const UpdateModal = ({ post, user, onClose, comment}) => {
   const {data:session} = useSession()
-  const [input, setInput] = useState(post.text)
-  const [selectedFile, setSelectedFile] = useState(post.image);
-  const [selectedImage, setSelectedImage] = useState(post.image);
-//   const handleCloseClick = (e) => {
-//     e.preventDefault();
-//     onClose();
-//   };
+  const [input, setInput] = useState(comment?comment.text:post.text)
+  const [selectedFile, setSelectedFile] = useState(comment?comment.image:post.image);
+  const [selectedImage, setSelectedImage] = useState(comment?comment.image:post.image);
   const dispatch = useDispatch()
 
   const addImageToComment = (e) => {
@@ -66,38 +62,9 @@ const UpdateModal = ({ post, user, onClose}) => {
     onClose();
 
   }
-
-
-  // const sendComment = async()=>{
-  //   try {
-  //     let Url = null;
-  //     if (selectedImage) {
-  //       const body = new FormData();
-  //       body.append("file", selectedImage);
-  //       const res = await fetch("/api/upload", {
-  //         method: "POST",
-  //         body,
-  //       });
-  //       if (!res.ok) {
-  //         throw new Error("Failed to upload image!");
-  //       }
-  //       Url = await res.json();
-  //     }
-  //     if(Url)
-  //       await(createComment({_id: post._id, 
-  //         newComment: {username:user.name, email:user.email, text:input, image: Url}}))
-  //     else
-  //       await(createComment({_id: post._id, 
-  //         newComment: {username:user.name, email:user.email, text:input}}))
-
-  //     const updatedPosts= await getAllPosts(user?.email)
-  //     dispatch({ type: 'SET_POSTS', payload: updatedPosts })
-  //   } catch (error) {
-  //     console.error("Error fetching posts:", error);
-  //   }
-
-  //   onClose()
-  // }
+  const updateCurrentComment = async() =>{
+    
+  }
 
   const modalContent = (
     <div
@@ -127,7 +94,7 @@ const UpdateModal = ({ post, user, onClose}) => {
           </div>
 
           <div className={styles["comment-user"]}>
-            <img className={styles["rounded"]} src={user?.image} alt="" />
+            {/* <img className={styles["rounded"]} src={user?.image} alt="" /> */}
           </div>
 
           <div className={styles["comment-user"]}>
@@ -165,13 +132,23 @@ const UpdateModal = ({ post, user, onClose}) => {
                 <HiOutlineLocationMarker className={styles["other-icons"]} />
               </div>
 
-              <button
+              {comment && <button
                 className={styles["reply-btn"]}
-                disabled={(!input.trim() && !selectedFile) || (post?.text==input && post?.image==selectedImage)}
+                disabled={(!input.trim() && !selectedFile) || 
+                  (comment?.text==input && comment?.image==selectedImage)}
+                onClick={updateCurrentComment}
+                >
+                  Update
+                </button>
+              }
+              {comment==null && <button
+                className={styles["reply-btn"]}
+                disabled={(!input.trim() && !selectedFile) || 
+                  (post?.text==input && post?.image==selectedImage)}
                 onClick={updateCurrentPost}
               >
                 Update
-              </button>
+              </button>}
             </div>
           </div>
         </div>

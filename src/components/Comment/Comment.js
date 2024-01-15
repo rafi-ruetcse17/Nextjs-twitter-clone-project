@@ -18,36 +18,17 @@ import { FaRetweet } from "react-icons/fa";
 import { RiDeleteBin5Line } from "react-icons/ri";
 import { AiFillHeart, AiOutlineHeart, AiOutlineShareAlt } from "react-icons/ai";
 import { useDispatch, useSelector } from "react-redux";
+import { BiEditAlt } from "react-icons/bi";
+import { FiEdit } from "react-icons/fi";
+import UpdateModal from "../UpdateModal/UpdateModal";
 
-const Comment = ({ comment, postId, user }) => {
+const Comment = ({post, comment, postId, user, isReply }) => {
   const { data: session } = useSession();
-
-  const [showModal, setShowModal] = useState(false);
-  const [liked, setLiked] = useState(false)
-  //   const [likes, setLikes] = useState([]);
-  //   const [liked, setLiked] = useState(false);
-  //   const [comments, setComments] = useState([]);
-  //   const [posts, setPosts] = useState(null);
-
-  //   const Posts = useSelector((state)=>state.posts)
-  //   const router = useRouter();
-  //   const { data: session } = useSession();
   const dispatch = useDispatch();
+  const [showReplyModal, setShowReplyModal] = useState(false);
+  const [showUpdateModal, setShowUpdateModal] = useState(false);
+  const [liked, setLiked] = useState(false)
 
-  //   useEffect(() => {
-  //     getFromDatabase()
-  //     if(Posts)
-  //       setPosts(Posts)
-  //   }, [Posts]);
-
-  //   const getFromDatabase = async () => {
-  //     try {
-  //       const response = await getAllPosts(user.email);
-  //       setPosts(response);
-  //     } catch (error) {
-  //       console.error("Error fetching posts:", error);
-  //     }
-  //   };
 
   const likeComment = async (commentLikes, commentId) => {
     if (commentLikes.includes(user?.email)) {
@@ -82,8 +63,13 @@ const Comment = ({ comment, postId, user }) => {
       console.error("Error fetching posts:", error);
     }
   };
-  const toggleModal = async (postId, state) => {
-    setShowModal(state)
+  const toggleModal = async (postId, state, operation) => {
+    if(operation=="reply"){
+      setShowReplyModal(state)
+    }
+    else{
+      setShowUpdateModal(state)
+    }
     // try {
     //   await updatePost({ _id: postId, showModal: state });
     //   const updatedPosts = await getAllPosts(user?.email);
@@ -96,7 +82,7 @@ const Comment = ({ comment, postId, user }) => {
   return (
     <>
       <div
-        className={styles["container"]}
+        className={styles[isReply?"container":""]}
         // onClick={() => router.push(`/${id}`)}
       >
         <div className={styles["user-container"]}>
@@ -108,7 +94,7 @@ const Comment = ({ comment, postId, user }) => {
             />
           </div>
 
-          <div className={styles["cmnt-container"]}>
+          <div className={styles[!isReply?"cmnt-container":"reply-container"]}>
             <div className={styles["user-details"]}>
               <h4 className={styles["user-name"]}>{comment?.username}</h4>
 
@@ -125,28 +111,29 @@ const Comment = ({ comment, postId, user }) => {
             <p className={styles["post-details"]}>{comment?.text}</p>
             <img className={styles["post-img"]} src={comment?.image} alt="" />
             <div className={styles["icons-container"]}>
-              <div className={styles["comments"]}>
+              {!isReply && <div className={styles["comments"]}>
                 <BsChat
                   className={styles["icon"]}
                   onClick={(e) => {
                     e.stopPropagation();
-                    toggleModal(comment._id, true);
+                    toggleModal(comment._id, true, "reply");
                     //openModal();
                   }}
                 />
-                {showModal && (
+                {comment?.replies?.length > 0 && (
+                  <span className={styles["comment-text"]}>
+                    {comment.replies.length}
+                  </span>
+                )}
+                {showReplyModal && (
                   <Modal
-                    post={comment}
+                    post={post}
                     user={user}
-                    onClose={() => toggleModal(comment._id, false)}
+                    onClose={() => toggleModal(comment._id, false, "reply")}
+                    comment={comment}
                   />
                 )}
-                {/* {comments.length > 0 && (
-                  <span className={styles["comment-text"]}>
-                    {comments.length}
-                  </span>
-                )} */}
-              </div>
+              </div>}
 
               {user?.email !== comment?.email ? (
                 <FaRetweet className={styles["icon"]} />
@@ -182,7 +169,19 @@ const Comment = ({ comment, postId, user }) => {
                 )}
               </div>
 
-              <AiOutlineShareAlt className={styles["icon"]} />
+              <FiEdit className={styles["icon"]} 
+              onClick={(e)=>{
+                e.stopPropagation()
+                toggleModal(comment._id,true,"edit")
+                }}/>
+              {showUpdateModal && (
+                  <UpdateModal
+                    post={post}
+                    user={user}
+                    onClose={() => toggleModal(comment._id, false, "edit")}
+                    comment = {comment}
+                  />
+              )}
             </div>
           </div>
         </div>

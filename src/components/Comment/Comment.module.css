@@ -8,6 +8,9 @@
     cursor: pointer;
 
 } */
+.container{
+    margin-top: -10px;
+}
 
 .user-container {
     display: grid;
@@ -23,7 +26,14 @@
     border-radius: 20px;
     padding-left: 10px;
     padding-top: 2px;
-    font-size: 14px;
+    font-size: 15px;
+}
+.reply-container{
+    background-color: #222222;
+    border-radius: 20px;
+    padding: 3px 10px 3px 10px;
+    font-size: 13px;
+    margin-bottom: 4px;
 }
 
 .user-img {

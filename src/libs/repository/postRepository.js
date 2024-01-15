@@ -80,12 +80,68 @@ const deleteComment = async ({ postId, commentId }) => {
   }
 };
 
+const updateComment = async ({postId, commentId, updateData}) => {
+  try {
+    const { text, image } = updateData;
+
+    const updateFields = {};
+    if (text !== undefined) {
+      updateFields["comments.$.text"] = text;
+    }
+    if (image !== undefined) {
+      updateFields["comments.$.image"] = image;
+    }
+
+    const updatedPost = await Post.findOneAndUpdate(
+      { _id: postId, "comments._id": commentId },
+      { $set: updateFields },
+      { new: true }
+    );
+
+    if (!updatedPost) {
+      throw new Error("Post not found or comment not updated");
+    }
+
+    const updatedComment = updatedPost.comments.find((comment) =>
+      comment._id.equals(commentId)
+    );
+
+    return updatedComment;
+  } catch (error) {
+    throw new Error(error.message);
+  }
+};
+
 const updateCommentLikes = async ({ postId, commentId, likesArray }) => {
   try {
     const updatedPost = await Post.findByIdAndUpdate(
       postId,
       {
         $set: { "comments.$[comment].likes": likesArray },
+      },
+      {
+        arrayFilters: [{ "comment._id": commentId }],
+        new: true,
+      }
+    );
+
+    if (!updatedPost) {
+      throw new Error("Post not found");
+    }
+
+    return updatedPost;
+  } catch (error) {
+    throw new Error(error.message);
+  }
+};
+
+const createReply = async ({ _id, commentId, newReply }) => {
+  console.log(_id, commentId, newReply);
+  try {
+    const updatedPost = await Post.findByIdAndUpdate(
+      _id,
+      {
+        $push: { "comments.$[comment].replies": newReply },
       },
       {
         arrayFilters: [{ "comment._id": commentId }],
@@ -111,7 +167,9 @@ const postRepository = {
   deletePost,
   createComment,
   deleteComment,
+  updateComment,
   updateCommentLikes,
+  createReply,
 };
 
 export default postRepository;

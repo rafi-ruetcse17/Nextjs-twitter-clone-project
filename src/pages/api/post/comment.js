@@ -1,5 +1,5 @@
 import connectDB from "@/config/connectDB";
-import { createComment, deleteComment, updateCommentLikes} from "@/libs/services/postService";
+import { createComment,updateComment, deleteComment, updateCommentLikes} from "@/libs/services/postService";
 
 export default async function handler(req, res) {
   try {
@@ -10,7 +10,15 @@ export default async function handler(req, res) {
       case "DELETE":
         return await deleteComment(req,res);
       case "PATCH":
-        return await updateCommentLikes(req, res);
+        console.log(req.headers);
+        const purpose = req.headers["X-Api-Purpose"];
+        switch(purpose){
+          case "LikeComment":
+            return await updateCommentLikes(req, res);
+          case "UpdateComment":
+            return await updateComment(req, res);
+        }
+        
     }
   } catch (error) {
     return res.status(500).json({ error });
