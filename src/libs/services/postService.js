@@ -89,3 +89,21 @@ export const createReply = async(req, res)=>{
     return res.status(500).json(error.message);
   }
 }
+
+export const updateReplyLikes = async(req, res)=>{
+  try{
+    const response = await postRepository.updateReplyLikes(req.body)
+    return res.status(200).json(response);
+  } catch (error) {
+    return res.status(500).json(error.message);
+  }
+}
+
+export const deleteReply = async(req, res)=>{
+  try{
+    const response = await postRepository.deleteReply(req.body)
+    return res.status(200).json(response);
+  } catch (error) {
+    return res.status(500).json(error.message);
+  }
+}

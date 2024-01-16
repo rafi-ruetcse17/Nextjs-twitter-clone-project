@@ -11,6 +11,8 @@ import {
   getPost,
   updatePost,
   updateCommentLikes,
+  updateReplyLikes,
+  deleteReply,
 } from "@/libs/actions/postAction";
 import Moment from "react-moment";
 import { BsChat } from "react-icons/bs";
@@ -31,10 +33,30 @@ const Comment = ({post, comment, postId, user, isReply }) => {
 
 
   const likeComment = async (commentLikes, commentId) => {
+    // if(isReply){
+    //   if(isReply.likes.includes(user?.email)){
+    //     const updatedLikes = isReply.likes.filter((email) => email !== user?.email);
+    //     try {
+    //       await updateReplyLikes({postId, commentId, likesArray:updatedLikes });
+    //       const updatedPosts = await getAllPosts(user?.email);
+    //       dispatch({ type: "SET_POSTS", payload: updatedPosts });
+    //       setLiked(false)
+    //     } catch (error) {
+    //       console.error("Error fetching posts:", error);
+    //     }
+    //     return;
+    //   }
+
+    //   return;
+    // }
     if (commentLikes.includes(user?.email)) {
       const updatedLikes = commentLikes.filter((email) => email !== user?.email);
       try {
-        await updateCommentLikes({postId, commentId, likesArray:updatedLikes });
+        if(isReply){
+          await updateReplyLikes({postId, commentId:isReply, replyId:comment._id,likesArray:updatedLikes  })
+        }
+        else 
+          await updateCommentLikes({postId, commentId, likesArray:updatedLikes });
         const updatedPosts = await getAllPosts(user?.email);
         dispatch({ type: "SET_POSTS", payload: updatedPosts });
         setLiked(false)
@@ -45,7 +67,10 @@ const Comment = ({post, comment, postId, user, isReply }) => {
     }
     try {
       const updatedLikes = [...commentLikes, user?.email];
-      await updateCommentLikes({postId, commentId, likesArray: updatedLikes });
+      if(isReply)
+        await updateReplyLikes({postId, commentId:isReply, replyId:comment._id,likesArray:updatedLikes  })
+      else
+        await updateCommentLikes({postId, commentId, likesArray: updatedLikes });
       const updatedPosts = await getAllPosts(user?.email);
       dispatch({ type: "SET_POSTS", payload: updatedPosts });
       setLiked(true)
@@ -56,7 +81,10 @@ const Comment = ({post, comment, postId, user, isReply }) => {
 
   const handleDelete = async (commentId) => {
     try {
-      await deleteComment({ postId, commentId });
+      if(isReply)
+        await deleteReply({postId, commentId:isReply, replyId:comment._id})
+      else
+        await deleteComment({ postId, commentId });
       const updatedPosts = await getAllPosts(user?.email);
       dispatch({ type: "SET_POSTS", payload: updatedPosts });
     } catch (error) {
@@ -70,15 +98,9 @@ const Comment = ({post, comment, postId, user, isReply }) => {
     else{
       setShowUpdateModal(state)
     }
-    // try {
-    //   await updatePost({ _id: postId, showModal: state });
-    //   const updatedPosts = await getAllPosts(user?.email);
-    //   dispatch({ type: "SET_POSTS", payload: updatedPosts });
-    // } catch (error) {
-    //   console.error("Error fetching posts:", error);
-    // }
+
   };
-  //console.log(posts.comments)
+
   return (
     <>
       <div

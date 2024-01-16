@@ -1,12 +1,20 @@
 import connectDB from "@/config/connectDB";
-import { createReply} from "@/libs/services/postService";
+import { createReply, updateReplyLikes,deleteReply} from "@/libs/services/postService";
 
 export default async function handler(req, res) {
   try {
     await connectDB();
     switch (req.method) {
       case "PATCH":
-        return await createReply(req, res);
+        const purpose = req.headers["x-api-purpose"];
+        switch(purpose){
+          case "CreateReply":
+            return await createReply(req, res);
+          case "LikeReply":
+            return await updateReplyLikes(req, res);
+        }
+      case "DELETE":
+        return await deleteReply(req, res);
     }
   } catch (error) {
     return res.status(500).json({ error });

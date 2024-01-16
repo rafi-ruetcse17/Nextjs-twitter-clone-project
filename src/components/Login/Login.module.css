@@ -6,7 +6,6 @@
 .logo {
     display: grid;
     place-items: center;
-    height: 100vh;
     background: black;
 }
 
@@ -30,20 +29,24 @@
     padding-left: 3rem;
     padding-right: 3rem;
     gap: 1rem;
+    justify-content: center;
     align-items: center;
     background-color: #ffffff;
     cursor: pointer;
     font-family: "Google Sans",arial,sans-serif;
     border-radius: 9999px;
     margin-bottom: 8px;
+    width: 200px;
+    height:30px;
 }
 .create-account {
     display: flex;
-    padding: 1rem;
-    padding-left: 5rem;
-    padding-right: 5.5rem;
+    padding: 0.5rem;
+    padding-left: 3rem;
+    padding-right: 3rem;
     gap: 1rem;
     align-items: center;
+    justify-content: center;
     background-color: #1a8cd8;
     color: #ffffff;
     cursor: pointer;
@@ -51,6 +54,9 @@
     font-family: "Google Sans",arial,sans-serif;
     border-radius: 9999px;
     margin-bottom: 8px;
+    width: 200px;
+    height:30px;
+    
 }
 .sign-in-header{
     color: white;
@@ -79,4 +85,23 @@
 
 .button-icon{
     font-size: 30px;
+}
+
+@media (max-width: 1000px) {
+    .container{
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+    .logo{
+        margin-bottom: 75px;
+    }
+    .x-color{
+        font-size: 50px;
+    }
+}
+@media (min-width: 1024px){
+    .logo{
+        height: 100vh;
+    }
 }

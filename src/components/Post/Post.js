@@ -281,14 +281,14 @@ const Post = ({ user }) => {
           )}
           {post?.comments?.length > 0 &&
             post.comments.map((comment) => (
-              <div>
+              <div key={comment._id}>
                 <Comment
                   key={comment._id}
                   post={post}
                   comment={comment}
                   postId={post._id}
                   user={user}
-                  isReply={false}
+                  isReply={null}
                 />
               
               {comment?.replies?.length>0 && (
@@ -303,7 +303,7 @@ const Post = ({ user }) => {
                       comment={reply}
                       postId={post._id}
                       user={user}
-                      isReply={true}
+                      isReply={comment._id}
                     />
                   ))}
                 </div>

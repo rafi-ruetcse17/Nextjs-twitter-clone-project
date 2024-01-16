@@ -10,8 +10,7 @@ export default async function handler(req, res) {
       case "DELETE":
         return await deleteComment(req,res);
       case "PATCH":
-        console.log(req.headers);
-        const purpose = req.headers["X-Api-Purpose"];
+        const purpose = req.headers["x-api-purpose"];
         switch(purpose){
           case "LikeComment":
             return await updateCommentLikes(req, res);

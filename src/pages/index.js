@@ -15,7 +15,7 @@ export default function Home({user}) {
   useEffect(() => {
     const fetchData = async () => {
       if (user) {
-        router.push('/home');
+        await router.push('/home');
       }
       setLoading(false);
     };

@@ -9,22 +9,28 @@ import {
   HiOutlineDotsCircleHorizontal,
 } from "react-icons/hi";
 import { signOut, useSession } from "next-auth/react";
+import { useRouter } from "next/router";
 
 const Sidebar = () => {
   const { data: session } = useSession();
+  const router = useRouter()
   return (
     <div className={styles["container"]}>
       <div className={styles["sidebar-logo"]}>
         <BsTwitterX className={styles["x-color"]} />
       </div>
       <div className={styles["sidebar"]}>
-        <SidebarLink text="Home" Icon={AiFillHome} />
+        <div onClick={()=>router.push(`/home`)}>
+          <SidebarLink text="Home" Icon={AiFillHome} />
+        </div>
         <SidebarLink text="Explore" Icon={BiHash} />
         <SidebarLink text="Notifications" Icon={BsBell} />
         <SidebarLink text="Messages" Icon={AiOutlineInbox} />
         <SidebarLink text="Bookmarks" Icon={BsBookmark} />
         <SidebarLink text="Lists" Icon={HiOutlineClipboardList} />
-        <SidebarLink text="Profile" Icon={AiOutlineUser} />
+        <div onClick={()=>router.push(`/${session?.user?.email}`)}>
+          <SidebarLink text="Profile" Icon={AiOutlineUser} />
+        </div>
         <SidebarLink text="More" Icon={HiOutlineDotsCircleHorizontal} />
       </div>
       <button className={styles["btn"]}>Post</button>

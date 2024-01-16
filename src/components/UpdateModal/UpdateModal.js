@@ -8,7 +8,7 @@ import { IoCalendarNumberOutline } from "react-icons/io5";
 import { MdClose } from "react-icons/md"
 import { RiBarChart2Line } from "react-icons/ri";
 import Moment from "react-moment";
-import { createComment, getAllPosts, updatePost } from "@/libs/actions/postAction";
+import { createComment, getAllPosts, updateComment, updatePost } from "@/libs/actions/postAction";
 import { useDispatch } from "react-redux";
 import { useSession } from "next-auth/react";
 
@@ -63,7 +63,31 @@ const UpdateModal = ({ post, user, onClose, comment}) => {
 
   }
   const updateCurrentComment = async() =>{
-    
+    let Url;
+    if (selectedImage!=comment.image) {
+      const body = new FormData();
+      body.append("file", selectedImage);
+      const res = await fetch("/api/upload", {
+        method: "POST",
+        body,
+      });
+      if (!res.ok) {
+        throw new Error("Failed to upload image!");
+      }
+      Url = await res.json();
+    }
+    if(selectedImage!=comment.image && input!=comment.text){
+      await updateComment({ _id: post._id, commentId: comment._id, updateData:{text:input, image: Url }});
+    }
+    else if(selectedImage!=comment.image){
+      await updateComment({ _id: post._id, commentId: comment._id, updateData:{image: Url }});
+    }
+    else{
+      await updateComment({  _id: post._id, commentId: comment._id, updateData:{ text: input }});
+    }
+    const updatedPosts = await getAllPosts(user?.email);
+    dispatch({ type: 'SET_POSTS', payload: updatedPosts })
+    onClose();
   }
 
   const modalContent = (

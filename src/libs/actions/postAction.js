@@ -9,6 +9,8 @@ import {
   likeClickedComment,
   createNewReply,
   updateClickedComment,
+  likeClickedReply,
+  deleteClickedReply,
 } from "../api-routes/user-api";
 
 async function createPost(data) {
@@ -96,6 +98,23 @@ async function createReply(data) {
     throw Error(error.response.data);
   }
 }
+async function updateReplyLikes(data){
+  try {
+    const response = await likeClickedReply(data);
+    return response.data;
+  } catch (error) {
+    throw Error(error.response.data);
+  }
+}
+
+async function deleteReply(data){
+  try {
+    const response = await deleteClickedReply(data);
+    return response.data;
+  } catch (error) {
+    throw Error(error.response.data);
+  }
+}
 
 
 export {
@@ -109,4 +128,6 @@ export {
   updateComment,
   updateCommentLikes,
   createReply,
+  updateReplyLikes,
+  deleteReply,
 };

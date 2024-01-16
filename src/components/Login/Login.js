@@ -93,7 +93,7 @@ const Login = () => {
               Create account
             </div>
             <h3 className={styles["sign-in-header"]}>Already have an account?</h3>
-            <div className={styles["sign-in"]} onClick={toggleLoginForm}>
+            <div className={styles["create-account"]} onClick={toggleLoginForm}>
               Sign in
             </div>
           </>

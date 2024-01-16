@@ -80,7 +80,7 @@ const deleteComment = async ({ postId, commentId }) => {
   }
 };
 
-const updateComment = async ({postId, commentId, updateData}) => {
+const updateComment = async ({_id, commentId, updateData}) => {
   try {
     const { text, image } = updateData;
 
@@ -93,7 +93,7 @@ const updateComment = async ({postId, commentId, updateData}) => {
     }
 
     const updatedPost = await Post.findOneAndUpdate(
-      { _id: postId, "comments._id": commentId },
+      { _id, "comments._id": commentId },
       { $set: updateFields },
       { new: true }
     );
@@ -159,6 +159,50 @@ const createReply = async ({ _id, commentId, newReply }) => {
   }
 };
 
+const updateReplyLikes = async ({postId, commentId, replyId, likesArray}) => {
+  try {
+    const updatedPost = await Post.findOneAndUpdate(
+      { _id: postId, "comments._id": commentId, "comments.replies._id": replyId },
+      { $set: { "comments.$[comment].replies.$[reply].likes": likesArray } },
+      {
+        arrayFilters: [{ "comment._id": commentId }, { "reply._id": replyId }],
+        new: true,
+      }
+    );
+
+    if (!updatedPost) {
+      throw new Error("Post not found or reply not updated");
+    }
+
+    const updatedComment = updatedPost.comments.find(comment => comment._id.equals(commentId));
+    const updatedReply = updatedComment.replies.find(reply => reply._id.equals(replyId));
+
+    return updatedReply;
+  } catch (error) {
+    throw new Error(error.message);
+  }
+};
+
+const deleteReply = async ({postId, commentId, replyId}) => {
+  try {
+    const updatedPost = await Post.findOneAndUpdate(
+      { "_id": postId, "comments._id": commentId },
+      { $pull: { "comments.$.replies": { _id: replyId } } },
+      { new: true }
+    );
+
+    if (!updatedPost) {
+      throw new Error("Post not found or reply not deleted");
+    }
+
+    const updatedComment = updatedPost.comments.find(comment => comment._id.equals(commentId));
+
+    return updatedComment.replies;
+  } catch (error) {
+    throw new Error(error.message);
+  }
+};
+
 const postRepository = {
   createPost,
   updatePost,
@@ -170,6 +214,8 @@ const postRepository = {
   updateComment,
   updateCommentLikes,
   createReply,
+  updateReplyLikes,
+  deleteReply,
 };
 
 export default postRepository;

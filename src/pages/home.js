@@ -4,6 +4,7 @@ import Sidebar from "@/components/Sidebar/Sidebar";
 import { getSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import styles from "@/styles/Home.module.css"
+import FollowBar from "@/components/FollowBar/FollowBar";
 
 const Home = ({ user }) => {
   const router = useRouter();
@@ -12,7 +13,7 @@ const Home = ({ user }) => {
   useEffect(() => {
     const fetchData = async () => {
       if (!user) {
-        router.push("/");
+        await router.push("/");
       }
       setLoading(false);
     };
@@ -29,6 +30,7 @@ const Home = ({ user }) => {
           <Sidebar />
           <div className={styles["feed"]}>
             <Feed user={user} />
+            <FollowBar/>
           </div>
         </main>
       )}

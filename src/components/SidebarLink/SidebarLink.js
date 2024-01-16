@@ -1,5 +1,7 @@
 import React from 'react'
 import styles from "@/components/SidebarLink/SidebarLink.module.css"
+import { useRouter } from 'next/router'
+import { useSession } from 'next-auth/react'
 
 const SidebarLink = ({text, Icon}) => {
   return (
