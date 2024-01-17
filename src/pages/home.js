@@ -3,7 +3,7 @@ import Feed from "@/components/Feed/Feed";
 import Sidebar from "@/components/Sidebar/Sidebar";
 import { getSession } from "next-auth/react";
 import { useRouter } from "next/router";
-import styles from "@/styles/Home.module.css"
+import styles from "@/styles/Home.module.css";
 import FollowBar from "@/components/FollowBar/FollowBar";
 
 const Home = ({ user }) => {
@@ -24,13 +24,13 @@ const Home = ({ user }) => {
   return (
     <div>
       {loading ? (
-        <p>Loading...</p>
+        <p className={styles["loading"]}>Loading...</p>
       ) : (
         <main className={styles["main"]}>
           <Sidebar />
           <div className={styles["feed"]}>
             <Feed user={user} />
-            <FollowBar/>
+            <FollowBar />
           </div>
         </main>
       )}

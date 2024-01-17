@@ -28,7 +28,7 @@
     padding-left: 1rem;
     padding-right: 1rem;
     padding-bottom: 1rem;
-    
+
     cursor: pointer;
     display: flex;
     flex-direction: column;
@@ -45,7 +45,8 @@
     justify-content: space-between;
 
 }
-.cover-photo{
+
+.cover-photo {
     width: 100%;
     height: 200px;
     background-size: 50% auto;
@@ -61,15 +62,96 @@
     border: 4px solid black;
 
 }
-.edit-profile-btn{
+
+.edit-profile-btn {
     width: 120px;
     height: 40px;
     border-radius: 9999px;
-    font-size:medium;
+    font-size: medium;
     font-weight: bold;
     border: 3px solid black;
     background-color: #fff;
 }
+
+.name {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-top: 0.5rem;
+}
+
+.name div b {
+    font-size: larger;
+}
+
+.follow {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.following {
+    text-decoration: none;
+    color: #fff;
+}
+
+.following:hover {
+    text-decoration: underline;
+}
+
+.container nav {
+    display: grid;
+    grid-template-columns: auto auto;
+    margin-top: 2rem;
+}
+
+.container nav div {
+    text-align: center;
+    font-weight: bold;
+    font-size: large;
+}
+
+.container nav div:hover {
+    text-decoration: underline;
+}
+
+.main {
+    max-width: 1400px;
+    margin: auto;
+}
+
+.clicked {
+    text-decoration: underline;
+}
+
+.media-container {
+    display: grid;
+    grid-template-columns: auto auto auto;
+    gap: 5px;
+    margin-top: -3px;
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+.media {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    position: relative;
+}
+
+.media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+
+
+
+
+
 
 .user-details {
     display: block;

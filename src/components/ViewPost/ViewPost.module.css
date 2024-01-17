@@ -3,7 +3,7 @@
     padding-bottom: 0.5rem;
     border-right: 1px solid;
     border-color: #9CA3AF;
-    min-height: 100vh;
+    /* min-height: 100vh; */
     color: #ffffff;
     width: 600px;
 }
@@ -161,9 +161,7 @@
 }
 
 @media (min-width: 1280px) {
-    .main-container {
-        margin-left: 340px;
-    }
+    
 
 }
 

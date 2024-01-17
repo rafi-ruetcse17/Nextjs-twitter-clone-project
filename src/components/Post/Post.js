@@ -39,7 +39,7 @@ const Post = ({ user }) => {
 
   const getFromDatabase = async () => {
     try {
-      const response = await getAllPosts(user.email);
+      const response = await getAllPosts(user?.email);
       setPosts(response);
     } catch (error) {
       console.error("Error fetching posts:", error);
@@ -98,7 +98,7 @@ const Post = ({ user }) => {
         <div
           key={post._id}
           className={styles["container"]}
-          onClick={() => router.push(`/${user.email}/${post._id}`)}
+          // onClick={() => router.push(`/${user.email}/${post._id}`)}
         >
           <div className={styles["user-container"]}>
             <div>

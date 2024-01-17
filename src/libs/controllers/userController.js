@@ -29,13 +29,13 @@ async function loginValidate(data) {
   const { email, password } = data;
 
   const user = await User.findOne({ email });
-  console.log("35", user);
+  //console.log("35", user);
   if (!user) {
     throw new Error("Incorrect Email..!");
   }
   
   const match = await bcrypt.compare(password, user.password);
-  console.log("36", match);
+  //console.log("36", match);
   if (!match) {
     throw Error("Incorrect password");
   }

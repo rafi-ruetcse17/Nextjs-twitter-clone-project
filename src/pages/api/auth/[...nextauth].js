@@ -21,11 +21,18 @@ export const authOptions = {
       name: "Crendentials",
       async authorize(credentials, req) {
         await connectDB();
-        const user = findUser(credentials);
+        const user = await findUser(credentials);
         return user;
       },
     }),
   ],
+  callbacks:{
+    async session({session, token, user}){
+      //session.user._id = token.sub
+      
+      return session;
+    }
+  },
 
   // callbacks: {
   //   async session({session, token, profile}){

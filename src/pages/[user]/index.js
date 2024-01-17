@@ -55,10 +55,12 @@ const profile = ({ user }) => {
         <p>Loading...</p>
       ) : (
         <main className={styles["main"]}>
+          
+          {/* <div><Sidebar /></div> */}
           <Sidebar />
           <div className={styles["feed"]}>
             {/* <Feed user={user} /> */}
-            <Profile/>
+            <Profile user={user}/>
             <FollowBar/>
           </div>
         </main>

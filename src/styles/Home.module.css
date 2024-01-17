@@ -239,3 +239,9 @@
   display: flex;
   gap: 1.5rem;
 }
+
+.loading{
+  color: #fff;
+  text-align: center;
+  margin-top: 20%;
+}

@@ -23,7 +23,7 @@ const LoginForm = ({ onClose }) => {
     e.preventDefault();
     try {
       //const response = await getUser({ email, password });
-      const status = await signIn("credentials", {
+      await signIn("credentials", {
         email: email,
         password: password,
       });

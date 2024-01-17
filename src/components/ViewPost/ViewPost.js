@@ -22,7 +22,7 @@ const ViewPost = ({ user, post }) => {
   };
   return (
     <section className={styles["main-container"]}>
-      <div className={styles["back-arrow"]}>
+      {/* <div className={styles["back-arrow"]}>
         <BsArrowLeft
           className={styles["back-icon"]}
           onClick={(e) => {
@@ -31,7 +31,7 @@ const ViewPost = ({ user, post }) => {
           }}
         />
         Post
-      </div>
+      </div> */}
       <div className={styles["container"]}>
         <div className={styles["user-container"]}>
           <div>

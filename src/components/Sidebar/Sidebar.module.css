@@ -2,6 +2,7 @@
     display: none;
     border-right: 1px solid #ccc;
     width: 70px;
+    position: relative;
     /*hidden on small screen*/
 }
 
@@ -120,7 +121,7 @@
         display: flex;
         align-items: flex-start;
         position: fixed;
-        width: 323px;
+        width: 323.5px;
         padding: 8px;
         height: 100%;
         /* padding-right: 2rem; */
