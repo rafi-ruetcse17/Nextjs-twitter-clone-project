@@ -4,6 +4,7 @@ import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
 import connectDB from "@/config/connectDB";
 import { findUser } from "@/libs/services/user-service";
+import { findOne } from "@/libs/controllers/userController";
 
 export const authOptions = {
   providers: [
@@ -26,12 +27,23 @@ export const authOptions = {
       },
     }),
   ],
-  callbacks:{
-    async session({session, token, user}){
+
+  callbacks: {
+    async session({ session, token, user }) {
       //session.user._id = token.sub
-      
+      const res = await findOne({
+        name: session?.user?.name,
+        email: session?.user?.email,
+        image: session?.user?.image,
+      });
+      //console.log("hehe", res);
+      session.user.username = res.username;
+      session.user.name = res.name;
+      session.user._id = res._id;
+      if(!session?.user?.image)
+        session.user.image = res.image;
       return session;
-    }
+    },
   },
 
   // callbacks: {

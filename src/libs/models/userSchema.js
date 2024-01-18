@@ -5,6 +5,10 @@ const userSchema = new mongoose.Schema({
     type: String,
     unique: true,
   },
+  name:{
+    type:String,
+    default: "New User",
+  },
   email: {
     type: String,
     required: true,
@@ -12,8 +16,24 @@ const userSchema = new mongoose.Schema({
   },
   password: {
     type: String,
-    required: true,
   },
+  image: {
+    type:String,
+    default: "/images/blank_user.jpg",
+  },
+  following:{
+    type:[String],
+  },
+  followers:{
+    type:[String],
+  },
+  verificationToken:{
+    type:String,
+  },
+  isVerified:{
+    type:Boolean,
+    default:false,
+  }
 }, {timestamps: true});
 
 const User = mongoose.models?.User|| mongoose.model('User', userSchema)

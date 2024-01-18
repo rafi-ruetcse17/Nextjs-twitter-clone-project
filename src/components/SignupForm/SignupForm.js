@@ -4,6 +4,7 @@ import styles from "./SignupForm.module.css";
 import { signIn, useSession } from "next-auth/react";
 
 const SignupForm = ({ onClose }) => {
+  const [name, setName] = useState("");
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -13,12 +14,12 @@ const SignupForm = ({ onClose }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await createUser({ username, email, password });
-      const status = await signIn("credentials", {
-        email: email,
-        password: password,
-      });
-      setError(null);
+      const response = await createUser({name, username, email, password });
+      // const status = await signIn("credentials", {
+      //   email: email,
+      //   password: password,
+      // });
+      setError("Check Email & Verify Account!");
     } catch (error) {
       setError(error.message);
     }
@@ -31,6 +32,15 @@ const SignupForm = ({ onClose }) => {
           &times;
         </button>
         <form onSubmit={handleSubmit}>
+          <label htmlFor="name">Full Name:</label>
+          <input
+            type="text"
+            id="name"
+            name="name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            required
+          />
           <label htmlFor="username">Username:</label>
           <input
             type="text"

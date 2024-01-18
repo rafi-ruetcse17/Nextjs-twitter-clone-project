@@ -88,7 +88,7 @@ const Profile = ({ user}) => {
           <div>
             <b>{session?.user?.name}</b>
           </div>
-          <div>@{session?.user?.name}</div>
+          <div>@{session?.user?.username}</div>
         </div>
 
         <div className={styles["follow"]}>

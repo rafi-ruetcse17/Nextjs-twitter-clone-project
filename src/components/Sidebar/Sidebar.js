@@ -28,7 +28,7 @@ const Sidebar = () => {
         <SidebarLink text="Messages" Icon={AiOutlineInbox} />
         <SidebarLink text="Bookmarks" Icon={BsBookmark} />
         <SidebarLink text="Lists" Icon={HiOutlineClipboardList} />
-        <div onClick={()=>router.push(`/${session?.user?.email}`)}>
+        <div onClick={()=>router.push(`/${session?.user?.username}`)}>
           <SidebarLink text="Profile" Icon={AiOutlineUser} />
         </div>
         <SidebarLink text="More" Icon={HiOutlineDotsCircleHorizontal} />
@@ -39,7 +39,7 @@ const Sidebar = () => {
         <img src={session?.user?.image} alt="" />
         <div className={styles["user"]}>
           <h4>{session?.user?.name}</h4>
-          <p>@{session?.user?.name}</p>
+          <p>@{session?.user?.username}</p>
         </div>
         <BsThreeDots className={styles["three-dots"]} />
       </div>
