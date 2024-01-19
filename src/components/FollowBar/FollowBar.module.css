@@ -26,6 +26,18 @@
     padding-left: 1rem;
 }
 
+.follow-bar {
+    margin-top: 2rem;
+    padding-left: 1rem;
+    display: flex;
+    flex-direction: column;
+    height: auto;
+    background-color: #16181C;
+    color: white;
+    border-radius: 20px;
+    
+}
+
 @media (min-width: 1024px) {
     .container {
         display: block;

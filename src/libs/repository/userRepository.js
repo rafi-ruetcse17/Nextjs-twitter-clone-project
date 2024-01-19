@@ -16,13 +16,23 @@ const findUser = async (data) => {
     const user = await loginValidate(data);
     return user;
   } catch (error) {
+    //console.log("repo", error);
     throw new Error(error.message);
   }
 };
+const getAllUsers = async () =>{
+  try{
+    const users = await User.find().sort({createdAt: -1});
+    return users;
+  }catch(error){
+    throw new Error(error.message);
+  }
+}
 
 const userRepository = {
   createUser,
   findUser,
+  getAllUsers,
 };
 
 export default userRepository;

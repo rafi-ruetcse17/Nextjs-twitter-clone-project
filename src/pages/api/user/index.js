@@ -1,5 +1,5 @@
 import connectDB from "@/config/connectDB";
-import { createUser , getUser} from "@/libs/services/user-service";
+import { createUser , getUser, getAllUsers} from "@/libs/services/user-service";
 
 export default async function handler(req, res){
     try{
@@ -9,7 +9,7 @@ export default async function handler(req, res){
                 const response = await createUser(req, res)
                 return response
             case "GET":
-                return await getUser(req, res)
+                return await getAllUsers()
         }
     } catch(error){
         return res.status(500).json({ error });

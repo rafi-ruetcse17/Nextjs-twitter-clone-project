@@ -15,6 +15,15 @@ export const findUser = async (data) => {
     const response = await userRepository.findUser(data);
     return response
   } catch (error) {
-    throw Error(error)
+    throw Error(error.message)
   }
 };
+
+export const getAllUsers = async()=>{
+  try{
+    const response = await userRepository.getAllUsers();
+    return response
+  } catch(error){
+    throw Error(error.message)
+  }
+}

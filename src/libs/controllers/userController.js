@@ -28,10 +28,17 @@ async function signupValidate(data) {
 }
 
 async function loginValidate(data) {
-  const { email, password } = data;
+  const { email, password , verificationToken} = data;
   //console.log();
+  if(verificationToken){
+    const user_by_token = await User.findOne({verificationToken});
+    if(!user_by_token)
+      throw new Error("Cannot find user");
+    return user_by_token;
+  }
+  
   const user = await User.findOne({ email });
-  console.log("35", user);
+  //console.log("35", user);
   if (!user) {
     throw new Error("Incorrect Email..!");
   }

@@ -1,16 +1,17 @@
-import { getUser} from "@/libs/actions/userAction";
+import { getUser } from "@/libs/actions/userAction";
 import React, { useState } from "react";
 import styles from "./LoginForm.module.css";
 import { FaGithub } from "react-icons/fa";
-import { FcGoogle } from "react-icons/fc";
+import { FcApproval, FcGoogle } from "react-icons/fc";
 import { signIn, useSession } from "next-auth/react";
+import { useRouter } from "next/router";
 
 const LoginForm = ({ onClose }) => {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
-  const {data: session} = useSession()
+  const router = useRouter()
 
   const handleGoogleLogin = () => {
     signIn("google");
@@ -21,16 +22,18 @@ const LoginForm = ({ onClose }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      //const response = await getUser({ email, password });
-      await signIn("credentials", {
-        email: email,
-        password: password,
-      });
-      setError(null);
-    } catch (error) {
-      setError(error.message);
-    }
+
+    //const response = await getUser({ email, password });
+    const status = await signIn("credentials", {
+      email: email,
+      password: password,
+      redirect: false,
+    });
+    if(status.ok)
+      router.push("/home");
+    else
+      setError(status.error)
+    //setError(null);
   };
 
   return (
@@ -39,6 +42,7 @@ const LoginForm = ({ onClose }) => {
         <button className={styles["close"]} onClick={onClose}>
           &times;
         </button>
+        {/* <div className=""><FcApproval/> <span>Successfully verified!</span></div> */}
         <form onSubmit={handleSubmit}>
           {/* <label htmlFor="username">Username:</label>
           <input
@@ -72,13 +76,11 @@ const LoginForm = ({ onClose }) => {
           {error && <h4 className={styles["error"]}>{error}</h4>}
 
           <button type="submit">Sign in</button>
-          <div className={styles["or"]}>
-              or
-            </div>
+          <div className={styles["or"]}>or</div>
           <div className={styles["button"]} onClick={handleGoogleLogin}>
             <FcGoogle className={styles["button-icon"]} />
             Sign up with Google
-          </div>  
+          </div>
           <div className={styles["button"]} onClick={handleGithubLogin}>
             <FaGithub className={styles["button-icon"]} />
             Sign up with Github

@@ -1,4 +1,4 @@
-import { createNewUser , getExistingUser} from "../api-routes/user-api";
+import { createNewUser , getExistingUser, getAllExistingUsers} from "../api-routes/user-api";
 async function createUser(credentials){
     try{
         const response = await createNewUser(credentials);
@@ -15,5 +15,13 @@ async function getUser(credentials){
         throw Error(error.response.data)
     }
 }
+async function getAllUsers(){
+    try{
+        const response = await getAllExistingUsers();
+        return response.data;
+    } catch(error){
+        throw Error(error.response.data)
+    }
+}
 
-export {createUser, getUser}
+export {createUser, getUser, getAllUsers}

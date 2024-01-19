@@ -22,8 +22,13 @@ export const authOptions = {
       name: "Crendentials",
       async authorize(credentials, req) {
         await connectDB();
-        const user = await findUser(credentials);
-        return user;
+        try{
+          const user = await findUser(credentials);
+          return user;
+        }catch(error){
+          console.log("errr", error.message);
+          throw Error(error.message)
+        }
       },
     }),
   ],

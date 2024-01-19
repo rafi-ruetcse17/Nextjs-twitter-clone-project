@@ -18,6 +18,7 @@ API.interceptors.response.use((res) => {
 
 export const createNewUser = (payload) =>API.post(api_endpoint, payload);
 export const getExistingUser = (payload) =>API.get(api_endpoint, payload);
+export const getAllExistingUsers = () =>API.get(api_endpoint);
 
 
 export const createNewPost = (payload) =>API.post(post_endpoint, payload)

@@ -243,5 +243,6 @@
 .loading{
   color: #fff;
   text-align: center;
+  font-size: larger;
   margin-top: 20%;
 }
