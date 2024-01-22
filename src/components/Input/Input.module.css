@@ -18,7 +18,6 @@
 }
 
 .image {
-    object-fit: contain;
     border-radius: 9999px;
     width: 3rem;
     height: 3rem;

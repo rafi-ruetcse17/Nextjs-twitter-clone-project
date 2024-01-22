@@ -20,6 +20,14 @@ const findUser = async (data) => {
     throw new Error(error.message);
   }
 };
+const getUser = async (data) =>{
+  try{
+    const user = await User.findOne({_id:data})
+    return user;
+  }catch(error){
+    throw new Error(error.message);
+  }
+}
 const getAllUsers = async () =>{
   try{
     const users = await User.find().sort({createdAt: -1});
@@ -29,10 +37,21 @@ const getAllUsers = async () =>{
   }
 }
 
+const updateUser = async (data) =>{
+  try{
+    const user = await User.findByIdAndUpdate(data._id, data);
+    return user;
+  }catch(error){
+    throw new Error(error.message);
+  }
+}
+
 const userRepository = {
   createUser,
   findUser,
   getAllUsers,
+  updateUser,
+  getUser,
 };
 
 export default userRepository;

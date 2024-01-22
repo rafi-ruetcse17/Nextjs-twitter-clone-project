@@ -28,14 +28,21 @@
 
 .follow-bar {
     margin-top: 2rem;
-    padding-left: 1rem;
+    /* padding-left: 1rem;
+    padding-right: 1rem; */
     display: flex;
     flex-direction: column;
     height: auto;
     background-color: #16181C;
     color: white;
     border-radius: 20px;
+    gap: 10px;
     
+}
+
+.follow-bar h2{
+    padding-left: 1rem;
+    padding-right: 1rem;
 }
 
 @media (min-width: 1024px) {

@@ -30,7 +30,7 @@ const Home = ({ user }) => {
           <Sidebar />
           <div className={styles["feed"]}>
             <Feed user={user} />
-            <FollowBar />
+            <FollowBar user={user}/>
           </div>
         </main>
       )}

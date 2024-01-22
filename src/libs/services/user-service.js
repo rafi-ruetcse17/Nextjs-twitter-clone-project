@@ -19,9 +19,28 @@ export const findUser = async (data) => {
   }
 };
 
+export const updateUser = async(req, res)=>{
+  try{
+    const response = await userRepository.updateUser(req.body);
+    return res.status(200).json(response);
+  } catch(error){
+    return res.status(500).json(error.message);
+  }
+}
+
+export const getUser = async(req,res)=>{
+  try{
+    const response = await userRepository.getUser(req.body);
+    return res.status(200).json(response);
+  }catch(error){
+    return res.status(500).json(error.message);
+  }
+}
+
 export const getAllUsers = async()=>{
   try{
     const response = await userRepository.getAllUsers();
+    //console.log(response);
     return response
   } catch(error){
     throw Error(error.message)

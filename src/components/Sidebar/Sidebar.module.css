@@ -36,6 +36,7 @@
 
 .btn {
     display: none;
+    border: none;
     border-radius: 9999px;
     margin-left: 6rem;
     width: 13rem;

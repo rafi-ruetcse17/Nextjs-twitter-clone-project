@@ -1,34 +1,57 @@
-import React, { useEffect, useState } from 'react'
-import styles from "./FollowBar.module.css"
-import { FiSearch } from 'react-icons/fi'
-import { getAllUsers } from '@/libs/actions/userAction';
+import React, { useEffect, useState } from "react";
+import styles from "./FollowBar.module.css";
+import { FiSearch } from "react-icons/fi";
+import { getAllUsers } from "@/libs/actions/userAction";
+import User from "../User/User";
+import { useDispatch, useSelector } from "react-redux";
+import { useSession } from "next-auth/react";
 
-const FollowBar = () => {
+const FollowBar = ({user}) => {
   const [users, setUsers] = useState(null);
+  const [currentUser, setCurrentUser] = useState(null);
+  const dispatch = useDispatch();
+  const Users = useSelector((state) => state.users);
 
-  useEffect(()=>{
-    const fetchData = async()=>{
+  useEffect(() => {
+    const fetchData = async () => {
       const data = await getAllUsers();
+      //dispatch({ type: "SET_USERS", payload: data });
+      const userMatch = data.find((check_user) => user?._id === check_user._id);
+      setCurrentUser(userMatch);
       setUsers(data);
-    }
+    };
     fetchData();
-  }, [])
+    if (Users) setUsers(Users);
+  }, [Users]);
+
+
+  
+  const filteredUsers = users
+    ?.filter((check_user) => !user?.following?.includes(check_user?._id))
+    .slice(0, 5);
 
   return (
     <div className={styles["container"]}>
-        <div className={styles["search-bar"]}>
-          <FiSearch/>
-          <input className={styles["search-input"]} type="text" placeholder='Search Twitter' />
-        </div>
+      <div className={styles["search-bar"]}>
+        <FiSearch />
+        <input
+          className={styles["search-input"]}
+          type="text"
+          placeholder="Search Twitter"
+        />
+      </div>
 
-        <div className={styles["follow-bar"]}>
-          <h2>Who to follow</h2>
-          {users?.map((user)=>(
-            <p key={user._id}>{user.name}</p>
-          ))}
-        </div>
+      <div className={styles["follow-bar"]}>
+        <h2>Who to follow</h2>
+        {filteredUsers?.map((check_user) => (
+          check_user?._id!=user._id && 
+          <div key={check_user?._id}>
+            <User user={check_user} currentUser={currentUser} />
+          </div>
+        ))}
+      </div>
     </div>
-  )
-}
+  );
+};
 
-export default FollowBar
+export default FollowBar;
