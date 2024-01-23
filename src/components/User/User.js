@@ -4,9 +4,10 @@ import { getAllUsers, updateUser } from "@/libs/actions/userAction";
 import { useSession } from "next-auth/react";
 import { useDispatch } from "react-redux";
 
-const User = ({ user, currentUser }) => {
+const User = ({ user, currentUser}) => {
   const [clicked, setClicked] = useState(false);
   const dispatch = useDispatch();
+  //console.log(user, currentUser);
   
 
   const handleFollow = async () => {
@@ -15,11 +16,19 @@ const User = ({ user, currentUser }) => {
     await updateUser({ _id: currentUser?._id, following: updatedFollowing });
     await updateUser({ _id: user?._id, followers: updatedFollower });
 
-    const data = await getAllUsers();
-    console.log(data);
-    dispatch({ type: "SET_USERS", payload: data });
     setClicked(true);
   };
+
+  const handleUnfollow = async () => {
+    const updatedFollowing = currentUser?.following.filter((id) => id !== user?._id);
+    const updatedFollower = user?.followers.filter((id) => id !== currentUser?._id);
+  
+    await updateUser({ _id: currentUser?._id, following: updatedFollowing });
+    await updateUser({ _id: user?._id, followers: updatedFollower });
+  
+    setClicked(false);  
+  };
+  
 
   return (
     <div className={styles["container"]}>
@@ -35,14 +44,20 @@ const User = ({ user, currentUser }) => {
         {!clicked && (
           <button
             className={styles["follow-btn"]}
-            onClick={() => handleFollow()}
+            onClick={(e) => {
+              e.stopPropagation()
+              handleFollow()}}
           >
             Follow
           </button>
         )}
 
         {clicked && (
-          <button className={styles["follow-btn"]}> Following </button>
+          <button className={styles["follow-btn"]}
+          onClick={(e) => {
+            e.stopPropagation()
+            handleUnfollow()}}
+          > Following </button>
         )}
       </div>
     </div>

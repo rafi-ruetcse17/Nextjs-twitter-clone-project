@@ -15,8 +15,10 @@ import { useSelector } from "react-redux";
 import ViewPost from "../ViewPost/ViewPost";
 import { getAllPosts } from "@/libs/actions/postAction";
 import Image from "next/image";
+import EditProfileModal from "../EditProfileMpdal/EditProfileModal";
 
-const Profile = ({ user}) => {
+const Profile = ({sessionUser, user, user_posts}) => {
+  //console.log(user_posts);
   const router = useRouter();
   const { data: session } = useSession();
   const [liked, setLiked] = useState(false);
@@ -24,13 +26,18 @@ const Profile = ({ user}) => {
   const [posts, setPosts] = useState(null);
   const [postClick, setPostClick] = useState(true);
   const [mediaClick, setMediaClick] = useState(false);
+  const [showModal, setShowModal] = useState(false);
   
   
-  const Posts = useSelector((state) => state.posts);
-  useEffect(() => {
-    getFromDatabase();
-    if (Posts) setPosts(Posts);
-  }, [Posts]);
+  // const Posts = useSelector((state) => state.posts);
+  // useEffect(() => {
+  //   getFromDatabase();
+  //   if (Posts) {
+  //     const userPosts = Posts.filter(post => post._id === user._id);
+  //     setPosts(userPosts);
+  //   }
+  //   console.log(posts);
+  // }, [Posts]);
 
   const getFromDatabase = async () => {
     try {
@@ -64,10 +71,10 @@ const Profile = ({ user}) => {
             e.stopPropagation();
           }}
         />
-        <b>{session?.user?.name}</b>
+        <b>{user?.name}</b>
       </div>
       <img
-        src="/images/rafi-cover1.jpg"
+        src="/images/cover.png"
         alt=""
         className={styles["cover-photo"]}
       />
@@ -76,24 +83,33 @@ const Profile = ({ user}) => {
         <div className={styles["user-container"]}>
           <div>
             <img
-              src={session?.user?.image}
+              src={user?.image}
               alt=""
               className={styles["user-img"]}
             />
           </div>
-          <button className={styles["edit-profile-btn"]}>Edit Profile</button>
+          {sessionUser?._id===user?._id? 
+            <button className={styles["edit-profile-btn"]}
+            onClick={()=>setShowModal(true)}
+            >Edit Profile</button>
+            :<button className={styles["edit-profile-btn"]}>Follow</button>
+          }
+          {showModal && <EditProfileModal sessionUser={sessionUser} onClose={()=>setShowModal(false)}/>}
+
         </div>
 
         <div className={styles["name"]}>
           <div>
-            <b>{session?.user?.name}</b>
+            <b>{user?.name}</b>
           </div>
-          <div>@{session?.user?.username}</div>
+          <div>@{user?.username}</div>
         </div>
 
         <div className={styles["follow"]}>
-          <Link href="#" className={styles["following"]}><b>0</b> Following</Link>
-          <Link href="#" className={styles["following"]}><b>0</b> Followers</Link>
+          <Link href="#" className={styles["following"]}>
+            <b>{user?.following?.length}</b> Following</Link>
+          <Link href="#" className={styles["following"]}>
+            <b>{user?.followers?.length}</b> Followers</Link>
         </div>
 
         <nav>
@@ -109,13 +125,13 @@ const Profile = ({ user}) => {
         
       </div>
       <hr/>
-      {postClick && posts?.map((post)=>(
+      {postClick && user_posts?.map((post)=>(
         <div key={post._id} className={styles["main"]}>
-        <ViewPost user={session?.user} post={post}/>
+        <ViewPost user={user} post={post}/>
         </div>
       ))}
       <div className={styles["media-container"]}>
-        {mediaClick && posts?.map((post)=>(
+        {mediaClick && user_posts?.map((post)=>(
           post.image && <div key={post._id} className={styles["media"]}>
             <img src={post?.image} alt="no image"/>
           </div>

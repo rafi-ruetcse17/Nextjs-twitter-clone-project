@@ -11,6 +11,10 @@ async function signupValidate(data) {
   if (!validator.isStrongPassword(password)) {
     throw Error("Password is not strong enough!");
   }
+  if (username.includes(' ')) {
+    throw Error("Username cannot contain space!");
+  }
+
   const exists_username = await User.findOne({ username });
   const exists_email = await User.findOne({ email });
 

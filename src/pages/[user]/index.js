@@ -1,53 +1,37 @@
-// import React from "react";
-// import Sidebar from "@/components/Sidebar/Sidebar";
-// import Login from "@/components/Login/Login";
-// import { getSession } from "next-auth/react";
-
-// const index = ({ user }) => {
-//   if (!user) return <Login />;
-//   return (
-//     <>
-//       <Sidebar />
-//     </>
-//   );
-// };
-
-// export default index;
-
-// export async function getServerSideProps(context) {
-//   const session = await getSession(context);
-
-//   return {
-//     props: {
-//       user: session?.user || null,
-//     },
-//   };
-// }
-
-
 import React, { useEffect, useState } from "react";
-import Feed from "@/components/Feed/Feed";
 import Sidebar from "@/components/Sidebar/Sidebar";
 import { getSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import styles from "@/styles/Home.module.css"
 import FollowBar from "@/components/FollowBar/FollowBar";
 import Profile from "@/components/Profile/Profile";
+import { getUser } from "@/libs/services/user-service";
+import { getAllPosts } from "@/libs/actions/postAction";
 
-const profile = ({ user }) => {
+const profile = ({ sessionUser,user }) => {
   const router = useRouter();
+  const [posts, setPosts] = useState(null);
   const [loading, setLoading] = useState(true);
+
+  useEffect(()=>{
+    const fetchPosts = async()=>{
+      setPosts(await getAllPosts(user?.email))
+    }
+    fetchPosts();
+  },[user])
 
   useEffect(() => {
     const fetchData = async () => {
-      if (!user) {
+      if (!sessionUser) {
         await router.push("/");
       }
       setLoading(false);
     };
 
     fetchData();
-  }, [user, router]);
+  }, [sessionUser, router]);
+
+
 
   return (
     <div>
@@ -60,8 +44,8 @@ const profile = ({ user }) => {
           <Sidebar />
           <div className={styles["feed"]}>
             {/* <Feed user={user} /> */}
-            <Profile user={user}/>
-            <FollowBar/>
+            <Profile sessionUser={sessionUser} user={user} user_posts={posts}/>
+            <FollowBar user={sessionUser}/>
           </div>
         </main>
       )}
@@ -73,9 +57,14 @@ export default profile;
 
 export async function getServerSideProps(context) {
   const session = await getSession(context);
+  const {user} = context.params;
+  const response = await getUser({username:user})
+  
+
   return {
     props: {
-      user: session?.user || null,
+      sessionUser: session?.user || null,
+      user: JSON.parse(JSON.stringify(response)),
     },
   };
 }

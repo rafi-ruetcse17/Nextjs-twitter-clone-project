@@ -9,6 +9,7 @@ export default function Document() {
         <NextScript />
         <div id="modal-root"></div>
         <div id="update-modal"></div>
+        <div id="edit-profile-modal"></div>
       </body>
     </Html>
   )

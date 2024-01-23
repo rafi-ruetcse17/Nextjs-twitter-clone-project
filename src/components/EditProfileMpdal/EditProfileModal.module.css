@@ -1,0 +1,130 @@
+.modal-surrounding {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 20;
+    height: 100vh;
+    width: 100vw;
+    background-color: rgba(36, 45, 52, 0.73);
+}
+
+.modal-container {
+    background-color: #181818;
+    width: 300px;
+    color: #fff;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-top: 40px;
+    padding:1rem 0.5rem;
+    border-radius: 20px;
+    box-sizing: content-box;
+    overflow: hidden;
+}
+
+.head {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    font-size: large;
+}
+
+.edit-save-btn {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+}
+
+.edit-profile {
+    font-weight: bold;
+}
+
+.cover-photo {
+    height: 200px;
+    width: 100%;
+}
+.selected-cover{
+    display: flex;
+    flex-direction: column;
+}
+.change-cover{
+    text-align: right;
+    margin-top: -6rem;
+}
+.selected-cover div{
+    text-align: right;
+}
+.selected-avatar{
+    margin-top: -4.5rem;
+    margin-left: 0.5rem;
+}
+.change-avatar-btn{
+    margin-top: 0.5rem;
+    margin-left: 1rem;
+    padding: 5px;
+    font-weight: bold;
+    border-radius: 9999px;
+    border: none;
+}
+.change-avatar-btn:hover{
+    background-color: #1a8cd8;
+    color: white;
+}
+.display-photo{
+    border-radius: 9999px;
+    border: 3px solid black;
+    height: 8rem;
+    width: 8rem;
+    object-fit: cover;
+    
+}
+.name-edit{
+    margin-top: 6rem;
+    margin-right: 1rem;
+}
+.save-btn{
+    font-size: 15px;
+    min-width: 78px;
+    height: 35px;
+    font-weight: bold;
+    border-radius: 9999px;
+    border: none;
+}
+.save-btn:hover{
+    background-color: #1a8cd8;
+    color: white;
+}
+.name{
+    color: #a0aec0;
+    margin-left: 0.5rem;
+}
+.textarea {
+    width: 100%;
+    background-color: rgb(18, 14, 14);
+    border: none;
+    border-radius: 10px;
+    outline: none;
+    font-size: 14px;
+    color: #fff;
+    padding: 0.5rem;
+}
+.textarea::placeholder{
+    color: #a0aec0;
+}
+@media(min-width:768px) {
+    .modal-container {
+        width: 600px;
+    }
+
+    .post-details {
+        font-size: 16px;
+    }
+
+    .textarea {
+        font-size: 16px;
+    }
+
+    .other-icons {
+        display: block;
+    }
+}

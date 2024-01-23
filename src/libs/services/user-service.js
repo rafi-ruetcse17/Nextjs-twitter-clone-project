@@ -28,12 +28,12 @@ export const updateUser = async(req, res)=>{
   }
 }
 
-export const getUser = async(req,res)=>{
+export const getUser = async({username})=>{
   try{
-    const response = await userRepository.getUser(req.body);
-    return res.status(200).json(response);
+    const response = await userRepository.getUser({username});
+    return response;
   }catch(error){
-    return res.status(500).json(error.message);
+    return error.message;
   }
 }
 

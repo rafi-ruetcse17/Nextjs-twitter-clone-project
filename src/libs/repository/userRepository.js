@@ -22,7 +22,7 @@ const findUser = async (data) => {
 };
 const getUser = async (data) =>{
   try{
-    const user = await User.findOne({_id:data})
+    const user = await User.findOne(data)
     return user;
   }catch(error){
     throw new Error(error.message);
