@@ -4,23 +4,23 @@ import { BsBell, BsBookmark, BsThreeDots, BsTwitterX } from "react-icons/bs";
 import SidebarLink from "../SidebarLink/SidebarLink";
 import { AiFillHome, AiOutlineInbox, AiOutlineUser } from "react-icons/ai";
 import { BiHash } from "react-icons/bi";
-import {
-  HiOutlineClipboardList,
-  HiOutlineDotsCircleHorizontal,
-} from "react-icons/hi";
-import { signOut, useSession } from "next-auth/react";
+import {HiOutlineClipboardList,HiOutlineDotsCircleHorizontal} from "react-icons/hi";
+import { signOut} from "next-auth/react";
 import { useRouter } from "next/router";
 
-const Sidebar = () => {
-  const { data: session } = useSession();
-  const router = useRouter()
+const Sidebar = ({ sessionUser, user }) => {
+  const router = useRouter();
   return (
     <div className={styles["container"]}>
-      <div className={styles["sidebar-logo"]}>
+      <div
+        className={styles["sidebar-logo"]}
+        onClick={() => router.push(`/home`)}
+      >
         <BsTwitterX className={styles["x-color"]} />
       </div>
+
       <div className={styles["sidebar"]}>
-        <div onClick={()=>router.push(`/home`)}>
+        <div onClick={() => router.push(`/home`)}>
           <SidebarLink text="Home" Icon={AiFillHome} />
         </div>
         <SidebarLink text="Explore" Icon={BiHash} />
@@ -28,7 +28,7 @@ const Sidebar = () => {
         <SidebarLink text="Messages" Icon={AiOutlineInbox} />
         <SidebarLink text="Bookmarks" Icon={BsBookmark} />
         <SidebarLink text="Lists" Icon={HiOutlineClipboardList} />
-        <div onClick={()=>router.push(`/${session?.user?.username}`)}>
+        <div onClick={() => router.push(`/${user?.username}`)}>
           <SidebarLink text="Profile" Icon={AiOutlineUser} />
         </div>
         <SidebarLink text="More" Icon={HiOutlineDotsCircleHorizontal} />
@@ -36,10 +36,10 @@ const Sidebar = () => {
       <button className={styles["btn"]}>Post</button>
 
       <div className={styles["profile-icon"]} onClick={signOut}>
-        <img src={session?.user?.image} alt="" />
+        <img src={user?.image} alt="" />
         <div className={styles["user"]}>
-          <h4>{session?.user?.name}</h4>
-          <p>@{session?.user?.username}</p>
+          <h4>{user?.name}</h4>
+          <p>@{user?.username}</p>
         </div>
         <BsThreeDots className={styles["three-dots"]} />
       </div>

@@ -21,6 +21,14 @@ const userSchema = new mongoose.Schema({
     type:String,
     default: "/images/blank_user.jpg",
   },
+  cover:{
+    type: String,
+    default: "/images/cover.png",
+  },
+  location:{
+    type: String,
+    default: "Shellbeehaken",
+  },
   following:{
     type:[String],
   },

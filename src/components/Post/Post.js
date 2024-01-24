@@ -19,25 +19,42 @@ import { useDispatch, useSelector } from "react-redux";
 import Comment from "../Comment/Comment";
 import UpdateModal from "../UpdateModal/UpdateModal";
 import { BiReply } from "react-icons/bi";
+import { getAllUsers } from "@/libs/actions/userAction";
 
 const Post = ({ user }) => {
   const [showModal, setShowModal] = useState(false);
   const [likes, setLikes] = useState([]);
   const [liked, setLiked] = useState(false);
   const [comments, setComments] = useState([]);
+  const [users, setUsers] = useState(null);
   const [posts, setPosts] = useState(null);
 
   const Posts = useSelector((state) => state.posts);
+  const Users = useSelector((state) => state.users);
   const router = useRouter();
   const { data: session } = useSession();
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    getFromDatabase();
-    if (Posts) setPosts(Posts);
-  }, [Posts]);
 
-  const getFromDatabase = async () => {
+
+  useEffect(() => {
+    getPostsFromDatabase();
+    getUsersFromDatabase();
+    const filteredPosts = Posts?.filter(post=> user?.following?.includes(post?.userId))
+    if (filteredPosts) setPosts(filteredPosts);
+    if (Users) setUsers(Users)
+  }, [Posts, Users]);
+
+  const getUsersFromDatabase = async()=>{
+    try {
+      const response = await getAllUsers();
+      setUsers(response);
+    } catch (error) {
+      console.error("Error fetching users:", error);
+    }
+  }
+
+  const getPostsFromDatabase = async () => {
     try {
       const response = await getAllPosts(user?.email);
       setPosts(response);
@@ -91,12 +108,12 @@ const Post = ({ user }) => {
       console.error("Error fetching posts:", error);
     }
   };
-  //console.log(posts.comments)
+  
   return (
     <>
       {posts?.map((post) => (
         <div
-          key={post._id}
+          key={post?._id}
           className={styles["container"]}
           // onClick={() => router.push(`/${user.email}/${post._id}`)}
         >
@@ -113,13 +130,6 @@ const Post = ({ user }) => {
               <div className={styles["user-details"]}>
                 <div className={styles["name-edit"]}>
                   <h3 className={styles["user-name"]}>{post?.username}</h3>
-                  {/* <FaRegEdit
-                    className={styles["icon"]}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      toggleModal(post._id, true, "update");
-                    }}
-                  /> */}
                 </div>
                 {post?.showUpdateModal && (
                   <UpdateModal
@@ -149,59 +159,6 @@ const Post = ({ user }) => {
 
               <p className={styles["post-details"]}>{post?.text}</p>
               <img className={styles["post-img"]} src={post?.image} alt="" />
-
-              {/* <div className={styles["icons-container"]}>
-                <div className={styles["comments"]}>
-                  <BsChat
-                    className={styles["icon"]}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      toggleModal(post._id, true)
-                      //openModal();
-                    }}
-                  />
-                  {post?.showModal && <Modal post={post} user={user}
-                    onClose={() => toggleModal(post._id,false)}
-                  />}
-                  {comments.length > 0 && (
-                    <span className={styles["comment-text"]}>{comments.length}</span>
-                  )}
-                </div>
-
-                {user?.email!== post?.email ? (
-                  <FaRetweet className={styles["icon"]} />
-                ) : (
-                  <RiDeleteBin5Line
-                    className={styles["icon"]}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleDelete(post._id)
-                    }}
-                  />
-                )}
-
-                <div
-                  className={styles["post-like"]}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    likePost(post._id, post.likes);
-                  }}
-                >
-                  {post?.likes?.includes(user?.email) ? (
-                    <AiFillHeart className={styles["liked"]} />
-                  ) : (
-                    <AiOutlineHeart className={styles["icon"]} />
-                  )}
-
-                  {post?.likes?.length > 0 && (
-                    <span className={styles[liked?"liked-color": "comment-text"]}>
-                      {post.likes.length}
-                    </span>
-                  )}
-                </div>
-
-                <AiOutlineShareAlt className={styles["icon"]} />
-              </div> */}
             </div>
           </div>
 

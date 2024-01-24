@@ -1,0 +1,18 @@
+.main {
+    display: flex;
+    position: relative;
+    max-width: 1400px;
+    margin: auto;
+}
+
+.feed {
+    display: flex;
+    gap: 1.5rem;
+}
+
+.loading {
+    color: #fff;
+    text-align: center;
+    font-size: larger;
+    margin-top: 20%;
+}

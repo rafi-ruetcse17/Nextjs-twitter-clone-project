@@ -1,6 +1,9 @@
 const mongoose = require("mongoose");
 
 const replySchema = new mongoose.Schema({
+  userId:{
+    type: String,
+  },
   username: {
     type: String,
     required: true,
@@ -26,6 +29,9 @@ const replySchema = new mongoose.Schema({
 });
 
 const commentSchema = new mongoose.Schema({
+  userId:{
+    type: String,
+  },
   username: {
     type: String,
     required: true,
@@ -56,6 +62,9 @@ const commentSchema = new mongoose.Schema({
 });
 
 const postSchema = new mongoose.Schema({
+  userId:{
+    type: String,
+  },
   username: {
     type: String,
     required: true,

@@ -16,6 +16,9 @@ import ViewPost from "../ViewPost/ViewPost";
 import { getAllPosts } from "@/libs/actions/postAction";
 import Image from "next/image";
 import EditProfileModal from "../EditProfileMpdal/EditProfileModal";
+import { CiLocationOn } from "react-icons/ci";
+import { IoLocationOutline } from "react-icons/io5";
+
 
 const Profile = ({sessionUser, user, user_posts}) => {
   //console.log(user_posts);
@@ -74,7 +77,7 @@ const Profile = ({sessionUser, user, user_posts}) => {
         <b>{user?.name}</b>
       </div>
       <img
-        src="/images/cover.png"
+        src={user?.cover}
         alt=""
         className={styles["cover-photo"]}
       />
@@ -104,6 +107,13 @@ const Profile = ({sessionUser, user, user_posts}) => {
           </div>
           <div>@{user?.username}</div>
         </div>
+        
+        <div className={styles["location"]}>
+          <IoLocationOutline/>
+          <span>{user?.location}</span>
+        </div>
+        
+        
 
         <div className={styles["follow"]}>
           <Link href="#" className={styles["following"]}>

@@ -3,6 +3,7 @@ import ReactDOM from "react-dom";
 import styles from "./EditProfileModal.module.css";
 import { MdClose } from "react-icons/md";
 import { AiOutlineClose } from "react-icons/ai";
+import { updateUser } from "@/libs/actions/userAction";
 
 const EditProfileModal = ({ sessionUser, onClose }) => {
   const [name, setName] = useState(sessionUser?.name);
@@ -12,6 +13,29 @@ const EditProfileModal = ({ sessionUser, onClose }) => {
   const [cover, setCover] = useState(
     sessionUser?.cover ? sessionUser.cover : "/images/cover.png"
   );
+
+  const addAvatarImage = (e) => {
+    const reader = new FileReader();
+    if (e.target.files[0]) {
+      reader.readAsDataURL(e.target.files[0]);
+    }
+    reader.onload = (readerEvent) => {
+      setAvatar(readerEvent.target.result);
+    };
+  };
+  const addCoverImage = (e) => {
+    const reader = new FileReader();
+    if (e.target.files[0]) {
+      reader.readAsDataURL(e.target.files[0]);
+    }
+    reader.onload = (readerEvent) => {
+      setCover(readerEvent.target.result);
+    };
+  };
+  const handleSave = async()=>{
+    await updateUser({_id:sessionUser?._id, name, username, location,image:avatar, cover})
+    onClose();
+  }
 
   const closeModal = (e) => {
     e.stopPropagation();
@@ -28,7 +52,11 @@ const EditProfileModal = ({ sessionUser, onClose }) => {
 
           <div className={styles["edit-save-btn"]}>
             <div className={styles["edit-profile"]}>Edit Profile</div>
-            <button className={styles["save-btn"]}>Save</button>
+            <button className={styles["save-btn"]}
+            disabled={!name.trim()|| !username.trim() || 
+              (name===sessionUser?.name && username===sessionUser?.username &&
+                location===sessionUser?.location && avatar===sessionUser?.image && cover===sessionUser?.cover)}
+            onClick={()=>handleSave()}>Save</button>
           </div>
         </div>
 
@@ -37,15 +65,19 @@ const EditProfileModal = ({ sessionUser, onClose }) => {
         {avatar && (
           <div className={styles["selected-avatar"]}>
             <img src={avatar} className={styles["display-photo"]} alt="" />
-            <div onClick={() => setAvatar(null)}>
-              <button className={styles["change-avatar-btn"]}>
-                Change Avatar
-              </button>
-            </div>
+              <div >
+                <label htmlFor="avatar" className={styles["change-avatar-btn"]}>
+                  Change Avatar
+                </label>
+              </div>
+            <input id="avatar" type="file" hidden onChange={addAvatarImage} />
           </div>
         )}
+      
         <div className={styles["change-cover"]}>
-          <button className={styles["change-avatar-btn"]}>Change Cover</button>
+          <label htmlFor="cover" className={styles["change-avatar-btn"]}>Change Cover</label>
+
+          <input id="cover" type="file" hidden onChange={addCoverImage} />
         </div>
 
         <div className={styles["name-edit"]}>
@@ -55,6 +87,7 @@ const EditProfileModal = ({ sessionUser, onClose }) => {
             rows="2"
             placeholder="Your Name"
             value={name}
+            required
             onChange={(e) => setName(e.target.value)}
           />
 
@@ -63,6 +96,7 @@ const EditProfileModal = ({ sessionUser, onClose }) => {
             className={styles["textarea"]}
             rows="2"
             placeholder="Username"
+            required
             value={username}
             onChange={(e) => setUsername(e.target.value)}
           />

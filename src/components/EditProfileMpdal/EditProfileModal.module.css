@@ -49,7 +49,7 @@
 }
 .change-cover{
     text-align: right;
-    margin-top: -6rem;
+    margin-top: -5rem;
 }
 .selected-cover div{
     text-align: right;
@@ -57,14 +57,20 @@
 .selected-avatar{
     margin-top: -4.5rem;
     margin-left: 0.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
 }
 .change-avatar-btn{
     margin-top: 0.5rem;
-    margin-left: 1rem;
+    margin-left: 0.5rem;
+    font-size: 15px;
     padding: 5px;
     font-weight: bold;
     border-radius: 9999px;
     border: none;
+    background-color: #fff;
+    color: black;
 }
 .change-avatar-btn:hover{
     background-color: #1a8cd8;

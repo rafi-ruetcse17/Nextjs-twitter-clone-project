@@ -141,8 +141,8 @@ const UpdateModal = ({ post, user, onClose, comment}) => {
 
             <div className={styles["options"]}>
               <div className={styles["icons"]}>
-              <label htmlFor="cmnt-file">
-                <BsImage />
+                <label htmlFor="cmnt-file">
+                  <BsImage />
                 </label>
 
                 <input id="cmnt-file" type="file" hidden onChange={addImageToComment} />

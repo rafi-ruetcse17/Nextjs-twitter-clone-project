@@ -72,6 +72,11 @@
     border: 3px solid black;
     background-color: #fff;
 }
+.edit-profile-btn:hover{
+    background-color: #1a8cd8;
+    color: white;
+}
+
 
 .name {
     display: flex;
@@ -83,7 +88,11 @@
 .name div b {
     font-size: larger;
 }
-
+.location{
+    color: #a0aec0;
+    margin-top: 0.5rem;
+    display: flex;
+}
 .follow {
     display: flex;
     gap: 1rem;

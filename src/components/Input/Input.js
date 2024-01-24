@@ -44,11 +44,12 @@ const Input = ({user}) => {
   const sendPost = async () => {
     if (loading) return;
     setLoading(true);
-    const username = session.user.name;
-    const email = session.user.email;
+    const userId = user?._id;
+    const username = user?.name;
+    const email = user?.email;
     const text = input;
 
-    let response = await createPost({ username, email, text });
+    let response = await createPost({userId, username, email, text });
 
     if (selectedImage) {
       const body = new FormData();
@@ -76,7 +77,7 @@ const Input = ({user}) => {
     <div className={styles[!loading ? "container1" : "container2"]}>
       <div className={styles["container-element"]}>
         <div>
-          <img className={styles["image"]} src={session?.user?.image} alt="" />
+          <img className={styles["image"]} src={user?.image} alt="" />
         </div>
 
         <div className={styles["post"]}>
@@ -96,7 +97,6 @@ const Input = ({user}) => {
               <img src={selectedFile} className={styles["input-img"]} alt="" />
             </div>
           )}
-          {/* {imageUrl && <img src={imageUrl}/>} */}
 
           {!loading && (
             <div className={styles["post-icons-container"]}>
