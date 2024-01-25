@@ -45,11 +45,13 @@ const Input = ({user}) => {
     if (loading) return;
     setLoading(true);
     const userId = user?._id;
-    const username = user?.name;
+    const userImage = user?.image;
+    const username = user?.username;
+    const name = user?.name;
     const email = user?.email;
     const text = input;
 
-    let response = await createPost({userId, username, email, text });
+    let response = await createPost({userId,name, username, email,userImage, text });
 
     if (selectedImage) {
       const body = new FormData();

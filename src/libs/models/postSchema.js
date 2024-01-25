@@ -4,6 +4,9 @@ const replySchema = new mongoose.Schema({
   userId:{
     type: String,
   },
+  name:{
+    type:String,
+  },
   username: {
     type: String,
     required: true,
@@ -11,6 +14,10 @@ const replySchema = new mongoose.Schema({
   email: {
     type: String,
     required: true,
+  },
+  userImage:{
+    type: String,
+    default: '/images/blank_user.jpg'
   },
   text: {
     type: String,
@@ -32,6 +39,9 @@ const commentSchema = new mongoose.Schema({
   userId:{
     type: String,
   },
+  name:{
+    type:String,
+  },
   username: {
     type: String,
     required: true,
@@ -39,6 +49,10 @@ const commentSchema = new mongoose.Schema({
   email: {
     type: String,
     required: true,
+  },
+  userImage:{
+    type: String,
+    default: '/images/blank_user.jpg'
   },
   text: {
     type: String,
@@ -69,9 +83,16 @@ const postSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  name:{
+    type:String,
+  },
   email: {
     type: String,
     required: true,
+  },
+  userImage:{
+    type: String,
+    default: '/images/blank_user.jpg'
   },
   text: {
     type: String,

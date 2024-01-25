@@ -103,12 +103,12 @@ const UpdateModal = ({ post, user, onClose, comment}) => {
 
         <div className={styles["contents"]}>
           <div>
-            <img className={styles["rounded"]} src={session?.user?.image} alt="" />
+            <img className={styles["rounded"]} src={user?.image} alt="" />
           </div>
 
           <div>
             <div className={styles["post-details"]}>
-              <h3>{post?.username}<span className={styles["username"]}>@{post?.username}</span></h3>
+              <h3>{post?.name}<span className={styles["username"]}>@{post?.username}</span></h3>
     
               <h4 className={styles["timestamp"]}>
                 . <Moment fromNow>{post?.timestamp}</Moment>

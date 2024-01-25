@@ -4,7 +4,7 @@ import styles from "@/components/Feed/Feed.module.css";
 import Input from "../Input/Input";
 import Post from "../Post/Post";
 
-const Feed = ({user}) => {
+const Feed = ({sessionUser, user}) => {
   return (
     <section className={styles["container"]}>
       <div className={styles["home"]}>
@@ -12,8 +12,8 @@ const Feed = ({user}) => {
         <HiOutlineSparkles />
       </div>
 
-      <Input  user = {user} />
-      <Post user = {user}/>
+      <Input user={user} />
+      <Post sessionUser={sessionUser} user={user}/>
 
     </section>
   );

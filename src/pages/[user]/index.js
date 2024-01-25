@@ -12,6 +12,7 @@ const profile = ({ sessionUser,user }) => {
   const router = useRouter();
   const [posts, setPosts] = useState(null);
   const [loading, setLoading] = useState(true);
+  
 
   useEffect(()=>{
     const fetchPosts = async()=>{
@@ -40,10 +41,8 @@ const profile = ({ sessionUser,user }) => {
       ) : (
         <main className={styles["main"]}>
           
-          {/* <div><Sidebar /></div> */}
-          <Sidebar />
+          <Sidebar sessionUser={sessionUser} user={user}/>
           <div className={styles["feed"]}>
-            {/* <Feed user={user} /> */}
             <Profile sessionUser={sessionUser} user={user} user_posts={posts}/>
             <FollowBar user={sessionUser}/>
           </div>

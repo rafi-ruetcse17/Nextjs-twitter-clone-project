@@ -57,8 +57,8 @@ const Comment = ({post, comment, postId, user, isReply }) => {
         }
         else 
           await updateCommentLikes({postId, commentId, likesArray:updatedLikes });
-        const updatedPosts = await getAllPosts(user?.email);
-        dispatch({ type: "SET_POSTS", payload: updatedPosts });
+        // const updatedPosts = await getAllPosts(user?.email);
+        // dispatch({ type: "SET_POSTS", payload: updatedPosts });
         setLiked(false)
       } catch (error) {
         console.error("Error fetching posts:", error);
@@ -71,8 +71,8 @@ const Comment = ({post, comment, postId, user, isReply }) => {
         await updateReplyLikes({postId, commentId:isReply, replyId:comment._id,likesArray:updatedLikes  })
       else
         await updateCommentLikes({postId, commentId, likesArray: updatedLikes });
-      const updatedPosts = await getAllPosts(user?.email);
-      dispatch({ type: "SET_POSTS", payload: updatedPosts });
+      // const updatedPosts = await getAllPosts(user?.email);
+      // dispatch({ type: "SET_POSTS", payload: updatedPosts });
       setLiked(true)
     } catch (error) {
       console.error("Error fetching posts:", error);
@@ -85,8 +85,8 @@ const Comment = ({post, comment, postId, user, isReply }) => {
         await deleteReply({postId, commentId:isReply, replyId:comment._id})
       else
         await deleteComment({ postId, commentId });
-      const updatedPosts = await getAllPosts(user?.email);
-      dispatch({ type: "SET_POSTS", payload: updatedPosts });
+      // const updatedPosts = await getAllPosts(user?.email);
+      // dispatch({ type: "SET_POSTS", payload: updatedPosts });
     } catch (error) {
       console.error("Error fetching posts:", error);
     }
@@ -110,7 +110,7 @@ const Comment = ({post, comment, postId, user, isReply }) => {
         <div className={styles["user-container"]}>
           <div>
             <img
-              src={session?.user?.image}
+              src={comment?.userImage}
               alt=""
               className={styles["user-img"]}
             />
@@ -118,7 +118,7 @@ const Comment = ({post, comment, postId, user, isReply }) => {
 
           <div className={styles[!isReply?"cmnt-container":"reply-container"]}>
             <div className={styles["user-details"]}>
-              <h4 className={styles["user-name"]}>{comment?.username}</h4>
+              <h4 className={styles["user-name"]}>{comment?.name}</h4>
 
               <div className={styles["user-id"]}>
                 <p className={styles["user-tag"]}>
@@ -191,11 +191,12 @@ const Comment = ({post, comment, postId, user, isReply }) => {
                 )}
               </div>
 
-              <FiEdit className={styles["icon"]} 
+              {comment.userId===user._id && <FiEdit className={styles["icon"]} 
               onClick={(e)=>{
                 e.stopPropagation()
                 toggleModal(comment._id,true,"edit")
                 }}/>
+              }
               {showUpdateModal && (
                   <UpdateModal
                     post={post}

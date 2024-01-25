@@ -11,7 +11,7 @@ import Moment from "react-moment";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import Link from "next/link";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import ViewPost from "../ViewPost/ViewPost";
 import { getAllPosts } from "@/libs/actions/postAction";
 import Image from "next/image";
@@ -32,24 +32,36 @@ const Profile = ({sessionUser, user, user_posts}) => {
   const [showModal, setShowModal] = useState(false);
   
   
-  // const Posts = useSelector((state) => state.posts);
-  // useEffect(() => {
-  //   getFromDatabase();
-  //   if (Posts) {
-  //     const userPosts = Posts.filter(post => post._id === user._id);
-  //     setPosts(userPosts);
-  //   }
-  //   console.log(posts);
-  // }, [Posts]);
+  const Posts = useSelector((state) => state.posts);
+  const dispatch = useDispatch();
+  
 
-  const getFromDatabase = async () => {
+  useEffect(() => {
+    getPostsFromDatabase();
+  }, [Posts]);
+
+  const getPostsFromDatabase = async () => {
     try {
       const response = await getAllPosts(user?.email);
-      setPosts(response);
+      const filteredPosts = response?.filter((post) =>
+      post?.userId===user._id
+    );
+    if (filteredPosts) {
+      dispatch({ type: "SET_POSTS", payload: filteredPosts });
+    }
     } catch (error) {
       console.error("Error fetching posts:", error);
     }
   };
+
+  // const getFromDatabase = async () => {
+  //   try {
+  //     const response = await getAllPosts(user?.email);
+  //     setPosts(response);
+  //   } catch (error) {
+  //     console.error("Error fetching posts:", error);
+  //   }
+  // };
 
   const handlePosts = () =>{
     setPostClick(true);
@@ -97,7 +109,7 @@ const Profile = ({sessionUser, user, user_posts}) => {
             >Edit Profile</button>
             :<button className={styles["edit-profile-btn"]}>Follow</button>
           }
-          {showModal && <EditProfileModal sessionUser={sessionUser} onClose={()=>setShowModal(false)}/>}
+          {showModal && <EditProfileModal sessionUser={user} onClose={()=>setShowModal(false)}/>}
 
         </div>
 
@@ -135,13 +147,13 @@ const Profile = ({sessionUser, user, user_posts}) => {
         
       </div>
       <hr/>
-      {postClick && user_posts?.map((post)=>(
+      {postClick && Posts?.map((post)=>(
         <div key={post._id} className={styles["main"]}>
         <ViewPost user={user} post={post}/>
         </div>
       ))}
       <div className={styles["media-container"]}>
-        {mediaClick && user_posts?.map((post)=>(
+        {mediaClick && Posts?.map((post)=>(
           post.image && <div key={post._id} className={styles["media"]}>
             <img src={post?.image} alt="no image"/>
           </div>

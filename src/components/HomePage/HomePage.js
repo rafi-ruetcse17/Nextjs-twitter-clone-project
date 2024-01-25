@@ -28,8 +28,8 @@ const HomePage = ({sessionUser, user }) => {
         <main className={styles["main"]}>
           <Sidebar sessionUser={sessionUser} user={user}/>
           <div className={styles["feed"]}>
-            <Feed user={user} />
-            <FollowBar user={user} />
+            <Feed sessionUser={sessionUser} user={user} />
+            <FollowBar sessionUser={sessionUser} user={user} />
           </div>
         </main>
       )}

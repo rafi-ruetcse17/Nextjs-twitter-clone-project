@@ -21,7 +21,7 @@ import UpdateModal from "../UpdateModal/UpdateModal";
 import { BiReply } from "react-icons/bi";
 import { getAllUsers } from "@/libs/actions/userAction";
 
-const Post = ({ user }) => {
+const Post = ({ sessionUser, user }) => {
   const [showModal, setShowModal] = useState(false);
   const [likes, setLikes] = useState([]);
   const [liked, setLiked] = useState(false);
@@ -30,34 +30,33 @@ const Post = ({ user }) => {
   const [posts, setPosts] = useState(null);
 
   const Posts = useSelector((state) => state.posts);
-  const Users = useSelector((state) => state.users);
   const router = useRouter();
   const { data: session } = useSession();
   const dispatch = useDispatch();
-
-
+  
 
   useEffect(() => {
     getPostsFromDatabase();
-    getUsersFromDatabase();
-    const filteredPosts = Posts?.filter(post=> user?.following?.includes(post?.userId))
-    if (filteredPosts) setPosts(filteredPosts);
-    if (Users) setUsers(Users)
-  }, [Posts, Users]);
+  }, [Posts]);
 
-  const getUsersFromDatabase = async()=>{
-    try {
-      const response = await getAllUsers();
-      setUsers(response);
-    } catch (error) {
-      console.error("Error fetching users:", error);
-    }
-  }
+  // const getUsersFromDatabase = async () => {
+  //   try {
+  //     const response = await getAllUsers();
+  //     setUsers(response);
+  //   } catch (error) {
+  //     console.error("Error fetching users:", error);
+  //   }
+  // };
 
   const getPostsFromDatabase = async () => {
     try {
       const response = await getAllPosts(user?.email);
-      setPosts(response);
+      const filteredPosts = response?.filter((post) =>
+      user?.following?.includes(post?.userId) || post?.userId===user._id
+    );
+    if (filteredPosts) {
+      dispatch({ type: "SET_POSTS", payload: filteredPosts });
+    }
     } catch (error) {
       console.error("Error fetching posts:", error);
     }
@@ -68,8 +67,7 @@ const Post = ({ user }) => {
       const updatedLikes = postLikes.filter((email) => email !== user?.email);
       try {
         await updatePost({ _id: postId, likes: updatedLikes });
-        const updatedPosts = await getAllPosts(user?.email);
-        dispatch({ type: "SET_POSTS", payload: updatedPosts });
+        getPostsFromDatabase()
       } catch (error) {
         console.error("Error fetching posts:", error);
       }
@@ -81,8 +79,7 @@ const Post = ({ user }) => {
       likes_array.push(user.email);
       setLikes(likes_array);
       await updatePost({ _id: postId, likes: likes_array });
-      const updatedPosts = await getAllPosts(user?.email);
-      dispatch({ type: "SET_POSTS", payload: updatedPosts });
+      getPostsFromDatabase()
     } catch (error) {
       console.error("Error fetching posts:", error);
     }
@@ -91,8 +88,7 @@ const Post = ({ user }) => {
   const handleDelete = async (postId) => {
     try {
       await deletePost(postId);
-      const updatedPosts = await getAllPosts(user?.email);
-      dispatch({ type: "SET_POSTS", payload: updatedPosts });
+      getPostsFromDatabase()
     } catch (error) {
       console.error("Error fetching posts:", error);
     }
@@ -102,16 +98,15 @@ const Post = ({ user }) => {
       modal_to_show === "update"
         ? await updatePost({ _id: postId, showUpdateModal: state })
         : await updatePost({ _id: postId, showModal: state });
-      const updatedPosts = await getAllPosts(user?.email);
-      dispatch({ type: "SET_POSTS", payload: updatedPosts });
+      getPostsFromDatabase()
     } catch (error) {
       console.error("Error fetching posts:", error);
     }
   };
-  
+
   return (
     <>
-      {posts?.map((post) => (
+      {Posts?.map((post) => (
         <div
           key={post?._id}
           className={styles["container"]}
@@ -120,7 +115,7 @@ const Post = ({ user }) => {
           <div className={styles["user-container"]}>
             <div>
               <img
-                src={session?.user?.image}
+                src={post?.userImage}
                 alt=""
                 className={styles["user-img"]}
               />
@@ -129,7 +124,7 @@ const Post = ({ user }) => {
             <div>
               <div className={styles["user-details"]}>
                 <div className={styles["name-edit"]}>
-                  <h3 className={styles["user-name"]}>{post?.username}</h3>
+                  <h3 className={styles["user-name"]}>{post?.name}</h3>
                 </div>
                 {post?.showUpdateModal && (
                   <UpdateModal
@@ -147,13 +142,16 @@ const Post = ({ user }) => {
                   <p className={styles["post-tag"]}>
                     <Moment fromNow>{post?.timestamp}</Moment>
                   </p>
-                  <span><FaRegEdit
-                    className={styles["edit-icon"]}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      toggleModal(post._id, true, "update");
-                    }} 
-                  /></span>
+                  {post.userId===user?._id  && <span>
+                    <FaRegEdit
+                      className={styles["edit-icon"]}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        toggleModal(post._id, true, "update");
+                      }}
+                    />
+                  </span>
+                  }
                 </div>
               </div>
 
@@ -247,24 +245,25 @@ const Post = ({ user }) => {
                   user={user}
                   isReply={null}
                 />
-              
-              {comment?.replies?.length>0 && (
-                <div className={styles["reply"]}>
-                  <div className={styles["view-cmnts"]}> 
-                  <FaReply className={styles["rep-icon"]}/> &nbsp; 
-                    <span>replies</span></div>
-                  {comment.replies?.map((reply)=>(
-                    <Comment 
-                      key={reply._id}
-                      post={post}
-                      comment={reply}
-                      postId={post._id}
-                      user={user}
-                      isReply={comment._id}
-                    />
-                  ))}
-                </div>
-              )}
+
+                {comment?.replies?.length > 0 && (
+                  <div className={styles["reply"]}>
+                    <div className={styles["view-cmnts"]}>
+                      <FaReply className={styles["rep-icon"]} /> &nbsp;
+                      <span>replies</span>
+                    </div>
+                    {comment.replies?.map((reply) => (
+                      <Comment
+                        key={reply._id}
+                        post={post}
+                        comment={reply}
+                        postId={post._id}
+                        user={user}
+                        isReply={comment._id}
+                      />
+                    ))}
+                  </div>
+                )}
               </div>
             ))}
         </div>

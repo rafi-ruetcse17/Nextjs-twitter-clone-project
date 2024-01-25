@@ -46,12 +46,12 @@ const ViewPost = ({ user, post }) => {
             <div className={styles["user-details"]}>
               <h3 className={styles["user-name"]}>
                 {post?.username}
-                <span>
+                {/* <span>
                   <FaRegEdit
                     className={styles["edit-post"]}
                     onClick={() => toggleModal(post._id, true)}
                   />
-                </span>
+                </span> */}
               </h3>
 
               {toggle && (

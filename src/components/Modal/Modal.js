@@ -52,22 +52,22 @@ const Modal = ({ post, user, onClose, comment}) => {
       if(comment){
         if(Url)
           await(createReply({_id: post._id, commentId:comment._id,
-            newReply: {username:user.name, email:user.email, text:input, image: Url}}))
+            newReply: {userId: user._id, name:user.name, userImage:user.image, username:user.username, email:user.email, text:input, image: Url}}))
         else
           await(createReply({_id: post._id, commentId:comment._id,
-            newReply: {username:user.name, email:user.email, text:input}}))
+            newReply: {userId: user._id, name:user.name, userImage:user.image,username:user.username, email:user.email, text:input}}))
       }
       else{
         if(Url)
           await(createComment({_id: post._id, 
-            newComment: {username:user.name, email:user.email, text:input, image: Url}}))
+            newComment: {userId: user._id,name:user.name, userImage:user.image, username:user.username, email:user.email, text:input, image: Url}}))
         else
           await(createComment({_id: post._id, 
-            newComment: {username:user.name, email:user.email, text:input}}))
+            newComment: {userId: user._id,name:user.name, userImage:user.image,username:user.username, email:user.email, text:input}}))
       }
 
-      const updatedPosts= await getAllPosts(user?.email)
-      dispatch({ type: 'SET_POSTS', payload: updatedPosts })
+      //const updatedPosts= await getAllPosts(user?.email)
+      //dispatch({ type: 'SET_POSTS', payload: updatedPosts })
     } catch (error) {
       console.error("Error fetching posts:", error);
     }
@@ -88,12 +88,12 @@ const Modal = ({ post, user, onClose, comment}) => {
 
         <div className={styles["contents"]}>
           <div>
-            <img className={styles["rounded"]} src={session?.user?.image} alt="" />
+            <img className={styles["rounded"]} src={comment?comment.userImage:post?.userImage} alt="" />
           </div>
 
           <div>
             <div className={styles["post-details"]}>
-              <h3>{comment?comment.username:post?.username}</h3>
+              <h3>{comment?comment.name:post?.name}</h3>
               <h4 className={styles["timestamp"]}>
                 . <Moment fromNow>{comment?comment.timestamp:post?.timestamp}</Moment>
               </h4>
@@ -112,7 +112,7 @@ const Modal = ({ post, user, onClose, comment}) => {
           </div>
 
           <div className={styles["comment-user"]}>
-            <img className={styles["rounded"]} src={session?.user?.image} alt="" />
+            <img className={styles["rounded"]} src={user?.image} alt="" />
           </div>
 
           <div className={styles["comment-user"]}>

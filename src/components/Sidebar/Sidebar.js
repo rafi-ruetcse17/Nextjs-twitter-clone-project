@@ -28,7 +28,7 @@ const Sidebar = ({ sessionUser, user }) => {
         <SidebarLink text="Messages" Icon={AiOutlineInbox} />
         <SidebarLink text="Bookmarks" Icon={BsBookmark} />
         <SidebarLink text="Lists" Icon={HiOutlineClipboardList} />
-        <div onClick={() => router.push(`/${user?.username}`)}>
+        <div onClick={() => router.push(`/${sessionUser?.username}`)}>
           <SidebarLink text="Profile" Icon={AiOutlineUser} />
         </div>
         <SidebarLink text="More" Icon={HiOutlineDotsCircleHorizontal} />
@@ -36,9 +36,9 @@ const Sidebar = ({ sessionUser, user }) => {
       <button className={styles["btn"]}>Post</button>
 
       <div className={styles["profile-icon"]} onClick={signOut}>
-        <img src={user?.image} alt="" />
+        <img src={sessionUser?.image} alt="" />
         <div className={styles["user"]}>
-          <h4>{user?.name}</h4>
+          <h4>{sessionUser?.name}</h4>
           <p>@{user?.username}</p>
         </div>
         <BsThreeDots className={styles["three-dots"]} />
