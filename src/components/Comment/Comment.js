@@ -23,8 +23,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { BiEditAlt } from "react-icons/bi";
 import { FiEdit } from "react-icons/fi";
 import UpdateModal from "../UpdateModal/UpdateModal";
+import ImageComp from "../ImageComp/ImageComp";
+import Username from "../UsernameComp/Username";
+import NameComp from "../NameComp/NameComp";
 
-const Comment = ({post, comment, postId, user, isReply }) => {
+const Comment = ({post, comment, postId, user, isReply , users, onUpdate}) => {
   const { data: session } = useSession();
   const dispatch = useDispatch();
   const [showReplyModal, setShowReplyModal] = useState(false);
@@ -59,6 +62,7 @@ const Comment = ({post, comment, postId, user, isReply }) => {
           await updateCommentLikes({postId, commentId, likesArray:updatedLikes });
         // const updatedPosts = await getAllPosts(user?.email);
         // dispatch({ type: "SET_POSTS", payload: updatedPosts });
+        onUpdate()
         setLiked(false)
       } catch (error) {
         console.error("Error fetching posts:", error);
@@ -73,6 +77,7 @@ const Comment = ({post, comment, postId, user, isReply }) => {
         await updateCommentLikes({postId, commentId, likesArray: updatedLikes });
       // const updatedPosts = await getAllPosts(user?.email);
       // dispatch({ type: "SET_POSTS", payload: updatedPosts });
+      onUpdate()
       setLiked(true)
     } catch (error) {
       console.error("Error fetching posts:", error);
@@ -87,6 +92,7 @@ const Comment = ({post, comment, postId, user, isReply }) => {
         await deleteComment({ postId, commentId });
       // const updatedPosts = await getAllPosts(user?.email);
       // dispatch({ type: "SET_POSTS", payload: updatedPosts });
+      onUpdate()
     } catch (error) {
       console.error("Error fetching posts:", error);
     }
@@ -109,21 +115,24 @@ const Comment = ({post, comment, postId, user, isReply }) => {
       >
         <div className={styles["user-container"]}>
           <div>
-            <img
+            {/* <img
               src={comment?.userImage}
               alt=""
               className={styles["user-img"]}
-            />
+            /> */}
+            <ImageComp users ={users} post={comment}/>
           </div>
 
           <div className={styles[!isReply?"cmnt-container":"reply-container"]}>
             <div className={styles["user-details"]}>
-              <h4 className={styles["user-name"]}>{comment?.name}</h4>
+              <h4 className={styles["user-name"]}>
+                <NameComp users ={users} post={comment}/></h4>
 
               <div className={styles["user-id"]}>
-                <p className={styles["user-tag"]}>
+                {/* <p className={styles["user-tag"]}>
                   @{comment?.username} &nbsp; .&nbsp;
-                </p>
+                </p> */}
+                <Username users ={users} post={comment}/>
                 <p className={styles["post-tag"]}>
                   <Moment fromNow>{comment?.timestamp}</Moment>
                 </p>
@@ -153,6 +162,7 @@ const Comment = ({post, comment, postId, user, isReply }) => {
                     user={user}
                     onClose={() => toggleModal(comment._id, false, "reply")}
                     comment={comment}
+                    onUpdate= {onUpdate}
                   />
                 )}
               </div>}

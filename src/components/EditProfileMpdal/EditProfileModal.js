@@ -5,7 +5,7 @@ import { MdClose } from "react-icons/md";
 import { AiOutlineClose } from "react-icons/ai";
 import { updateUser } from "@/libs/actions/userAction";
 
-const EditProfileModal = ({ sessionUser, onClose }) => {
+const EditProfileModal = ({ sessionUser, onClose, getUsersFromDatabase }) => {
   const [name, setName] = useState(sessionUser?.name);
   const [username, setUsername] = useState(sessionUser?.username);
   const [location, setLocation] = useState(sessionUser?.location);
@@ -34,6 +34,7 @@ const EditProfileModal = ({ sessionUser, onClose }) => {
   };
   const handleSave = async()=>{
     await updateUser({_id:sessionUser?._id, name, username, location,image:avatar, cover})
+    getUsersFromDatabase();
     onClose();
   }
 

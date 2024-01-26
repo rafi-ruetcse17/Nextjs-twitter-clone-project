@@ -8,7 +8,12 @@
     cursor: pointer;
 
 }
-
+.retweet-container{
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 0.6rem;
+    color: #8e8e93;
+}
 .user-container {
     display: grid;
     grid-template-columns: 48px 1fr;

@@ -12,7 +12,7 @@ import { createComment, getAllPosts , createReply} from "@/libs/actions/postActi
 import { useDispatch } from "react-redux";
 import { useSession } from "next-auth/react";
 
-const Modal = ({ post, user, onClose, comment}) => {
+const Modal = ({ post, user, onClose, comment, onUpdate}) => {
   const [input, setInput] = useState("")
   const [selectedFile, setSelectedFile] = useState(null);
   const [selectedImage, setSelectedImage] = useState(null);
@@ -68,6 +68,7 @@ const Modal = ({ post, user, onClose, comment}) => {
 
       //const updatedPosts= await getAllPosts(user?.email)
       //dispatch({ type: 'SET_POSTS', payload: updatedPosts })
+      onUpdate()
     } catch (error) {
       console.error("Error fetching posts:", error);
     }

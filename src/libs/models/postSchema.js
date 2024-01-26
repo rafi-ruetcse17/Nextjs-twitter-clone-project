@@ -94,6 +94,9 @@ const postSchema = new mongoose.Schema({
     type: String,
     default: '/images/blank_user.jpg'
   },
+  ReTweetedBy:{
+    type: String,
+  },
   text: {
     type: String,
   },

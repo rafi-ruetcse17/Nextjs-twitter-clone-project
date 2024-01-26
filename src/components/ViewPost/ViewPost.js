@@ -36,7 +36,7 @@ const ViewPost = ({ user, post }) => {
         <div className={styles["user-container"]}>
           <div>
             <img
-              src={session?.user?.image}
+              src={user?.image}
               alt=""
               className={styles["user-img"]}
             />
@@ -45,7 +45,7 @@ const ViewPost = ({ user, post }) => {
           <div>
             <div className={styles["user-details"]}>
               <h3 className={styles["user-name"]}>
-                {post?.username}
+                {user?.name}
                 {/* <span>
                   <FaRegEdit
                     className={styles["edit-post"]}
@@ -64,7 +64,7 @@ const ViewPost = ({ user, post }) => {
 
               <div className={styles["user-id"]}>
                 <p className={styles["user-tag"]}>
-                  @{post?.username} &nbsp; .&nbsp;
+                  @{user?.username} &nbsp; .&nbsp;
                 </p>
                 <p className={styles["post-tag"]}>
                   <Moment fromNow>{post?.timestamp}</Moment>
@@ -77,7 +77,7 @@ const ViewPost = ({ user, post }) => {
           </div>
         </div>
 
-        {post.comments?.length > 0 && <hr />}
+        {/* {post.comments?.length > 0 && <hr />} */}
         <div className={styles["icons-container"]}>
           <div className={styles["comments"]}>
             <BsChat
@@ -135,16 +135,16 @@ const ViewPost = ({ user, post }) => {
 
           <AiOutlineShareAlt className={styles["icon"]} />
         </div>
-        {post.comments?.length > 0 && (
+        {/* {post.comments?.length > 0 && (
           <div>
             <hr />
             <div className={styles["view-cmnts"]}>View comments</div>
           </div>
-        )}
-        {post.comments?.length > 0 &&
+        )} */}
+        {/* {post.comments?.length > 0 &&
           post.comments.map((comment) => (
             <Comment key={comment._id} comment={comment} user={user} />
-          ))}
+          ))} */}
       </div>
     </section>
   );

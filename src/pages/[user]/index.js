@@ -43,7 +43,7 @@ const profile = ({ sessionUser,user }) => {
           
           <Sidebar sessionUser={sessionUser} user={user}/>
           <div className={styles["feed"]}>
-            <Profile sessionUser={sessionUser} user={user} user_posts={posts}/>
+            <Profile sessionUser={sessionUser} profile_user={user} user_posts={posts}/>
             <FollowBar user={sessionUser}/>
           </div>
         </main>

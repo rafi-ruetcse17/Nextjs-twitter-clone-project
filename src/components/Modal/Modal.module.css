@@ -37,8 +37,9 @@
 }
 
 .rounded {
-    border-radius: 50%;
+    border-radius: 9999px;
     height: 3.5rem;
+    width: 3.5rem;
 }
 
 .post-details {

@@ -108,7 +108,7 @@ const UpdateModal = ({ post, user, onClose, comment}) => {
 
           <div>
             <div className={styles["post-details"]}>
-              <h3>{post?.name}<span className={styles["username"]}>@{post?.username}</span></h3>
+              <h3>{user?.name}<span className={styles["username"]}>@{user?.username}</span></h3>
     
               <h4 className={styles["timestamp"]}>
                 . <Moment fromNow>{post?.timestamp}</Moment>

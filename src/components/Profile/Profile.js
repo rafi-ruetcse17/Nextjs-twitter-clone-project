@@ -18,27 +18,36 @@ import Image from "next/image";
 import EditProfileModal from "../EditProfileMpdal/EditProfileModal";
 import { CiLocationOn } from "react-icons/ci";
 import { IoLocationOutline } from "react-icons/io5";
+import { getAllUsers } from "@/libs/actions/userAction";
 
 
-const Profile = ({sessionUser, user, user_posts}) => {
-  //console.log(user_posts);
+const Profile = ({sessionUser, profile_user, user_posts}) => {
   const router = useRouter();
-  const { data: session } = useSession();
-  const [liked, setLiked] = useState(false);
-  const [toggle, setToggle] = useState(false);
-  const [posts, setPosts] = useState(null);
   const [postClick, setPostClick] = useState(true);
   const [mediaClick, setMediaClick] = useState(false);
   const [showModal, setShowModal] = useState(false);
+  const [user, setUser] = useState(profile_user)
   
   
   const Posts = useSelector((state) => state.posts);
+  const Users = useSelector((state) => state.users)
   const dispatch = useDispatch();
   
 
   useEffect(() => {
     getPostsFromDatabase();
-  }, [Posts]);
+    //getUsersFromDatabase();
+  }, []);
+
+  const getUsersFromDatabase = async () => {
+    try {
+      const response = await getAllUsers();
+      dispatch({type: "SET_USERS", payload: response});
+      setUser(response.find((user)=>user._id===profile_user._id))
+    } catch (error) {
+      console.error("Error fetching users:", error);
+    }
+  };
 
   const getPostsFromDatabase = async () => {
     try {
@@ -109,7 +118,7 @@ const Profile = ({sessionUser, user, user_posts}) => {
             >Edit Profile</button>
             :<button className={styles["edit-profile-btn"]}>Follow</button>
           }
-          {showModal && <EditProfileModal sessionUser={user} onClose={()=>setShowModal(false)}/>}
+          {showModal && <EditProfileModal sessionUser={user} onClose={()=>setShowModal(false)} getUsersFromDatabase={getUsersFromDatabase()}/>}
 
         </div>
 
@@ -150,6 +159,7 @@ const Profile = ({sessionUser, user, user_posts}) => {
       {postClick && Posts?.map((post)=>(
         <div key={post._id} className={styles["main"]}>
         <ViewPost user={user} post={post}/>
+        <hr/>
         </div>
       ))}
       <div className={styles["media-container"]}>

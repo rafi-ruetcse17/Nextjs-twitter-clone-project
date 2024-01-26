@@ -4,6 +4,7 @@ import Modal from "../Modal/Modal";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
 import {
+  createPost,
   deletePost,
   getAllPosts,
   getPost,
@@ -19,34 +20,43 @@ import { useDispatch, useSelector } from "react-redux";
 import Comment from "../Comment/Comment";
 import UpdateModal from "../UpdateModal/UpdateModal";
 import { BiReply } from "react-icons/bi";
-import { getAllUsers } from "@/libs/actions/userAction";
+import { getAllUsers, getUser } from "@/libs/actions/userAction";
+import ImageComp from "../ImageComp/ImageComp";
+import NameComp from "../NameComp/NameComp";
+import Username from "../UsernameComp/Username";
 
 const Post = ({ sessionUser, user }) => {
   const [showModal, setShowModal] = useState(false);
-  const [likes, setLikes] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [liked, setLiked] = useState(false);
   const [comments, setComments] = useState([]);
   const [users, setUsers] = useState(null);
   const [posts, setPosts] = useState(null);
 
   const Posts = useSelector((state) => state.posts);
+  const Users = useSelector((state) => state.users)
   const router = useRouter();
   const { data: session } = useSession();
   const dispatch = useDispatch();
-  
+  console.log(Posts);
 
   useEffect(() => {
     getPostsFromDatabase();
-  }, [Posts]);
+  }, []);
 
-  // const getUsersFromDatabase = async () => {
-  //   try {
-  //     const response = await getAllUsers();
-  //     setUsers(response);
-  //   } catch (error) {
-  //     console.error("Error fetching users:", error);
-  //   }
-  // };
+  useEffect(()=>{
+    getUsersFromDatabase();
+    
+  }, [])
+
+  const getUsersFromDatabase = async () => {
+    try {
+      const response = await getAllUsers();
+      dispatch({type: "SET_USERS", payload: response});
+    } catch (error) {
+      console.error("Error fetching users:", error);
+    }
+  };
 
   const getPostsFromDatabase = async () => {
     try {
@@ -57,6 +67,7 @@ const Post = ({ sessionUser, user }) => {
     if (filteredPosts) {
       dispatch({ type: "SET_POSTS", payload: filteredPosts });
     }
+    setLoading(false)
     } catch (error) {
       console.error("Error fetching posts:", error);
     }
@@ -77,7 +88,7 @@ const Post = ({ sessionUser, user }) => {
       const response = await getPost(postId);
       let likes_array = response.likes;
       likes_array.push(user.email);
-      setLikes(likes_array);
+      //setLikes(likes_array);
       await updatePost({ _id: postId, likes: likes_array });
       getPostsFromDatabase()
     } catch (error) {
@@ -104,6 +115,30 @@ const Post = ({ sessionUser, user }) => {
     }
   };
 
+  const handleReTweet = async(post)=>{
+    const user = Users.find((user)=>user._id===post.userId)
+    const repostedPost = {
+      userId: user._id,
+      username: user.username,
+      name: user.name,
+      email: user.email,
+      userImage: user.image,
+      ReTweetedBy: sessionUser._id,
+      text: post.text,
+      image: post.image,
+    };
+    await createPost(repostedPost);
+    alert(`You successfully Shared the post of @${user.username}!`)
+    getPostsFromDatabase();
+
+  }
+
+  if(loading){
+    return (
+      <div>loading....</div>
+    )
+  }
+
   return (
     <>
       {Posts?.map((post) => (
@@ -112,19 +147,30 @@ const Post = ({ sessionUser, user }) => {
           className={styles["container"]}
           // onClick={() => router.push(`/${user.email}/${post._id}`)}
         >
+          {post.ReTweetedBy && <div className={styles["retweet-container"]}>
+            <div><FaRetweet/></div>
+            {post.ReTweetedBy===user._id ? 
+            <div>You retweeted this post.</div>
+            : <div>@{Users.find(user => user._id === post.ReTweetedBy)?.username} retweeted this post. </div>}
+            
+          </div>}
+          
           <div className={styles["user-container"]}>
             <div>
-              <img
+              <ImageComp users={Users} post={post}/>
+              {/* <img
                 src={post?.userImage}
                 alt=""
                 className={styles["user-img"]}
-              />
+              /> */}
             </div>
 
             <div>
               <div className={styles["user-details"]}>
                 <div className={styles["name-edit"]}>
-                  <h3 className={styles["user-name"]}>{post?.name}</h3>
+                  <h3 className={styles["user-name"]}>
+                    <NameComp users={Users} post={post}/></h3>
+                  
                 </div>
                 {post?.showUpdateModal && (
                   <UpdateModal
@@ -136,9 +182,10 @@ const Post = ({ sessionUser, user }) => {
                 )}
 
                 <div className={styles["user-id"]}>
-                  <p className={styles["user-tag"]}>
+                  {/* <p className={styles["user-tag"]}>
                     @{post?.username} &nbsp; .&nbsp;
-                  </p>
+                  </p> */}
+                  <Username users={Users} post={post}/>
                   <p className={styles["post-tag"]}>
                     <Moment fromNow>{post?.timestamp}</Moment>
                   </p>
@@ -177,6 +224,8 @@ const Post = ({ sessionUser, user }) => {
                   user={user}
                   onClose={() => toggleModal(post._id, false, "comment")}
                   comment={null}
+                  users={Users}
+                  onUpdate ={()=>getPostsFromDatabase()}
                 />
               )}
               {post.comments.length > 0 && (
@@ -187,7 +236,8 @@ const Post = ({ sessionUser, user }) => {
             </div>
 
             {user?.email !== post?.email ? (
-              <FaRetweet className={styles["icon"]} />
+              <FaRetweet className={styles["icon"]} 
+              onClick = {()=> handleReTweet(post)}/>
             ) : (
               <RiDeleteBin5Line
                 className={styles["icon"]}
@@ -244,6 +294,8 @@ const Post = ({ sessionUser, user }) => {
                   postId={post._id}
                   user={user}
                   isReply={null}
+                  users={Users}
+                  onUpdate ={()=>getPostsFromDatabase()}
                 />
 
                 {comment?.replies?.length > 0 && (
@@ -260,6 +312,8 @@ const Post = ({ sessionUser, user }) => {
                         postId={post._id}
                         user={user}
                         isReply={comment._id}
+                        users={Users}
+                        onUpdate ={()=>getPostsFromDatabase()}
                       />
                     ))}
                   </div>
