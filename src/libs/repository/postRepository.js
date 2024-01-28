@@ -203,6 +203,48 @@ const deleteReply = async ({postId, commentId, replyId}) => {
   }
 };
 
+const updateReply = async ({ postId ,commentId, replyId, updateData }) => {
+  try {
+    const { text, image } = updateData;
+
+    const updateFields = {};
+    if (text !== undefined) {
+      updateFields["comments.$[comment].replies.$[reply].text"] = text;
+    }
+    if (image !== undefined) {
+      updateFields["comments.$[comment].replies.$[reply].image"] = image;
+    }
+
+    const updatedPost = await Post.findOneAndUpdate(
+      { "_id":postId, "comments._id": commentId, "comments.replies._id": replyId },
+      { $set: updateFields },
+      {
+        arrayFilters: [
+          { "comment._id": commentId },
+          { "reply._id": replyId },
+        ],
+        new: true,
+      }
+    );
+
+    if (!updatedPost) {
+      throw new Error("Post not found or reply not updated");
+    }
+
+    const updatedComment = updatedPost.comments.find((comment) =>
+      comment._id.equals(commentId)
+    );
+    const updatedReply = updatedComment.replies.find((reply) =>
+      reply._id.equals(replyId)
+    );
+
+    return updatedReply;
+  } catch (error) {
+    throw new Error(error.message);
+  }
+};
+
+
 const postRepository = {
   createPost,
   updatePost,
@@ -216,6 +258,7 @@ const postRepository = {
   createReply,
   updateReplyLikes,
   deleteReply,
+  updateReply,
 };
 
 export default postRepository;

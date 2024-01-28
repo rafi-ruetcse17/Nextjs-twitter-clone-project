@@ -8,11 +8,11 @@ import { IoCalendarNumberOutline } from "react-icons/io5";
 import { MdClose } from "react-icons/md"
 import { RiBarChart2Line } from "react-icons/ri";
 import Moment from "react-moment";
-import { createComment, getAllPosts, updateComment, updatePost } from "@/libs/actions/postAction";
+import { createComment, getAllPosts, updateComment, updatePost, updateReply } from "@/libs/actions/postAction";
 import { useDispatch } from "react-redux";
 import { useSession } from "next-auth/react";
 
-const UpdateModal = ({ post, user, onClose, comment}) => {
+const UpdateModal = ({ post, user, onClose, comment, onUpdate, commentId}) => {
   const {data:session} = useSession()
   const [input, setInput] = useState(comment?comment.text:post.text)
   const [selectedFile, setSelectedFile] = useState(comment?comment.image:post.image);
@@ -57,8 +57,9 @@ const UpdateModal = ({ post, user, onClose, comment}) => {
     else{
       await updatePost({ _id: post._id, text: input });
     }
-    const updatedPosts = await getAllPosts(user?.email);
-    dispatch({ type: 'SET_POSTS', payload: updatedPosts })
+    // const updatedPosts = await getAllPosts(user?.email);
+    // dispatch({ type: 'SET_POSTS', payload: updatedPosts })
+    onUpdate()
     onClose();
 
   }
@@ -77,16 +78,26 @@ const UpdateModal = ({ post, user, onClose, comment}) => {
       Url = await res.json();
     }
     if(selectedImage!=comment.image && input!=comment.text){
-      await updateComment({ _id: post._id, commentId: comment._id, updateData:{text:input, image: Url }});
+      if(commentId)
+        await updateReply({ postId: post._id, commentId, replyId:comment._id, updateData:{text:input, image: Url }});
+      else 
+        await updateComment({ _id: post._id, commentId: comment._id, updateData:{text:input, image: Url }});
     }
     else if(selectedImage!=comment.image){
-      await updateComment({ _id: post._id, commentId: comment._id, updateData:{image: Url }});
+      if(commentId)
+        await updateReply({ postId: post._id, commentId, replyId:comment._id, updateData:{image: Url }});
+      else
+        await updateComment({ _id: post._id, commentId: comment._id, updateData:{image: Url }});
     }
     else{
-      await updateComment({  _id: post._id, commentId: comment._id, updateData:{ text: input }});
+      if(commentId)
+        await updateReply({ postId: post._id, commentId, replyId:comment._id, updateData:{text:input}});
+      else
+        await updateComment({  _id: post._id, commentId: comment._id, updateData:{ text: input }});
     }
-    const updatedPosts = await getAllPosts(user?.email);
-    dispatch({ type: 'SET_POSTS', payload: updatedPosts })
+    onUpdate()
+    // const updatedPosts = await getAllPosts(user?.email);
+    // dispatch({ type: 'SET_POSTS', payload: updatedPosts })
     onClose();
   }
 
@@ -111,7 +122,7 @@ const UpdateModal = ({ post, user, onClose, comment}) => {
               <h3>{user?.name}<span className={styles["username"]}>@{user?.username}</span></h3>
     
               <h4 className={styles["timestamp"]}>
-                . <Moment fromNow>{post?.timestamp}</Moment>
+                . <Moment fromNow>{comment?.timestamp}</Moment>
               </h4>
             </div>
             
@@ -165,6 +176,7 @@ const UpdateModal = ({ post, user, onClose, comment}) => {
                   Update
                 </button>
               }
+              
               {comment==null && <button
                 className={styles["reply-btn"]}
                 disabled={(!input.trim() && !selectedFile) || 

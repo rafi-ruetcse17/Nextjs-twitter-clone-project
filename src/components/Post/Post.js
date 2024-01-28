@@ -178,6 +178,7 @@ const Post = ({ sessionUser, user }) => {
                     user={user}
                     onClose={() => toggleModal(post._id, false, "update")}
                     comment={null}
+                    onUpdate ={()=>getPostsFromDatabase()}
                   />
                 )}
 

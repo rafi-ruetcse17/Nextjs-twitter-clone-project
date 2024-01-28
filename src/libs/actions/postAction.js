@@ -11,6 +11,7 @@ import {
   updateClickedComment,
   likeClickedReply,
   deleteClickedReply,
+  updateClickedReply,
 } from "../api-routes/user-api";
 
 async function createPost(data) {
@@ -98,6 +99,14 @@ async function createReply(data) {
     throw Error(error.response.data);
   }
 }
+async function updateReply(data) {
+  try {
+    const response = await updateClickedReply(data);
+    return response.data;
+  } catch (error) {
+    throw Error(error.response.data);
+  }
+}
 async function updateReplyLikes(data){
   try {
     const response = await likeClickedReply(data);
@@ -130,4 +139,5 @@ export {
   createReply,
   updateReplyLikes,
   deleteReply,
+  updateReply,
 };

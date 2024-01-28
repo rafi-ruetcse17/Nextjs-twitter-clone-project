@@ -4,12 +4,16 @@ import styles from "./EditProfileModal.module.css";
 import { MdClose } from "react-icons/md";
 import { AiOutlineClose } from "react-icons/ai";
 import { updateUser } from "@/libs/actions/userAction";
+import { useRouter } from "next/router";
 
-const EditProfileModal = ({ sessionUser, onClose, getUsersFromDatabase }) => {
+const EditProfileModal = ({ sessionUser, onClose , getUsersFromDatabase}) => {
   const [name, setName] = useState(sessionUser?.name);
   const [username, setUsername] = useState(sessionUser?.username);
   const [location, setLocation] = useState(sessionUser?.location);
-  const [avatar, setAvatar] = useState(sessionUser?.image);
+  const [avatar, setAvatar] = useState(sessionUser?.image ? sessionUser?.image : "/images/blank_user.jpg");
+  const router = useRouter()
+  const [tempCover, setTempCover] = useState(null);
+  const [tempAvatar, setTempAvatar] = useState(null);
   const [cover, setCover] = useState(
     sessionUser?.cover ? sessionUser.cover : "/images/cover.png"
   );
@@ -18,6 +22,7 @@ const EditProfileModal = ({ sessionUser, onClose, getUsersFromDatabase }) => {
     const reader = new FileReader();
     if (e.target.files[0]) {
       reader.readAsDataURL(e.target.files[0]);
+      setTempAvatar(e.target.files[0]);
     }
     reader.onload = (readerEvent) => {
       setAvatar(readerEvent.target.result);
@@ -27,15 +32,48 @@ const EditProfileModal = ({ sessionUser, onClose, getUsersFromDatabase }) => {
     const reader = new FileReader();
     if (e.target.files[0]) {
       reader.readAsDataURL(e.target.files[0]);
+      setTempCover(e.target.files[0])
     }
     reader.onload = (readerEvent) => {
       setCover(readerEvent.target.result);
     };
   };
   const handleSave = async()=>{
-    await updateUser({_id:sessionUser?._id, name, username, location,image:avatar, cover})
+    //let coverUrl, avatarUrl;
+    if (tempCover) {
+      const body = new FormData();
+      body.append("file", tempCover);
+      const res = await fetch("/api/upload", {
+        method: "POST",
+        body,
+      });
+      if (!res.ok) {
+        throw new Error("Failed to upload image!");
+      }
+      const coverUrl = await res.json();
+      await updateUser({_id:sessionUser?._id, name, username, location, cover: coverUrl})
+    }
+    
+    if(tempAvatar){
+      const body = new FormData();
+      body.append("file", tempAvatar);
+      const res = await fetch("/api/upload", {
+        method: "POST",
+        body,
+      });
+      if (!res.ok) {
+        throw new Error("Failed to upload image!");
+      }
+      const avatarUrl = await res.json();
+      await updateUser({_id:sessionUser?._id, name, username, location,image:avatarUrl})
+    }
+    else 
+      await updateUser({_id:sessionUser?._id, name, username, location})
     getUsersFromDatabase();
     onClose();
+    //if(sessionUser.username!=username){
+      router.push(`/${username}`)
+    //}
   }
 
   const closeModal = (e) => {

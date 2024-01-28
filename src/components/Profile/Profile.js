@@ -18,32 +18,42 @@ import Image from "next/image";
 import EditProfileModal from "../EditProfileMpdal/EditProfileModal";
 import { CiLocationOn } from "react-icons/ci";
 import { IoLocationOutline } from "react-icons/io5";
-import { getAllUsers } from "@/libs/actions/userAction";
+import { getAllUsers, updateUser } from "@/libs/actions/userAction";
 
 
-const Profile = ({sessionUser, profile_user, user_posts}) => {
+const Profile = ({sessionUser, profile_user}) => {
   const router = useRouter();
+  const [clicked, setClicked] = useState(false);
   const [postClick, setPostClick] = useState(true);
   const [mediaClick, setMediaClick] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [user, setUser] = useState(profile_user)
+
+  console.log(sessionUser, profile_user);
   
   
   const Posts = useSelector((state) => state.posts);
   const Users = useSelector((state) => state.users)
   const dispatch = useDispatch();
+
+  useEffect(()=>{
+    if(Users.find((user)=>user?._id==sessionUser?._id)?.following?.includes(user?._id))
+      setClicked(true)
+  }, [Users])
   
 
   useEffect(() => {
     getPostsFromDatabase();
-    //getUsersFromDatabase();
-  }, []);
+    getUsersFromDatabase();
+  }, [profile_user]);
 
   const getUsersFromDatabase = async () => {
     try {
       const response = await getAllUsers();
       dispatch({type: "SET_USERS", payload: response});
       setUser(response.find((user)=>user._id===profile_user._id))
+      // if(Users.find((user)=>user?._id==sessionUser?._id)?.following?.includes(user?._id))
+      //   setClicked(true)
     } catch (error) {
       console.error("Error fetching users:", error);
     }
@@ -53,7 +63,7 @@ const Profile = ({sessionUser, profile_user, user_posts}) => {
     try {
       const response = await getAllPosts(user?.email);
       const filteredPosts = response?.filter((post) =>
-      post?.userId===user._id
+      post?.userId===profile_user._id
     );
     if (filteredPosts) {
       dispatch({ type: "SET_POSTS", payload: filteredPosts });
@@ -71,6 +81,26 @@ const Profile = ({sessionUser, profile_user, user_posts}) => {
   //     console.error("Error fetching posts:", error);
   //   }
   // };
+  const handleFollow = async () => {
+    const currentUser = Users.find((user)=>user?._id==sessionUser?._id)
+    const updatedFollowing = [...currentUser?.following, user?._id];
+    const updatedFollower = [...user?.followers, currentUser?._id];
+    await updateUser({ _id: currentUser?._id, following: updatedFollowing });
+    await updateUser({ _id: user?._id, followers: updatedFollower });
+
+    setClicked(true);
+  };
+
+  const handleUnfollow = async () => {
+    const currentUser = Users.find((user)=>user?._id==sessionUser?._id)
+    const updatedFollowing = currentUser?.following.filter((id) => id !== user?._id);
+    const updatedFollower = user?.followers.filter((id) => id !== currentUser?._id);
+  
+    await updateUser({ _id: currentUser?._id, following: updatedFollowing });
+    await updateUser({ _id: user?._id, followers: updatedFollower });
+  
+    setClicked(false);  
+  };
 
   const handlePosts = () =>{
     setPostClick(true);
@@ -112,13 +142,25 @@ const Profile = ({sessionUser, profile_user, user_posts}) => {
               className={styles["user-img"]}
             />
           </div>
-          {sessionUser?._id===user?._id? 
+          {sessionUser?._id===user?._id &&
             <button className={styles["edit-profile-btn"]}
             onClick={()=>setShowModal(true)}
-            >Edit Profile</button>
-            :<button className={styles["edit-profile-btn"]}>Follow</button>
+            >Edit Profile</button>   
           }
-          {showModal && <EditProfileModal sessionUser={user} onClose={()=>setShowModal(false)} getUsersFromDatabase={getUsersFromDatabase()}/>}
+          {sessionUser?._id!=user?._id && 
+            // !Users.find((user)=>user?._id==sessionUser?._id)?.following?.includes(user?._id)
+            !clicked
+            && <button onClick={()=>handleFollow()} 
+            className={styles["edit-profile-btn"]}>Follow</button>
+          }
+          {sessionUser?._id!=user?._id && 
+            // Users.find((user)=>user?._id==sessionUser?._id)?.following?.includes(user?._id)
+            clicked
+            && <button onClick={()=>handleUnfollow()} 
+            className={styles["edit-profile-btn"]}>Unfollow</button>
+          }  
+          {showModal && <EditProfileModal sessionUser={user} onClose={()=>setShowModal(false)} 
+          getUsersFromDatabase={()=>getUsersFromDatabase()}/>}
 
         </div>
 

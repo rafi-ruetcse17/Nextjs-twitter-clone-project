@@ -56,6 +56,13 @@ export const createNewReply =(payload) =>{
     };
     return API.patch(reply_endpoint, payload, {headers})
 }
+export const updateClickedReply =(payload) =>{
+    const headers = {
+        "Content-Type": "application/json",
+        "X-Api-Purpose": "UpdateReply", 
+    };
+    return API.patch(reply_endpoint, payload, {headers})
+}
 export const likeClickedReply =(payload) =>{
     const headers = {
         "Content-Type": "application/json",

@@ -14,12 +14,12 @@ const profile = ({ sessionUser,user }) => {
   const [loading, setLoading] = useState(true);
   
 
-  useEffect(()=>{
-    const fetchPosts = async()=>{
-      setPosts(await getAllPosts(user?.email))
-    }
-    fetchPosts();
-  },[user])
+  // useEffect(()=>{
+  //   const fetchPosts = async()=>{
+  //     setPosts(await getAllPosts(user?.email))
+  //   }
+  //   fetchPosts();
+  // },[user])
 
   useEffect(() => {
     const fetchData = async () => {
@@ -43,7 +43,7 @@ const profile = ({ sessionUser,user }) => {
           
           <Sidebar sessionUser={sessionUser} user={user}/>
           <div className={styles["feed"]}>
-            <Profile sessionUser={sessionUser} profile_user={user} user_posts={posts}/>
+            <Profile sessionUser={sessionUser} profile_user={user} />
             <FollowBar user={sessionUser}/>
           </div>
         </main>

@@ -8,6 +8,7 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 
 const FollowBar = ({user}) => {
+  console.log(user);
   const [users, setUsers] = useState(null);
   const [currentUser, setCurrentUser] = useState(null);
   const router = useRouter();
@@ -47,7 +48,8 @@ const FollowBar = ({user}) => {
         {filteredUsers?.map((check_user) => (
           check_user?._id!=user?._id && 
           <div key={check_user?._id}  
-          onClick={()=>router.push(`/${check_user?.username}`)}>
+          onClick={()=>router.push(`/${check_user?.username}`)}
+          >
             <User user={check_user} currentUser={currentUser} />
           </div>
         ))}

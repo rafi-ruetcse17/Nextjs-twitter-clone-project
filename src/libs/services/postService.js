@@ -107,3 +107,12 @@ export const deleteReply = async(req, res)=>{
     return res.status(500).json(error.message);
   }
 }
+
+export const updateReply = async(req, res)=>{
+  try{
+    const response = await postRepository.updateReply(req.body)
+    return res.status(200).json(response);
+  } catch (error) {
+    return res.status(500).json(error.message);
+  }
+}

@@ -46,6 +46,7 @@ export const authOptions = {
       session.user.name = res.name;
       session.user._id = res._id;
       //if(!session?.user?.image)
+      if(res?.image)
         session.user.image = res.image;
       return session;
     },

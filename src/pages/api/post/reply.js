@@ -1,5 +1,5 @@
 import connectDB from "@/config/connectDB";
-import { createReply, updateReplyLikes,deleteReply} from "@/libs/services/postService";
+import { createReply, updateReplyLikes,deleteReply, updateReply} from "@/libs/services/postService";
 
 export default async function handler(req, res) {
   try {
@@ -12,6 +12,8 @@ export default async function handler(req, res) {
             return await createReply(req, res);
           case "LikeReply":
             return await updateReplyLikes(req, res);
+          case "UpdateReply":
+            return await updateReply(req, res);
         }
       case "DELETE":
         return await deleteReply(req, res);

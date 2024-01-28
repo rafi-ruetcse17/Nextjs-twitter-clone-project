@@ -36,10 +36,10 @@ const Sidebar = ({ sessionUser, user }) => {
       <button className={styles["btn"]}>Post</button>
 
       <div className={styles["profile-icon"]} onClick={signOut}>
-        <img src={sessionUser?.image} alt="" />
+        <img src={sessionUser?._id==user?._id? user?.image:sessionUser?.image} alt="" />
         <div className={styles["user"]}>
-          <h4>{sessionUser?.name}</h4>
-          <p>@{user?.username}</p>
+          <h4>{sessionUser?._id==user?._id? user?.name:sessionUser?.name}</h4>
+          <p>@{sessionUser?._id==user?._id? user?.username:sessionUser?.username}</p>
         </div>
         <BsThreeDots className={styles["three-dots"]} />
       </div>
