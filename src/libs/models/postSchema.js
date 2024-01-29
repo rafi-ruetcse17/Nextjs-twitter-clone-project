@@ -79,6 +79,9 @@ const postSchema = new mongoose.Schema({
   userId:{
     type: String,
   },
+  postId:{
+    type:String,
+  },
   username: {
     type: String,
     required: true,

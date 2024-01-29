@@ -7,6 +7,8 @@ import { BiHash } from "react-icons/bi";
 import {HiOutlineClipboardList,HiOutlineDotsCircleHorizontal} from "react-icons/hi";
 import { signOut} from "next-auth/react";
 import { useRouter } from "next/router";
+import { FaSignOutAlt } from "react-icons/fa";
+import { IoMdLogOut } from "react-icons/io";
 
 const Sidebar = ({ sessionUser, user }) => {
   const router = useRouter();
@@ -35,7 +37,7 @@ const Sidebar = ({ sessionUser, user }) => {
       </div>
       <button className={styles["btn"]}>Post</button>
 
-      <div className={styles["profile-icon"]} onClick={signOut}>
+      <div className={styles["profile-icon"]} >
         <img src={sessionUser?._id==user?._id? user?.image:sessionUser?.image} alt="" />
         <div className={styles["user"]}>
           <h4>{sessionUser?._id==user?._id? user?.name:sessionUser?.name}</h4>
@@ -43,6 +45,10 @@ const Sidebar = ({ sessionUser, user }) => {
         </div>
         <BsThreeDots className={styles["three-dots"]} />
       </div>
+
+      <button className={styles["signout"]} onClick={signOut}>
+        <span><FaSignOutAlt/></span> &nbsp; SignOut
+      </button>
     </div>
   );
 };

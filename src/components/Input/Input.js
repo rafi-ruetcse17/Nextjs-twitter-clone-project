@@ -66,13 +66,28 @@ const Input = ({user}) => {
       const Url = await res.json();
       await updatePost({ _id: response, image: Url });
     }
-    const updatedPosts = await getAllPosts(user?.email);
-    dispatch({ type: 'SET_POSTS', payload: updatedPosts })
+    //const updatedPosts = await getAllPosts(user?.email);
+    //dispatch({ type: 'SET_POSTS', payload: updatedPosts })
+    getPostsFromDatabase();
 
     setLoading(false);
     setInput("");
     setSelectedFile(null);
     setShowEmojis(false);
+  };
+
+  const getPostsFromDatabase = async () => {
+    try {
+      const response = await getAllPosts(user?.email);
+      const filteredPosts = response?.filter((post) =>
+      user?.following?.includes(post?.userId) || post?.userId===user._id
+    );
+    if (filteredPosts) {
+      dispatch({ type: "SET_POSTS", payload: filteredPosts });
+    }
+    } catch (error) {
+      console.error("Error fetching posts:", error);
+    }
   };
 
   return (

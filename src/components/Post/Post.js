@@ -38,7 +38,7 @@ const Post = ({ sessionUser, user }) => {
   const router = useRouter();
   const { data: session } = useSession();
   const dispatch = useDispatch();
-  console.log(Posts);
+  //console.log(Posts);
 
   useEffect(() => {
     getPostsFromDatabase();
@@ -99,6 +99,12 @@ const Post = ({ sessionUser, user }) => {
   const handleDelete = async (postId) => {
     try {
       await deletePost(postId);
+      Posts?.map(async(post)=>{
+        if(post.postId===postId){
+          await deletePost(post._id)
+          getPostsFromDatabase()
+        }
+      })
       getPostsFromDatabase()
     } catch (error) {
       console.error("Error fetching posts:", error);
@@ -119,6 +125,7 @@ const Post = ({ sessionUser, user }) => {
     const user = Users.find((user)=>user._id===post.userId)
     const repostedPost = {
       userId: user._id,
+      postId: post._id,
       username: user.username,
       name: user.name,
       email: user.email,
@@ -179,6 +186,7 @@ const Post = ({ sessionUser, user }) => {
                     onClose={() => toggleModal(post._id, false, "update")}
                     comment={null}
                     onUpdate ={()=>getPostsFromDatabase()}
+                    posts ={Posts}
                   />
                 )}
 
@@ -190,7 +198,7 @@ const Post = ({ sessionUser, user }) => {
                   <p className={styles["post-tag"]}>
                     <Moment fromNow>{post?.timestamp}</Moment>
                   </p>
-                  {post.userId===user?._id  && <span>
+                  {post?.userId===user?._id  && !post?.ReTweetedBy && <span>
                     <FaRegEdit
                       className={styles["edit-icon"]}
                       onClick={(e) => {
@@ -225,8 +233,8 @@ const Post = ({ sessionUser, user }) => {
                   user={user}
                   onClose={() => toggleModal(post._id, false, "comment")}
                   comment={null}
-                  users={Users}
                   onUpdate ={()=>getPostsFromDatabase()}
+                  users={Users}
                 />
               )}
               {post.comments.length > 0 && (
@@ -236,10 +244,8 @@ const Post = ({ sessionUser, user }) => {
               )}
             </div>
 
-            {user?.email !== post?.email ? (
-              <FaRetweet className={styles["icon"]} 
-              onClick = {()=> handleReTweet(post)}/>
-            ) : (
+            {(user?.email === post?.email && !post?.ReTweetedBy) || post?.ReTweetedBy==user?._id?
+            (
               <RiDeleteBin5Line
                 className={styles["icon"]}
                 onClick={(e) => {
@@ -247,6 +253,9 @@ const Post = ({ sessionUser, user }) => {
                   handleDelete(post._id);
                 }}
               />
+              )  : (
+              <FaRetweet className={styles["icon"]} 
+              onClick = {()=> handleReTweet(post)}/>
             )}
 
             <div

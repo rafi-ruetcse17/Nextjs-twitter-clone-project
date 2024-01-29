@@ -107,6 +107,7 @@ const Comment = ({post, comment, postId, user, isReply , users, onUpdate}) => {
 
   };
 
+
   return (
     <>
       <div
@@ -163,6 +164,7 @@ const Comment = ({post, comment, postId, user, isReply , users, onUpdate}) => {
                     onClose={() => toggleModal(comment._id, false, "reply")}
                     comment={comment}
                     onUpdate= {onUpdate}
+                    users ={users}
                   />
                 )}
               </div>}

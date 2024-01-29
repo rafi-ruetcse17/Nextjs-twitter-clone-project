@@ -12,13 +12,12 @@ import { createComment, getAllPosts, updateComment, updatePost, updateReply } fr
 import { useDispatch } from "react-redux";
 import { useSession } from "next-auth/react";
 
-const UpdateModal = ({ post, user, onClose, comment, onUpdate, commentId}) => {
+const UpdateModal = ({ post, user, onClose, comment, onUpdate, commentId, posts}) => {
   const {data:session} = useSession()
   const [input, setInput] = useState(comment?comment.text:post.text)
   const [selectedFile, setSelectedFile] = useState(comment?comment.image:post.image);
   const [selectedImage, setSelectedImage] = useState(comment?comment.image:post.image);
   const dispatch = useDispatch()
-
   const addImageToComment = (e) => {
     const reader = new FileReader();
     if (e.target.files[0]) {
@@ -48,6 +47,7 @@ const UpdateModal = ({ post, user, onClose, comment, onUpdate, commentId}) => {
       }
       Url = await res.json();
     }
+    
     if(selectedImage!=post.image && input!=post.text){
       await updatePost({ _id: post._id,text:input, image: Url });
     }
@@ -57,6 +57,21 @@ const UpdateModal = ({ post, user, onClose, comment, onUpdate, commentId}) => {
     else{
       await updatePost({ _id: post._id, text: input });
     }
+
+    posts?.map(async(cur_post)=>{
+      if(cur_post?.postId===post?._id){
+        if(selectedImage!=post.image && input!=post.text){
+          await updatePost({ _id: cur_post._id,text:input, image: Url });
+        }
+        else if(selectedImage!=post.image){
+          await updatePost({ _id: cur_post._id, image: Url });
+        }
+        else{
+          await updatePost({ _id: cur_post._id, text: input });
+        }
+      }
+    })
+
     // const updatedPosts = await getAllPosts(user?.email);
     // dispatch({ type: 'SET_POSTS', payload: updatedPosts })
     onUpdate()

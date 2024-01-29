@@ -12,7 +12,7 @@ import { createComment, getAllPosts , createReply} from "@/libs/actions/postActi
 import { useDispatch } from "react-redux";
 import { useSession } from "next-auth/react";
 
-const Modal = ({ post, user, onClose, comment, onUpdate}) => {
+const Modal = ({ post, user, onClose, comment, onUpdate, users}) => {
   const [input, setInput] = useState("")
   const [selectedFile, setSelectedFile] = useState(null);
   const [selectedImage, setSelectedImage] = useState(null);
@@ -89,12 +89,14 @@ const Modal = ({ post, user, onClose, comment, onUpdate}) => {
 
         <div className={styles["contents"]}>
           <div>
-            <img className={styles["rounded"]} src={comment?comment.userImage:post?.userImage} alt="" />
+            <img className={styles["rounded"]} src={comment?(users?.find((user)=>user?._id===comment?.userId)?.image)
+              :(users?.find((user)=>user?._id===post?.userId)?.image)} alt="" />
           </div>
 
           <div>
             <div className={styles["post-details"]}>
-              <h3>{comment?comment.name:post?.name}</h3>
+              <h3>{comment?(users?.find((user)=>user?._id===comment?.userId)?.name)
+              : (users?.find((user)=>user?._id===post?.userId)?.name)}</h3>
               <h4 className={styles["timestamp"]}>
                 . <Moment fromNow>{comment?comment.timestamp:post?.timestamp}</Moment>
               </h4>
@@ -108,7 +110,8 @@ const Modal = ({ post, user, onClose, comment, onUpdate}) => {
             />
 
             <p className={styles["comment"]}>
-              Replying to: <span className={styles["username"]}>@{comment?comment.username:post?.username}</span>
+              Replying to: <span className={styles["username"]}>@{comment?(users?.find((user)=>user?._id===comment?.userId)?.username)
+              :(users?.find((user)=>user?._id===post?.userId)?.username)}</span>
             </p>
           </div>
 
