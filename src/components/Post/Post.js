@@ -64,6 +64,7 @@ const Post = ({ sessionUser, user }) => {
       const filteredPosts = response?.filter((post) =>
       user?.following?.includes(post?.userId) || post?.userId===user._id
     );
+
     if (filteredPosts) {
       dispatch({ type: "SET_POSTS", payload: filteredPosts });
     }
@@ -148,7 +149,7 @@ const Post = ({ sessionUser, user }) => {
 
   return (
     <>
-      {Posts?.map((post) => (
+      {Posts?.map((post) => ( 
         <div
           key={post?._id}
           className={styles["container"]}
