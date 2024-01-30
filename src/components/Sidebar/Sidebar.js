@@ -27,7 +27,9 @@ const Sidebar = ({ sessionUser, user }) => {
         </div>
         <SidebarLink text="Explore" Icon={BiHash} />
         <SidebarLink text="Notifications" Icon={BsBell} />
-        <SidebarLink text="Messages" Icon={AiOutlineInbox} />
+        <div onClick={() => router.push(`/messages`)}>
+          <SidebarLink text="Messages" Icon={AiOutlineInbox} />
+        </div>
         <SidebarLink text="Bookmarks" Icon={BsBookmark} />
         <SidebarLink text="Lists" Icon={HiOutlineClipboardList} />
         <div onClick={() => router.push(`/${sessionUser?.username}`)}>

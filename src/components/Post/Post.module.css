@@ -77,6 +77,8 @@
 .post-details {
     margin-top: -3.5rem;
     font-size: 17px;
+    word-wrap: break-word;
+    max-width: 410px;
 }
 
 .user-tag {

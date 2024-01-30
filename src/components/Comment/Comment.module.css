@@ -68,6 +68,8 @@
 
 .post-details {
     margin-top: -3rem;
+    word-wrap: break-word;
+    max-width: 410px;
 }
 
 .user-tag {

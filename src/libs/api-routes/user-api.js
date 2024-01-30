@@ -4,6 +4,7 @@ const api_endpoint = '/api/user';
 const post_endpoint = '/api/post';
 const comment_endpoint = '/api/post/comment'
 const reply_endpoint = '/api/post/reply'
+const message_endpoint = '/api/message'
 const API = axios.create({ baseURL: "http://localhost:3000" })
 
 API.interceptors.request.use((req)=>{
@@ -72,3 +73,7 @@ export const likeClickedReply =(payload) =>{
 }
 
 export const deleteClickedReply = (payload)=>API.patch(reply_endpoint, payload)
+
+
+//message
+export const createNewConversation =(payload)=>API.post(message_endpoint, payload)

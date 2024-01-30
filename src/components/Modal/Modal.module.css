@@ -57,6 +57,8 @@
 .text {
     font-size: 12px;
     margin-top: -2px;
+    word-wrap: break-word;
+    max-width: 450px;
 }
 
 .post-image {
