@@ -37,6 +37,15 @@ const getAllUsers = async () =>{
   }
 }
 
+const getUserById = async(id) =>{
+  try{
+    const user = await User.findById(id);
+    return user;
+  } catch(error){
+    throw new Error(error.message);
+  }
+}
+
 const updateUser = async (data) =>{
   try{
     const user = await User.findByIdAndUpdate(data._id, data);
@@ -52,6 +61,7 @@ const userRepository = {
   getAllUsers,
   updateUser,
   getUser,
+  getUserById,
 };
 
 export default userRepository;

@@ -21,8 +21,21 @@ const createConversation = async (data) => {
   }
 };
 
+const getConversation = async (_id) => {
+  const {messageId} = _id;
+  try {
+    const response = await Chat.findOne({_id: messageId})
+    return response;
+  } catch (error) {
+    throw new Error(error.message);
+  }
+};
+
+
+
 const messageRepository = {
   createConversation,
+  getConversation,
 };
 
 export default messageRepository;

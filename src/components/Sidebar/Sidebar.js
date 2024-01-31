@@ -39,7 +39,8 @@ const Sidebar = ({ sessionUser, user }) => {
       </div>
       <button className={styles["btn"]}>Post</button>
 
-      <div className={styles["profile-icon"]} >
+      <div className={styles["profile-icon"]} 
+      onClick={() => router.push(`/${sessionUser?.username}`)}>
         <img src={sessionUser?._id==user?._id? user?.image:sessionUser?.image} alt="" />
         <div className={styles["user"]}>
           <h4>{sessionUser?._id==user?._id? user?.name:sessionUser?.name}</h4>

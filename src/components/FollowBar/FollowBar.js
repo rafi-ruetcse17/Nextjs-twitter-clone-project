@@ -8,7 +8,6 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 
 const FollowBar = ({user}) => {
-  console.log(user);
   const [users, setUsers] = useState(null);
   const [currentUser, setCurrentUser] = useState(null);
   const router = useRouter();

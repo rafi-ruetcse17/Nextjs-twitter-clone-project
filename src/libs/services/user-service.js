@@ -46,3 +46,13 @@ export const getAllUsers = async()=>{
     throw Error(error.message)
   }
 }
+
+export const getUserById = async(id)=>{
+  try{
+    const response = await userRepository.getUserById(id);
+    return response
+  } catch(error){
+    throw Error(error.message)
+  }
+}
+

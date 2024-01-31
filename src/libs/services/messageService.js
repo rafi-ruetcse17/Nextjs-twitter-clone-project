@@ -8,3 +8,13 @@ export const createConversation = async (req, res) => {
     return res.status(500).json(error.message);
   }
 };
+
+export const getConversation = async (_id) => {
+  try {
+    const response = await messageRepository.getConversation(_id);
+    return response;
+  } catch (error) {
+    return error.message;
+  }
+};
+

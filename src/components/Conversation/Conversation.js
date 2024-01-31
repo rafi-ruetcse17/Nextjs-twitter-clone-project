@@ -2,46 +2,45 @@ import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import io from "socket.io-client";
 import styles from "./Conversation.module.css";
-import { TiMessages } from "react-icons/ti";
-import { TbMessagePlus } from "react-icons/tb";
+import { LuSendHorizonal } from "react-icons/lu";
 
 let socket;
 
-export default function Conversation({ sessionUser, user, conversation }) {
+export default function Conversation({ sessionUser,user,receiver,conversation }) {
   const [message, setMessage] = useState("");
   const [username, setUsername] = useState("");
-  const [allMessages, setAllMessages] = useState([]);
+  const [allMessages, setAllMessages] = useState(null);
 
   useEffect(() => {
     socketInitializer();
-
-    // return () => {
-    //   socket.disconnect();
-    // };
-  }, []);
+    setAllMessages(conversation?.conversation)
+  }, [conversation?._id]);
 
   async function socketInitializer() {
     await fetch("/api/socket");
 
     socket = io();
 
-    socket.on("receive-message", (data) => {
-      console.log("data", data);
-      setAllMessages((pre) => [...pre, data]);
+    socket.on("receive-message", ({ sender_id, receiver_id, message}) => {
+      setAllMessages((pre) => [...pre, { sender_id, receiver_id, message}]);  
     });
 
     socket.on("disconnect", function () {
       console.log("user disconnected");
     });
+
+    socket.emit("join-room", { roomId: conversation._id });
   }
 
-  function handleSubmit(e) {
-    e.preventDefault();
+  function handleSubmit() {
 
-    console.log("emitted");
+    const sender_id = user?._id;
+    const receiver_id = receiver?._id;
 
     socket.emit("send-message", {
-      username,
+      conversation:conversation._id,
+      sender_id,
+      receiver_id,
       message,
     });
 
@@ -51,31 +50,34 @@ export default function Conversation({ sessionUser, user, conversation }) {
   return (
     <section className={styles["container"]}>
       <h2>{user?.name}</h2>
-      <h1>Enter a username</h1>
-
-      <input value={username} onChange={(e) => setUsername(e.target.value)} />
-
-      <br />
-      <br />
 
       <div>
-        {allMessages.map(({ username, message }, index) => (
-          <div key={index}>
-            {username}: {message}
-          </div>
-        ))}
 
-        <br />
+        <div>{allMessages?.length}</div>
 
-        <form onSubmit={handleSubmit}>
-          <input
+        <div className={styles["chat-box"]}>
+          {allMessages?.map((message, index)=>(
+            <div className={styles["conversation"]} key={index}>
+              <div className={styles[message?.sender_id===receiver?._id?"receive-message":"send-message"]}>
+                {message?.message}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div className={styles["send-btn"]}>
+          <input className={styles["input"]}
             name="message"
             placeholder="enter your message"
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             autoComplete={"off"}
           />
-        </form>
+          <button className={styles["btn"]} 
+          onClick={()=>handleSubmit()}>
+            <LuSendHorizonal />
+          </button>
+        </div>
       </div>
     </section>
   );

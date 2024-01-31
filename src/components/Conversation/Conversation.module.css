@@ -5,6 +5,63 @@
     min-height: 100vh;
     color: #ffffff;
     margin-left: auto;
+    width: 500px;
 }
 
+.chat-box {
+    height: 400px;
+    width: 100%;
+    border-top: 1px solid #9CA3AF;
+    overflow-y:auto;
+}
 
+.conversation {
+    display: flex;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+.receive-message {
+    padding: 10px;
+    border: 1px solid #9CA3AF;
+    border-radius: 9999px;
+    width: 50%;
+}
+
+.send-message{
+    padding: 10px;
+    border: 1px solid #9CA3AF;
+    border-radius: 9999px;
+    width: 50%;
+    margin-left: 50%;
+}
+
+.send-btn{
+    display: flex;
+    margin-top: 5px;
+    padding: 5px 0px;
+    width: 100%;
+    border: 1px solid #9CA3AF;
+    border-radius: 9999px;
+    width: 100%;
+}
+
+.input{
+    padding: 5px;
+    margin-left: 5px;
+    width: 90%;
+    outline: none;
+    background-color: transparent;
+    border: none;
+    color: #fff;
+    font-size: 15px;
+}
+.btn{
+    
+    background-color: deepskyblue;
+    border: 1px solid deepskyblue;
+    padding-top: 3px;
+    border-radius: 2px;
+}
