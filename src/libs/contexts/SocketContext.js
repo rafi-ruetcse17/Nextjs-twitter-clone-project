@@ -14,6 +14,8 @@ export const SocketProvider = ({ children }) => {
     
     const fetchData = async () => {
       try {
+
+
         const response = await fetch("/api/socket");
         if (!response.ok) {
           throw new Error("Failed to fetch socket");

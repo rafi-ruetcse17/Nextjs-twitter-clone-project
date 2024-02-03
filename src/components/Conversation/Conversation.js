@@ -12,18 +12,18 @@ export default function Conversation({ sessionUser,user,receiver,conversation })
   const [allMessages, setAllMessages] = useState(null);
   const chatBoxRef = useRef();
   const socket = useSocket()
-  console.log(socket);
+  //console.log(socket);
 
   useEffect(() => {
     socketInitializer();
     setAllMessages(conversation?.conversation)
+    markMessagesAsSeen();
 
     return ()=>{
-      socket?.on("disconnect", function () {
-        console.log("user disconnected");
-      });
+      if(socket)
+        cleanupSocketListeners();
     }
-  }, [conversation,socket]);
+  }, [conversation?._id,socket]);
 
   useEffect(() => {
     scrollToBottom();
@@ -37,8 +37,11 @@ export default function Conversation({ sessionUser,user,receiver,conversation })
     if(!socket)
       return;
 
-    socket.on("receive-message", ({ sender_id, receiver_id, message}) => {
-      setAllMessages((pre) => [...pre, { sender_id, receiver_id, message}]);  
+    
+    cleanupSocketListeners();
+    socket.on("receive-message", ({ sender_id, receiver_id, message, roomId}) => {
+      if(roomId==conversation._id)
+        setAllMessages((pre) => [...pre, { sender_id, receiver_id, message}]);
     });
 
     socket.on("disconnect", function () {
@@ -46,13 +49,30 @@ export default function Conversation({ sessionUser,user,receiver,conversation })
     });
 
     socket.emit("join-room", { roomId: conversation._id });
+      
+  }
+
+  const markMessagesAsSeen =async() =>{
+    const seenMessageIds = allMessages
+      .filter((message) => message.sender_id === receiver._id && !message.seen)
+      .map((message) => message._id);
+
+  }
+
+  function cleanupSocketListeners() {
+    socket.off("receive-message");
+    socket.off("send-message");
+    socket.off("disconnect");
+    socket.off("join-room")
+
   }
 
   function handleSubmit() {
 
     const sender_id = user?._id;
     const receiver_id = receiver?._id;
-
+    //console.log(user, receiver);
+    
     socket.emit("send-message", {
       conversation:conversation._id,
       sender_id,

@@ -32,7 +32,7 @@ export default function SocketHandler(req, res) {
       );
 
       if(chat)
-        io.to(conversation).emit("receive-message", { sender_id, receiver_id, message})
+        io.to(conversation).emit("receive-message", { sender_id, receiver_id, message, roomId:conversation})
     });
 
     socket.on("join-room", ({roomId})=>{
