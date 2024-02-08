@@ -13,6 +13,11 @@ const conversationSchema = new mongoose.Schema({
     type:String,
     // required: true,
   },
+
+  seen :{
+    type:Boolean,
+    default:false,
+  },
   timestamp: {
     type: Date,
     default: Date.now,
