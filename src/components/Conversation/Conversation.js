@@ -5,6 +5,7 @@ import styles from "./Conversation.module.css";
 import { LuSendHorizonal } from "react-icons/lu";
 import { useSocket } from "@/libs/contexts/SocketContext";
 import { markMessagesSeen } from "@/libs/actions/messageAction";
+import { BsCheck2All } from "react-icons/bs";
 
 export default function Conversation({
   sessionUser,
@@ -17,11 +18,12 @@ export default function Conversation({
   const [allMessages, setAllMessages] = useState(null);
   const chatBoxRef = useRef();
   const socket = useSocket();
+  //console.log("infinite test");
 
   useEffect(() => {
     socketInitializer();
     setAllMessages(conversation?.conversation);
-    // markMessagesAsSeen();
+    markMessagesAsSeen();
 
     return () => {
       if (socket) cleanupSocketListeners();
@@ -31,16 +33,16 @@ export default function Conversation({
   useEffect(() => {
     scrollToBottom();
   }, [allMessages]);
+  //console.log("d");
 
   useEffect(() => {
-    markMessagesAsSeen();
-    console.log(allMessages);
-  
     socket?.on("marked-as-seen", ({ conversationId, messageIds }) => {
+      
       if (conversationId === conversation?._id) {
+        
         setAllMessages((prev) => {
           const updatedMessages = prev.map((message) => {
-            if (!message.seen) {
+            if (!message.seen && message.sender_id===user._id) {
               return {
                 ...message,
                 seen: true,
@@ -64,15 +66,27 @@ export default function Conversation({
     cleanupSocketListeners();
     socket.on(
       "receive-message",
-      ({ sender_id, receiver_id, message, roomId , seen}) => {
+      ({lastMessage, roomId}) => {
         if (roomId == conversation._id)
           setAllMessages((pre) => [
             ...pre,
-            { sender_id, receiver_id, message , seen},
+            lastMessage,
           ]);
+  
+
+          const lastMessageIsFromOtherUser = lastMessage?.sender_id === receiver?._id;
+          let messageIds =[];
+          if(allMessages)
+            messageIds.push(lastMessage?._id);
+        
+          if (lastMessageIsFromOtherUser) {
+            socket?.emit("mark-as-seen", {
+              conversationId: conversation._id,
+              messageIds,
+            });
+          }
       }
     );
-
     socket.on("disconnect", function () {
       console.log("user disconnected");
     });
@@ -85,10 +99,9 @@ export default function Conversation({
       ?.filter((message) => message.sender_id === receiver._id && !message.seen)
     
     const Ids = unseenMessageIds?.map((message)=>message._id)
-    console.log("ids", unseenMessageIds, Ids);
 
-    //await markMessagesSeen({conversationId: conversation?._id, messageIds:unseenMessageIds});
-    //socket?.emit("mark-as-seen", {conversationId: conversation?._id, messageIds:unseenMessageIds})
+    await markMessagesSeen({conversationId: conversation?._id, messageIds:Ids});
+    socket?.emit("mark-as-seen", {conversationId: conversation?._id, messageIds:Ids})
   };
 
   function cleanupSocketListeners() {
@@ -96,12 +109,13 @@ export default function Conversation({
     socket.off("send-message");
     socket.off("disconnect");
     socket.off("join-room");
+    // socket.off("mark-as-seen");
+    // socket.off("marked-as-seen")
   }
 
   function handleSubmit() {
     const sender_id = user?._id;
     const receiver_id = receiver?._id;
-    //console.log(user, receiver);
 
     socket.emit("send-message", {
       conversation: conversation?._id,
@@ -143,8 +157,10 @@ export default function Conversation({
                 }
               >
                 {message?.message}
+                {message?.seen && message?.sender_id===user?._id && <span className={styles["checked"]}> <BsCheck2All/></span>}
+                {!message?.seen && message?.sender_id===user?._id && <span className={styles["check"]}> <BsCheck2All/></span>}
               </div>
-              {message?.seen && <div> seen</div>}
+              
             </div>
           ))}
         </div>

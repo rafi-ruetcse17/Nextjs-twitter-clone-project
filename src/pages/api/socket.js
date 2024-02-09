@@ -15,7 +15,6 @@ export default function SocketHandler(req, res) {
   io.on("connection", (socket) => {
     socket.on("send-message", async (messageData) => {
       const { conversation, sender_id, receiver_id, message } = messageData;
-      //io.emit("receive-message", message);
       const chat = await Chat.findOneAndUpdate(
         {
           _id: conversation,
@@ -32,14 +31,10 @@ export default function SocketHandler(req, res) {
         { upsert: true, new: true }
       );
 
-      if (chat)
-        io.to(conversation).emit("receive-message", {
-          sender_id,
-          receiver_id,
-          message,
-          roomId: conversation,
-          seen: false,
-        });
+      if (chat){
+        const lastMessage = chat.conversation[chat.conversation.length-1];
+        io.to(conversation).emit("receive-message", {lastMessage, roomId: conversation});
+      }
     });
 
     socket.on("mark-as-seen", async ({ conversationId, messageIds }) => {
@@ -47,10 +42,9 @@ export default function SocketHandler(req, res) {
         conversationId,
         messageIds,
       });
-      //console.log(updatedChat);
+      
 
       if (updatedChat) {
-        console.log("jndsgg");
         io.to(conversationId).emit("marked-as-seen", {
           conversationId,
           messageIds,

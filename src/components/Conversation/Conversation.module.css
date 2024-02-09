@@ -46,12 +46,20 @@
     /* padding-left: 5px;
     padding-right: 5px; */
 }
+.check{
+    color: white;
+}
+.checked{
+    color: #60A5FA;
+}
 
 .receive-message {
     padding: 10px;
     border: 1px solid #9CA3AF;
+    background-color: #CBD5E0;
     border-radius: 9999px;
-    width: 50%;
+    color: black;
+    max-width: 50%;
     border-bottom-left-radius: 4px;
 }
 
@@ -59,7 +67,9 @@
     padding: 10px;
     border: 1px solid #9CA3AF;
     border-radius: 9999px;
-    width: 50%;
+    text-align: end;
+    background-color: #276749;
+    max-width: 50%;
     margin-left: 45%;
     border-bottom-right-radius: 4px;
 }

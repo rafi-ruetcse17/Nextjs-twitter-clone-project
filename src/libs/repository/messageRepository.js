@@ -21,18 +21,33 @@ const createConversation = async (data) => {
   }
 };
 
+// const markMessagesSeen = async (data) => {
+//   const { conversationId, messageIds } = data;
+//   //console.log(data);
+//   try {
+//     const response = await Chat.findOneAndUpdate(
+//       {
+//         _id: conversationId,
+//         "conversation._id": { $in: messageIds },
+//       },
+//       { $set: { "conversation.$.seen": true } },
+//       { new: true }
+//     );
+//     return response;
+//   } catch (error) {
+//     throw new Error(error.message);
+//   }
+// };
 const markMessagesSeen = async (data) => {
-  const { conversationId, senderIds } = data;
-  console.log(data);
+  const { conversationId, messageIds } = data;
+
   try {
-    const response = await Chat.findOneAndUpdate(
-      {
-        _id: conversationId,
-        "conversation.sender_id": { $in: senderIds },
-      },
-      { $set: { "conversation.$.seen": true } },
-      { new: true }
+    const response = await Chat.updateOne(
+      { _id: conversationId, "conversation._id": { $in: messageIds } },
+      { $set: { "conversation.$[elem].seen": true } },
+      { arrayFilters: [{ "elem._id": { $in: messageIds } }] }
     );
+
     return response;
   } catch (error) {
     throw new Error(error.message);
