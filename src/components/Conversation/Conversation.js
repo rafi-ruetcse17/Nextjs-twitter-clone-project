@@ -14,6 +14,10 @@ export default function Conversation({ sessionUser,user,receiver,conversation })
   useEffect(() => {
     socketInitializer();
     setAllMessages(conversation?.conversation)
+
+    return () =>{
+      socket?.disconnect();
+    }
   }, [conversation?._id]);
 
   async function socketInitializer() {
