@@ -5,37 +5,77 @@
     min-height: 100vh;
     color: #ffffff;
     margin-left: auto;
-    width: 500px;
+    width: 470px;
+    border-right: 1px solid #9CA3AF;
+    padding-right: 1rem;
+}
+.receiver-container{
+    display: flex;
+    justify-content: center;
+    margin-bottom: 2rem;
+    align-items: center;
+}
+.receiver{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
 }
 
+.receiver img {
+    border-radius: 9999px;
+    width: 4rem;
+    height: 4rem;
+}
+.receiver-name{
+    font-size: 20px;
+    font-weight: bold;
+}
 .chat-box {
-    height: 400px;
+    height: 480px;
     width: 100%;
     border-top: 1px solid #9CA3AF;
     overflow-y:auto;
+    padding-bottom: 1rem;
 }
-
+.user-image img{
+    height: 2.5rem;
+    width: 2.5rem;
+    border-radius: 9999px;
+}
 .conversation {
-    display: flex;
+    /* display: flex; */
     margin-top: 0.5rem;
     margin-bottom: 0.5rem;
-    padding-left: 5px;
-    padding-right: 5px;
+    /* padding-left: 5px;
+    padding-right: 5px; */
+}
+.check{
+    color: white;
+}
+.checked{
+    color: #60A5FA;
 }
 
 .receive-message {
     padding: 10px;
     border: 1px solid #9CA3AF;
+    background-color: #CBD5E0;
     border-radius: 9999px;
-    width: 50%;
+    color: black;
+    max-width: 50%;
+    border-bottom-left-radius: 4px;
 }
 
 .send-message{
     padding: 10px;
     border: 1px solid #9CA3AF;
     border-radius: 9999px;
-    width: 50%;
-    margin-left: 50%;
+    text-align: end;
+    background-color: #276749;
+    max-width: 50%;
+    margin-left: 45%;
+    border-bottom-right-radius: 4px;
 }
 
 .send-btn{

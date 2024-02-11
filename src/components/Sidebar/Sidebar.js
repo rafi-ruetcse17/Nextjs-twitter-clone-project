@@ -9,9 +9,11 @@ import { signOut} from "next-auth/react";
 import { useRouter } from "next/router";
 import { FaSignOutAlt } from "react-icons/fa";
 import { IoMdLogOut } from "react-icons/io";
+import { useSelector } from "react-redux";
 
 const Sidebar = ({ sessionUser, user }) => {
   const router = useRouter();
+  const Notifications = useSelector((state) => state.notifications)
   return (
     <div className={styles["container"]}>
       <div
@@ -29,6 +31,8 @@ const Sidebar = ({ sessionUser, user }) => {
         <SidebarLink text="Notifications" Icon={BsBell} />
         <div onClick={() => router.push(`/messages`)}>
           <SidebarLink text="Messages" Icon={AiOutlineInbox} />
+          {Notifications?.length>0 && 
+          <div className={styles["notifications"]}>{Notifications?.length}</div>}
         </div>
         <SidebarLink text="Bookmarks" Icon={BsBookmark} />
         <SidebarLink text="Lists" Icon={HiOutlineClipboardList} />

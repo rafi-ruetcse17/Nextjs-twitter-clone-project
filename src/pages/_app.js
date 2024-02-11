@@ -1,5 +1,6 @@
 import "@/styles/globals.css";
 import { SessionProvider } from "next-auth/react";
+import { SocketProvider } from "@/libs/contexts/SocketContext";
 import { Provider } from "react-redux";
 import store from "@/libs/redux/store";
 
@@ -10,7 +11,9 @@ export default function App({
   return (
     <SessionProvider session={session}>
       <Provider store={store}>
-        <Component {...pageProps} />
+        <SocketProvider>
+          <Component {...pageProps} />
+        </SocketProvider>
       </Provider>
     </SessionProvider>
   );

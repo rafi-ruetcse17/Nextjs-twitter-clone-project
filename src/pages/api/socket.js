@@ -1,5 +1,6 @@
 import { Server } from "socket.io";
 import Chat from "@/libs/models/chatSchema";
+import messageRepository from "@/libs/repository/messageRepository";
 
 export default function SocketHandler(req, res) {
   if (res.socket.server.io) {
@@ -14,7 +15,6 @@ export default function SocketHandler(req, res) {
   io.on("connection", (socket) => {
     socket.on("send-message", async (messageData) => {
       const { conversation, sender_id, receiver_id, message } = messageData;
-      //io.emit("receive-message", message);
       const chat = await Chat.findOneAndUpdate(
         {
           _id: conversation,
@@ -31,17 +31,34 @@ export default function SocketHandler(req, res) {
         { upsert: true, new: true }
       );
 
-      if(chat)
-        io.to(conversation).emit("receive-message", { sender_id, receiver_id, message})
+      if (chat){
+        const lastMessage = chat.conversation[chat.conversation.length-1];
+        io.to(conversation).emit("receive-message", {lastMessage, roomId: conversation});
+      }
     });
 
-    socket.on("join-room", ({roomId})=>{
-      socket.join(roomId);
-    })
+    socket.on("mark-as-seen", async ({ conversationId, messageIds }) => {
+      const updatedChat = await messageRepository.markMessagesSeen({
+        conversationId,
+        messageIds,
+      });
+      
 
-    socket.on("disconnect", function(){
+      if (updatedChat) {
+        io.to(conversationId).emit("marked-as-seen", {
+          conversationId,
+          messageIds,
+        });
+      }
+    });
+
+    socket.on("join-room", ({ roomId }) => {
+      socket.join(roomId);
+    });
+
+    socket.on("disconnect", function () {
       console.log("user disconnected");
-    })
+    });
   });
 
   console.log("Setting up socket");

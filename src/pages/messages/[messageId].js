@@ -24,7 +24,8 @@ const message = ({ sessionUser, user , receiver, conversation}) => {
       <main className={styles["main"]}>
         <Sidebar sessionUser={sessionUser} user={user} />
         <div className={styles["feed"]}>
-          <MessageUsers sessionUser={sessionUser} user={user} />
+          <MessageUsers sessionUser={sessionUser} user={user}
+          conversation={conversation} />
           <Conversation sessionUser={sessionUser} user={user} 
           receiver={receiver} conversation={conversation}/>
         </div>

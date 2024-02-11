@@ -99,6 +99,9 @@
     margin-left: 0.8rem;
     height: 1.25rem;
 }
+.notifications{
+    color: red;
+}
 
 .signout{
     display: none;

@@ -33,11 +33,9 @@ export default index;
 
 export async function getServerSideProps(context) {
   const { user } = context.params;
-  //const session = await getSession(context);
   const post = await getPost(context.query.postId);
   return {
     props: {
-      //user: session?.user || null,
       user,
       post,
     },
