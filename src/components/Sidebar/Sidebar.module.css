@@ -99,9 +99,21 @@
     margin-left: 0.8rem;
     height: 1.25rem;
 }
-.notifications{
-    color: red;
-}
+.relative-container {
+    position: relative;
+  }
+  
+  .notifications {
+    position: absolute;
+    top: -1px; 
+    margin-left: 1.3rem; 
+    background-color: red; 
+    color: white; 
+    border-radius: 50%;
+    padding: 4px 8px;
+    font-size: 12px;
+  }
+  
 
 .signout{
     display: none;

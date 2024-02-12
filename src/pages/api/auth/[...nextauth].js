@@ -52,29 +52,8 @@ export const authOptions = {
     },
   },
 
-  // callbacks: {
-  //   async session({session, token, profile}){
-  //     //console.log(token);
-  //     if(profile){
-  //       session.user.tag = session.user.name.split("").join("").toLocaleLowerCase()
-  //       session.user.uid = token.sub
-  //     }
-  //     return session
-  //   }
-  // },
-
   secret: process.env.NEXTAUTH_SECRET,
 };
 
 export default NextAuth(authOptions);
 
-// const user = await User.findOne({ email });
-
-// if (!user) {
-//   throw new Error("Incorrect Email..!");
-// }
-
-// const match = await bcrypt.compare(password, user.password);
-// if (!match) {
-//   throw Error("Incorrect password");
-// }

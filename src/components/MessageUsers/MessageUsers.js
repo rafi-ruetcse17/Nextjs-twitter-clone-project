@@ -13,7 +13,7 @@ const MessageUsers = ({ sessionUser, user, conversation }) => {
   const dispatch = useDispatch();
   const Users = useSelector((state) => state.users);
   const Notifications = useSelector((state) => state.notifications)
-  console.log("inf")
+  //console.log("inf")
 
   useEffect(() => {
     getUsersFromDatabase();

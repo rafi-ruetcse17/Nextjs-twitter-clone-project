@@ -1,4 +1,4 @@
-import { createNewConversation, markMessagesAsSeen } from "../api-routes/user-api";
+import { createNewConversation, markMessagesAsSeen ,getAllClickedConversations} from "../api-routes/user-api";
 
 async function createConversation(data) {
   try {
@@ -17,8 +17,17 @@ async function markMessagesSeen(data){
     throw Error(error.response.data);
   }
 }
+async function getAllConversations(){
+  try {
+    const response = await getAllClickedConversations();
+    return response.data;
+  } catch (error) {
+    throw Error(error.response.data);
+  }
+}
 
 export{
     createConversation,
     markMessagesSeen,
+    getAllConversations,
 }

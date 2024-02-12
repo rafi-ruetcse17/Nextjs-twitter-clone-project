@@ -21,23 +21,6 @@ const createConversation = async (data) => {
   }
 };
 
-// const markMessagesSeen = async (data) => {
-//   const { conversationId, messageIds } = data;
-//   //console.log(data);
-//   try {
-//     const response = await Chat.findOneAndUpdate(
-//       {
-//         _id: conversationId,
-//         "conversation._id": { $in: messageIds },
-//       },
-//       { $set: { "conversation.$.seen": true } },
-//       { new: true }
-//     );
-//     return response;
-//   } catch (error) {
-//     throw new Error(error.message);
-//   }
-// };
 const markMessagesSeen = async (data) => {
   const { conversationId, messageIds } = data;
 
@@ -57,17 +40,27 @@ const markMessagesSeen = async (data) => {
 const getConversation = async (_id) => {
   const { messageId } = _id;
   try {
-    const response = await Chat.findOne({ _id: messageId });
-    return response;
+    return await Chat.findOne({ _id: messageId });
+    return await Chat.find();
   } catch (error) {
     throw new Error(error.message);
   }
 };
 
+const getAllConversations = async () => {
+  try {
+    return await Chat.find();
+  } catch (error) {
+    throw new Error(error.message);
+  }
+};
+
+
 const messageRepository = {
   createConversation,
   getConversation,
   markMessagesSeen,
+  getAllConversations,
 };
 
 export default messageRepository;

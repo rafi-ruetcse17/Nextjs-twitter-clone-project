@@ -34,6 +34,7 @@ export default function SocketHandler(req, res) {
       if (chat){
         const lastMessage = chat.conversation[chat.conversation.length-1];
         io.to(conversation).emit("receive-message", {lastMessage, roomId: conversation});
+        io.to(conversation).emit("notification", {lastMessage, roomId: conversation});
       }
     });
 

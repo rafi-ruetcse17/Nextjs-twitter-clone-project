@@ -27,4 +27,14 @@ export const getConversation = async (_id) => {
   }
 };
 
+export const getAllConversations = async (req, res) => {
+  try {
+    const response = await messageRepository.getAllConversations();
+    return res.status(200).json(response);
+  } catch (error) {
+    return res.status(500).json(error.message);
+  }
+};
+
+
 

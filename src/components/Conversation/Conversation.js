@@ -21,7 +21,10 @@ export default function Conversation({
   const socket = useSocket();
   const Notifications = useSelector((state) => state.notifications)
   const dispatch = useDispatch();
-  //console.log("infinite test");
+  const router = useRouter();
+  //console.log("infinite test", socket);
+
+  //console.log(Notifications);
 
   useEffect(() => {
     setAllMessages(conversation?.conversation);
@@ -39,21 +42,23 @@ export default function Conversation({
 
   useEffect(() => {
     scrollToBottom();
+    //router.push(`/messages/${conversation._id}`)
   }, [allMessages]);
 
 
   useEffect(() => {
     socket?.on("marked-as-seen", ({ conversationId, messageIds }) => {
+      console.log(Notifications);
+      let flag = false;
 
       if (conversationId === conversation?._id) {
         
         setAllMessages((prev) => {
           const updatedMessages = prev.map((message) => {
+            //console.log("kjn", message);
             if (!message.seen && message.sender_id===user._id) {
-              const updatedNotifications = Notifications.filter(notification => notification.roomId !== conversation?._id);
-              console.log(updatedNotifications);
-              dispatch({ type: "SET_NOTIFICATIONS", payload: updatedNotifications });
-
+              flag = true;
+              
               return {
                 ...message,
                 seen: true,
@@ -63,6 +68,15 @@ export default function Conversation({
           });
           return updatedMessages;
         });
+
+        // console.log("flag", flag);
+        //if(flag){
+          
+          // const updatedNotifications = Notifications?.filter((notification)=>{
+          //   return notification._id!==conversation?._id;
+          // })
+          // dispatch({ type: "SET_NOTIFICATIONS", payload: updatedNotifications });
+        //}
       }
       
     });
@@ -73,6 +87,7 @@ export default function Conversation({
 
   async function socketInitializer() {
     if (!socket) return;
+    //console.log("infinite test", socket);
 
     cleanupSocketListeners();
     socket.on(
@@ -84,11 +99,10 @@ export default function Conversation({
             lastMessage,
           ]);
 
-          if (!Notifications?.some(notification => notification.roomId === conversation?._id)) {
-            const updatedNotifications = [...Notifications, 
-              { roomId: conversation?._id, sender_id: lastMessage.sender_id, message: lastMessage.message }];
-            dispatch({ type: "SET_NOTIFICATIONS", payload: updatedNotifications });
-          }
+          // if (!Notifications?.some(notification => notification?._id === conversation?._id)) {
+          //   const updatedNotifications = [...Notifications, conversation];
+          //   dispatch({ type: "SET_NOTIFICATIONS", payload: updatedNotifications });
+          // }
           
           const lastMessageIsFromOtherUser = lastMessage?.sender_id === receiver?._id;
           let messageIds =[];
@@ -115,12 +129,12 @@ export default function Conversation({
 
   const markMessagesAsSeen = async () => {
     const temp = conversation?.conversation
-    const unseenMessageIds = temp
+    const unseenMessages = temp
       ?.filter((message) => {
         return message.sender_id === receiver._id && !message.seen
       })
-    
-    const Ids = unseenMessageIds?.map((message)=>message._id)
+
+    const Ids = unseenMessages?.map((message)=>message._id)
     
     if(Ids?.length>0){
       await markMessagesSeen({conversationId: conversation?._id, messageIds:Ids});

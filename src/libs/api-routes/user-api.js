@@ -78,3 +78,4 @@ export const deleteClickedReply = (payload)=>API.patch(reply_endpoint, payload)
 //message
 export const createNewConversation =(payload)=>API.post(message_endpoint, payload)
 export const markMessagesAsSeen =(payload) =>API.patch(message_endpoint, payload)
+export const getAllClickedConversations =() =>API.get(message_endpoint)
