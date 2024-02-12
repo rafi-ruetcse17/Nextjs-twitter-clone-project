@@ -6,18 +6,44 @@ import { FiSearch } from "react-icons/fi";
 import { getAllUsers } from "@/libs/actions/userAction";
 import { useRouter } from "next/router";
 import { createConversation } from "@/libs/actions/messageAction";
+import { useSocket } from "@/libs/contexts/SocketContext";
 
 const MessageUsers = ({ sessionUser, user, conversation }) => {
   const [users, setUsers] = useState(null);
+  const [notifications, setNotifications] = useState(null)
   const router = useRouter()
   const dispatch = useDispatch();
+  const socket = useSocket();
   const Users = useSelector((state) => state.users);
   const Notifications = useSelector((state) => state.notifications)
   //console.log("inf")
 
+  useEffect(()=>{
+    socketInitializer();
+    //fetchConversations()
+    return ()=>{
+      socket?.off("notfication");
+    }
+  }, [user?._id, socket, conversation?._id])
+
   useEffect(() => {
     getUsersFromDatabase();
   }, [conversation?._id]);
+
+  async function socketInitializer (){
+    if(!socket) return;
+    //console.log(socket);
+    socket?.on("notification",({lastMessage, roomId})=>{
+      console.log("kjbd",lastMessage);
+      if(lastMessage?.receiver_id ===user?._id){
+        if(!notifications)
+          setNotifications([lastMessage])
+        else
+          setNotifications([...notifications, lastMessage])
+      }
+    } )
+  }
+  console.log(notifications);
 
   const getUsersFromDatabase = async () => {
     try {
@@ -60,6 +86,9 @@ const MessageUsers = ({ sessionUser, user, conversation }) => {
             >
               <div className={styles["user-image"]}>
                 <img src={user?.image} alt="" />
+                {notifications && notifications?.some(notification=>notification?.sender_id===user?._id) &&  (
+                <div className={styles["notifications"]}>?</div>
+                )}
               </div>
               <div className={styles["message"]}>
                 <div className={styles["name-section"]}>

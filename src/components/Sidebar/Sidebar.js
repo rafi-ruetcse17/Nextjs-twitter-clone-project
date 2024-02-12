@@ -19,7 +19,7 @@ const Sidebar = ({ sessionUser, user }) => {
   const Notifications = useSelector((state) => state.notifications)
   const dispatch = useDispatch();
   const socket = useSocket();
-  console.log(socket, notifications);
+  //console.log(socket, notifications);
   
   useEffect(()=>{
     socketInitializer();
@@ -31,10 +31,10 @@ const Sidebar = ({ sessionUser, user }) => {
 
   async function socketInitializer (){
     if(!socket) return;
-    console.log(socket);
+    //console.log(socket);
     socket?.on("notification",({lastMessage, roomId})=>{
       console.log("kjbd",lastMessage);
-      if(lastMessage?.receiver?._id ===user?._id){
+      if(lastMessage?.receiver_id ===user?._id){
         setNotifications(lastMessage)
       }
     } )
