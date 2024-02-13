@@ -1,10 +1,10 @@
 import { getSession, signIn } from "next-auth/react";
 import { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import styles from "@/styles/Home.module.css";
 import { FcApproval } from "react-icons/fc";
 
-const redirecting = ({ tokenId, user }) => {
+const Redirecting = ({ tokenId, user }) => {
   const router = useRouter();
 
   useEffect(() => {
@@ -27,7 +27,7 @@ const redirecting = ({ tokenId, user }) => {
   );
 };
 
-export default redirecting;
+export default Redirecting;
 
 export async function getServerSideProps(context) {
   const { tokenId } = context.params;

@@ -1,7 +1,6 @@
-// pages/signup.js
-import React, { useState } from 'react';
-import SignupForm from '@/components/SignupForm/SignupForm';
-import Login from '@/components/Login/Login';
+import React, { useState } from "react";
+import SignupForm from "@/components/SignupForm/SignupForm";
+import Login from "@/components/Login/Login";
 
 const Signup = () => {
   const [showSignupForm, setShowSignupForm] = useState(false);

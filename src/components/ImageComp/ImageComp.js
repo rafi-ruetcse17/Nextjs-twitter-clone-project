@@ -1,7 +1,7 @@
 import React from "react";
-import styles from "./ImageComp.module.css"
+import styles from "./ImageComp.module.css";
 
-const ImageComp = ({users, post}) => {
+const ImageComp = ({ users, post }) => {
   return (
     <div>
       {users &&

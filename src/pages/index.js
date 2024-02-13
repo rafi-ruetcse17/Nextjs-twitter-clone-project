@@ -1,4 +1,3 @@
-import styles from "@/styles/Home.module.css";
 import { getSession } from "next-auth/react";
 import AuthPage from "@/components/AuthPage/AuthPage";
 

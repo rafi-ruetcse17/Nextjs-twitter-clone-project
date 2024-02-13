@@ -8,16 +8,13 @@ import { IoCalendarNumberOutline } from "react-icons/io5";
 import { MdClose } from "react-icons/md"
 import { RiBarChart2Line } from "react-icons/ri";
 import Moment from "react-moment";
-import { createComment, getAllPosts, updateComment, updatePost, updateReply } from "@/libs/actions/postAction";
-import { useDispatch } from "react-redux";
-import { useSession } from "next-auth/react";
+import { updateComment, updatePost, updateReply, uploadImage } from "@/libs/actions/postAction";
 
 const UpdateModal = ({ post, user, onClose, comment, onUpdate, commentId, posts}) => {
-  const {data:session} = useSession()
   const [input, setInput] = useState(comment?comment.text:post.text)
   const [selectedFile, setSelectedFile] = useState(comment?comment.image:post.image);
   const [selectedImage, setSelectedImage] = useState(comment?comment.image:post.image);
-  const dispatch = useDispatch()
+ 
   const addImageToComment = (e) => {
     const reader = new FileReader();
     if (e.target.files[0]) {
@@ -38,14 +35,11 @@ const UpdateModal = ({ post, user, onClose, comment, onUpdate, commentId, posts}
     if (selectedImage!=post.image) {
       const body = new FormData();
       body.append("file", selectedImage);
-      const res = await fetch("/api/upload", {
-        method: "POST",
-        body,
-      });
-      if (!res.ok) {
-        throw new Error("Failed to upload image!");
+      try {
+        Url = await uploadImage(body)
+      } catch (error) {
+        console.error("Failed to upload image!");
       }
-      Url = await res.json();
     }
     
     if(selectedImage!=post.image && input!=post.text){
@@ -72,8 +66,6 @@ const UpdateModal = ({ post, user, onClose, comment, onUpdate, commentId, posts}
       }
     })
 
-    // const updatedPosts = await getAllPosts(user?.email);
-    // dispatch({ type: 'SET_POSTS', payload: updatedPosts })
     onUpdate()
     onClose();
 
@@ -83,14 +75,11 @@ const UpdateModal = ({ post, user, onClose, comment, onUpdate, commentId, posts}
     if (selectedImage!=comment.image) {
       const body = new FormData();
       body.append("file", selectedImage);
-      const res = await fetch("/api/upload", {
-        method: "POST",
-        body,
-      });
-      if (!res.ok) {
-        throw new Error("Failed to upload image!");
+      try {
+        Url = await uploadImage(body)
+      } catch (error) {
+        console.error("Failed to upload image!");
       }
-      Url = await res.json();
     }
     if(selectedImage!=comment.image && input!=comment.text){
       if(commentId)
@@ -110,9 +99,7 @@ const UpdateModal = ({ post, user, onClose, comment, onUpdate, commentId, posts}
       else
         await updateComment({  _id: post._id, commentId: comment._id, updateData:{ text: input }});
     }
-    onUpdate()
-    // const updatedPosts = await getAllPosts(user?.email);
-    // dispatch({ type: 'SET_POSTS', payload: updatedPosts })
+    onUpdate();
     onClose();
   }
 
@@ -143,9 +130,7 @@ const UpdateModal = ({ post, user, onClose, comment, onUpdate, commentId, posts}
             
           </div>
 
-          <div className={styles["comment-user"]}>
-            {/* <img className={styles["rounded"]} src={user?.image} alt="" /> */}
-          </div>
+          <div className={styles["comment-user"]}></div>
 
           <div className={styles["comment-user"]}>
             <textarea

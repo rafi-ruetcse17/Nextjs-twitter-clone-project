@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styles from "@/components/Post/Post.module.css";
 import Modal from "../Modal/Modal";
-import { useRouter } from "next/router";
-import { useSession } from "next-auth/react";
 import {
   createPost,
   deletePost,
@@ -11,34 +9,23 @@ import {
   updatePost,
 } from "@/libs/actions/postAction";
 import Moment from "react-moment";
-import { BsChat, BsThreeDots } from "react-icons/bs";
+import { BsChat } from "react-icons/bs";
 import { FaRegEdit, FaReply, FaRetweet } from "react-icons/fa";
 import { RiDeleteBin5Line } from "react-icons/ri";
-import { FiEdit3 } from "react-icons/fi";
 import { AiFillHeart, AiOutlineHeart, AiOutlineShareAlt } from "react-icons/ai";
 import { useDispatch, useSelector } from "react-redux";
 import Comment from "../Comment/Comment";
 import UpdateModal from "../UpdateModal/UpdateModal";
-import { BiReply } from "react-icons/bi";
-import { getAllUsers, getUser } from "@/libs/actions/userAction";
+import { getAllUsers} from "@/libs/actions/userAction";
 import ImageComp from "../ImageComp/ImageComp";
 import NameComp from "../NameComp/NameComp";
 import Username from "../UsernameComp/Username";
 
 const Post = ({ sessionUser, user }) => {
-  const [showModal, setShowModal] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [liked, setLiked] = useState(false);
-  const [comments, setComments] = useState([]);
-  const [users, setUsers] = useState(null);
-  const [posts, setPosts] = useState(null);
-
   const Posts = useSelector((state) => state.posts);
   const Users = useSelector((state) => state.users)
-  const router = useRouter();
-  const { data: session } = useSession();
   const dispatch = useDispatch();
-  //console.log(Posts);
 
   useEffect(() => {
     getPostsFromDatabase();
@@ -89,7 +76,6 @@ const Post = ({ sessionUser, user }) => {
       const response = await getPost(postId);
       let likes_array = response.likes;
       likes_array.push(user.email);
-      //setLikes(likes_array);
       await updatePost({ _id: postId, likes: likes_array });
       getPostsFromDatabase()
     } catch (error) {
@@ -166,11 +152,6 @@ const Post = ({ sessionUser, user }) => {
           <div className={styles["user-container"]}>
             <div>
               <ImageComp users={Users} post={post}/>
-              {/* <img
-                src={post?.userImage}
-                alt=""
-                className={styles["user-img"]}
-              /> */}
             </div>
 
             <div>
@@ -192,9 +173,6 @@ const Post = ({ sessionUser, user }) => {
                 )}
 
                 <div className={styles["user-id"]}>
-                  {/* <p className={styles["user-tag"]}>
-                    @{post?.username} &nbsp; .&nbsp;
-                  </p> */}
                   <Username users={Users} post={post}/>
                   <p className={styles["post-tag"]}>
                     <Moment fromNow>{post?.timestamp}</Moment>
@@ -225,7 +203,6 @@ const Post = ({ sessionUser, user }) => {
                 onClick={(e) => {
                   e.stopPropagation();
                   toggleModal(post._id, true, "comment");
-                  //openModal();
                 }}
               />
               {post?.showModal && (

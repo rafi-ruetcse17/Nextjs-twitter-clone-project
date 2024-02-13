@@ -12,6 +12,7 @@ import {
   likeClickedReply,
   deleteClickedReply,
   updateClickedReply,
+  uploadImageToPulic,
 } from "../api-routes/user-api";
 
 async function createPost(data) {
@@ -125,6 +126,15 @@ async function deleteReply(data){
   }
 }
 
+async function uploadImage(data){
+  try {
+    const response = await uploadImageToPulic(data);
+    return response.data;
+  } catch (error) {
+    throw Error(error.response.data);
+  }
+}
+
 
 export {
   createPost,
@@ -140,4 +150,5 @@ export {
   updateReplyLikes,
   deleteReply,
   updateReply,
+  uploadImage,
 };

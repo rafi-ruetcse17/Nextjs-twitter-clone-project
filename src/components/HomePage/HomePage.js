@@ -2,10 +2,10 @@ import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import Sidebar from "../Sidebar/Sidebar";
 import Feed from "../Feed/Feed";
-import styles from "./HomePage.module.css"
+import styles from "./HomePage.module.css";
 import FollowBar from "../FollowBar/FollowBar";
 
-const HomePage = ({sessionUser, user }) => {
+const HomePage = ({ sessionUser, user }) => {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
 
@@ -26,7 +26,7 @@ const HomePage = ({sessionUser, user }) => {
         <p className={styles["loading"]}>Loading...</p>
       ) : (
         <main className={styles["main"]}>
-          <Sidebar sessionUser={sessionUser} user={user}/>
+          <Sidebar sessionUser={sessionUser} user={user} />
           <div className={styles["feed"]}>
             <Feed sessionUser={sessionUser} user={user} />
             <FollowBar sessionUser={sessionUser} user={user} />

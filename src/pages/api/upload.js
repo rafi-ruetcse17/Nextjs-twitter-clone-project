@@ -1,6 +1,4 @@
 import { IncomingForm } from "formidable";
-import { promises as fs } from "fs";
-
 var mv = require("mv");
 
 export const config = {
@@ -15,6 +13,7 @@ export default async (req, res) => {
 
     form.parse(req, (err, fields, files) => {
       if (err) return reject(err);
+      console.log("hd" ,fields);
       var oldPath = files.file[0].filepath;
       var newPath = `./public/images/${files.file[0].originalFilename}`;
       mv(oldPath, newPath, function (err) {});

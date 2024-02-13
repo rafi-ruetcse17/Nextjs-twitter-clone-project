@@ -1,15 +1,10 @@
 import React, { useState } from "react";
 import styles from "./User.module.css";
-import { getAllUsers, updateUser } from "@/libs/actions/userAction";
-import { useSession } from "next-auth/react";
-import { useDispatch } from "react-redux";
+import { updateUser } from "@/libs/actions/userAction";
 
 const User = ({ user, currentUser}) => {
   const [clicked, setClicked] = useState(false);
-  const dispatch = useDispatch();
-  //console.log(user, currentUser);
   
-
   const handleFollow = async () => {
     const updatedFollowing = [...currentUser?.following, user?._id];
     const updatedFollower = [...user?.followers, currentUser?._id];

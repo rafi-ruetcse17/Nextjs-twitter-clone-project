@@ -10,7 +10,7 @@ export const createUser = async (req, res) => {
 };
 
 
-export const findUser = async (data) => {
+export const LoginWithSNS = async (data) => {
   try {
     const response = await userRepository.findUser(data);
     return response
@@ -40,7 +40,6 @@ export const getUser = async({username})=>{
 export const getAllUsers = async()=>{
   try{
     const response = await userRepository.getAllUsers();
-    //console.log(response);
     return response
   } catch(error){
     throw Error(error.message)

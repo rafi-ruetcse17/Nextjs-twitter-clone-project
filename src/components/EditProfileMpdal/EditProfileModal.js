@@ -2,16 +2,18 @@ import React, { useState } from "react";
 import ReactDOM from "react-dom";
 import styles from "./EditProfileModal.module.css";
 import { MdClose } from "react-icons/md";
-import { AiOutlineClose } from "react-icons/ai";
 import { updateUser } from "@/libs/actions/userAction";
 import { useRouter } from "next/router";
+import { uploadImage } from "@/libs/actions/postAction";
 
-const EditProfileModal = ({ sessionUser, onClose , getUsersFromDatabase}) => {
+const EditProfileModal = ({ sessionUser, onClose, getUsersFromDatabase }) => {
   const [name, setName] = useState(sessionUser?.name);
   const [username, setUsername] = useState(sessionUser?.username);
   const [location, setLocation] = useState(sessionUser?.location);
-  const [avatar, setAvatar] = useState(sessionUser?.image ? sessionUser?.image : "/images/blank_user.jpg");
-  const router = useRouter()
+  const [avatar, setAvatar] = useState(
+    sessionUser?.image ? sessionUser?.image : "/images/blank_user.jpg"
+  );
+  const router = useRouter();
   const [tempCover, setTempCover] = useState(null);
   const [tempAvatar, setTempAvatar] = useState(null);
   const [cover, setCover] = useState(
@@ -28,53 +30,57 @@ const EditProfileModal = ({ sessionUser, onClose , getUsersFromDatabase}) => {
       setAvatar(readerEvent.target.result);
     };
   };
+
   const addCoverImage = (e) => {
     const reader = new FileReader();
     if (e.target.files[0]) {
       reader.readAsDataURL(e.target.files[0]);
-      setTempCover(e.target.files[0])
+      setTempCover(e.target.files[0]);
     }
     reader.onload = (readerEvent) => {
       setCover(readerEvent.target.result);
     };
   };
-  const handleSave = async()=>{
-    //let coverUrl, avatarUrl;
+
+  const handleSave = async () => {
     if (tempCover) {
       const body = new FormData();
       body.append("file", tempCover);
-      const res = await fetch("/api/upload", {
-        method: "POST",
-        body,
-      });
-      if (!res.ok) {
-        throw new Error("Failed to upload image!");
+      try {
+        const coverUrl = await uploadImage(body);
+        await updateUser({
+          _id: sessionUser?._id,
+          name,
+          username,
+          location,
+          cover: coverUrl,
+        });
+      } catch (error) {
+        console.error("Failed to upload image!");
       }
-      const coverUrl = await res.json();
-      await updateUser({_id:sessionUser?._id, name, username, location, cover: coverUrl})
     }
-    
-    if(tempAvatar){
+
+    if (tempAvatar) {
       const body = new FormData();
       body.append("file", tempAvatar);
-      const res = await fetch("/api/upload", {
-        method: "POST",
-        body,
-      });
-      if (!res.ok) {
-        throw new Error("Failed to upload image!");
+      try {
+        const avatarUrl = await uploadImage(body);
+        await updateUser({
+          _id: sessionUser?._id,
+          name,
+          username,
+          location,
+          image: avatarUrl,
+        });
+      } catch (error) {
+        console.error("Failed to upload image!");
       }
-      const avatarUrl = await res.json();
-      await updateUser({_id:sessionUser?._id, name, username, location,image:avatarUrl})
-    }
-    else 
-      await updateUser({_id:sessionUser?._id, name, username, location})
+    } else
+      await updateUser({ _id: sessionUser?._id, name, username, location });
     getUsersFromDatabase();
     onClose();
-    //if(sessionUser.username!=username){
-      router.push(`/${username}`)
-    //}
-  }
+    router.push(`/${username}`);
+  };
 
   const closeModal = (e) => {
     e.stopPropagation();
@@ -91,11 +97,21 @@ const EditProfileModal = ({ sessionUser, onClose , getUsersFromDatabase}) => {
 
           <div className={styles["edit-save-btn"]}>
             <div className={styles["edit-profile"]}>Edit Profile</div>
-            <button className={styles["save-btn"]}
-            disabled={!name.trim()|| !username.trim() || 
-              (name===sessionUser?.name && username===sessionUser?.username &&
-                location===sessionUser?.location && avatar===sessionUser?.image && cover===sessionUser?.cover)}
-            onClick={()=>handleSave()}>Save</button>
+            <button
+              className={styles["save-btn"]}
+              disabled={
+                !name.trim() ||
+                !username.trim() ||
+                (name === sessionUser?.name &&
+                  username === sessionUser?.username &&
+                  location === sessionUser?.location &&
+                  avatar === sessionUser?.image &&
+                  cover === sessionUser?.cover)
+              }
+              onClick={() => handleSave()}
+            >
+              Save
+            </button>
           </div>
         </div>
 
@@ -104,17 +120,19 @@ const EditProfileModal = ({ sessionUser, onClose , getUsersFromDatabase}) => {
         {avatar && (
           <div className={styles["selected-avatar"]}>
             <img src={avatar} className={styles["display-photo"]} alt="" />
-              <div >
-                <label htmlFor="avatar" className={styles["change-avatar-btn"]}>
-                  Change Avatar
-                </label>
-              </div>
+            <div>
+              <label htmlFor="avatar" className={styles["change-avatar-btn"]}>
+                Change Avatar
+              </label>
+            </div>
             <input id="avatar" type="file" hidden onChange={addAvatarImage} />
           </div>
         )}
-      
+
         <div className={styles["change-cover"]}>
-          <label htmlFor="cover" className={styles["change-avatar-btn"]}>Change Cover</label>
+          <label htmlFor="cover" className={styles["change-avatar-btn"]}>
+            Change Cover
+          </label>
 
           <input id="cover" type="file" hidden onChange={addCoverImage} />
         </div>

@@ -1,12 +1,9 @@
-import { useRouter } from "next/router";
 import React, { useEffect, useRef, useState } from "react";
-import io from "socket.io-client";
 import styles from "./Conversation.module.css";
 import { LuSendHorizonal } from "react-icons/lu";
 import { useSocket } from "@/libs/contexts/SocketContext";
 import { markMessagesSeen } from "@/libs/actions/messageAction";
 import { BsCheck2All } from "react-icons/bs";
-import { useDispatch, useSelector } from "react-redux";
 
 export default function Conversation({
   sessionUser,
@@ -15,50 +12,34 @@ export default function Conversation({
   conversation,
 }) {
   const [message, setMessage] = useState("");
-  const [notification, setNotification] = useState(1);
   const [allMessages, setAllMessages] = useState(null);
   const chatBoxRef = useRef();
   const socket = useSocket();
-  const Notifications = useSelector((state) => state.notifications)
-  const dispatch = useDispatch();
-  const router = useRouter();
-  //console.log("infinite test", socket);
-
-  //console.log(Notifications);
 
   useEffect(() => {
     setAllMessages(conversation?.conversation);
-    socketInitializer(); 
+    socketInitializer();
     markMessagesAsSeen();
 
     return () => {
       if (socket) cleanupSocketListeners();
     };
-
-    return () =>{
-      socket?.disconnect();
-    }
   }, [conversation?._id, socket, user?._id]);
 
   useEffect(() => {
     scrollToBottom();
-    //router.push(`/messages/${conversation._id}`)
   }, [allMessages]);
-
 
   useEffect(() => {
     socket?.on("marked-as-seen", ({ conversationId, messageIds }) => {
-      console.log(Notifications);
       let flag = false;
 
       if (conversationId === conversation?._id) {
-        
         setAllMessages((prev) => {
           const updatedMessages = prev.map((message) => {
-            //console.log("kjn", message);
-            if (!message.seen && message.sender_id===user._id) {
+            if (!message?.seen && message?.sender_id === user?._id) {
               flag = true;
-              
+
               return {
                 ...message,
                 seen: true,
@@ -68,58 +49,30 @@ export default function Conversation({
           });
           return updatedMessages;
         });
-
-        // console.log("flag", flag);
-        //if(flag){
-          
-          // const updatedNotifications = Notifications?.filter((notification)=>{
-          //   return notification._id!==conversation?._id;
-          // })
-          // dispatch({ type: "SET_NOTIFICATIONS", payload: updatedNotifications });
-        //}
       }
-      
     });
-
-    
   }, [socket, conversation?._id, allMessages, user?._id]);
-  
 
   async function socketInitializer() {
     if (!socket) return;
-    //console.log("infinite test", socket);
 
     cleanupSocketListeners();
-    socket.on(
-      "receive-message",
-      ({lastMessage, roomId}) => {
-        if (roomId == conversation._id)
-          setAllMessages((pre) => [
-            ...pre,
-            lastMessage,
-          ]);
+    socket.on("receive-message", ({ lastMessage, roomId }) => {
+      if (roomId == conversation._id)
+        setAllMessages((pre) => [...pre, lastMessage]);
 
-          // if (!Notifications?.some(notification => notification?._id === conversation?._id)) {
-          //   const updatedNotifications = [...Notifications, conversation];
-          //   dispatch({ type: "SET_NOTIFICATIONS", payload: updatedNotifications });
-          // }
-          
-          const lastMessageIsFromOtherUser = lastMessage?.sender_id === receiver?._id;
-          let messageIds =[];
-          if(allMessages)
-            messageIds.push(lastMessage?._id);
+      const lastMessageIsFromOtherUser =
+        lastMessage?.sender_id === receiver?._id;
+      let messageIds = [];
+      if (allMessages) messageIds.push(lastMessage?._id);
 
-          
-        
-          if (lastMessageIsFromOtherUser) {
-            setNotification(null)
-            socket?.emit("mark-as-seen", {
-              conversationId: conversation._id,
-              messageIds,
-            });
-          }
+      if (lastMessageIsFromOtherUser) {
+        socket?.emit("mark-as-seen", {
+          conversationId: conversation._id,
+          messageIds,
+        });
       }
-    );
+    });
     socket.on("disconnect", function () {
       console.log("user disconnected");
     });
@@ -128,18 +81,22 @@ export default function Conversation({
   }
 
   const markMessagesAsSeen = async () => {
-    const temp = conversation?.conversation
-    const unseenMessages = temp
-      ?.filter((message) => {
-        return message.sender_id === receiver._id && !message.seen
-      })
+    const temp = conversation?.conversation;
+    const unseenMessages = temp?.filter((message) => {
+      return message.sender_id === receiver._id && !message.seen;
+    });
 
-    const Ids = unseenMessages?.map((message)=>message._id)
-    
-    if(Ids?.length>0){
-      await markMessagesSeen({conversationId: conversation?._id, messageIds:Ids});
-      setNotification(null);
-      socket?.emit("mark-as-seen", {conversationId: conversation?._id, messageIds:Ids})
+    const Ids = unseenMessages?.map((message) => message._id);
+
+    if (Ids?.length > 0) {
+      await markMessagesSeen({
+        conversationId: conversation?._id,
+        messageIds: Ids,
+      });
+      socket?.emit("mark-as-seen", {
+        conversationId: conversation?._id,
+        messageIds: Ids,
+      });
     }
   };
 
@@ -148,8 +105,6 @@ export default function Conversation({
     socket.off("send-message");
     socket.off("disconnect");
     socket.off("join-room");
-    // socket.off("mark-as-seen");
-    // socket.off("marked-as-seen")
   }
 
   function handleSubmit() {
@@ -181,14 +136,9 @@ export default function Conversation({
       </div>
 
       <div>
-        {/* <div>{allMessages?.length}</div> */}
-
         <div className={styles["chat-box"]} ref={chatBoxRef}>
           {allMessages?.map((message, index) => (
             <div className={styles["conversation"]} key={index}>
-              {/* <div className={styles["user-image"]}>
-                <img src={user?.image} alt="" />
-              </div> */}
               <div
                 className={
                   styles[
@@ -199,10 +149,19 @@ export default function Conversation({
                 }
               >
                 {message?.message}
-                {message?.seen && message?.sender_id===user?._id && <span className={styles["checked"]}> <BsCheck2All/></span>}
-                {!message?.seen && message?.sender_id===user?._id && <span className={styles["check"]}> <BsCheck2All/></span>}
+                {message?.seen && message?.sender_id === user?._id && (
+                  <span className={styles["checked"]}>
+                    {" "}
+                    <BsCheck2All />
+                  </span>
+                )}
+                {!message?.seen && message?.sender_id === user?._id && (
+                  <span className={styles["check"]}>
+                    {" "}
+                    <BsCheck2All />
+                  </span>
+                )}
               </div>
-              
             </div>
           ))}
         </div>

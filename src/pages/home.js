@@ -4,7 +4,6 @@ import HomePage from "@/components/HomePage/HomePage";
 import { getUser } from "@/libs/services/user-service";
 
 const Home = ({ sessionUser, user }) => {
-  console.log(user);
   return (
     <>
       <HomePage sessionUser={sessionUser} user={user} />

@@ -8,36 +8,41 @@ import {HiOutlineClipboardList,HiOutlineDotsCircleHorizontal} from "react-icons/
 import { signOut} from "next-auth/react";
 import { useRouter } from "next/router";
 import { FaSignOutAlt } from "react-icons/fa";
-import { IoMdLogOut } from "react-icons/io";
-import { useDispatch, useSelector } from "react-redux";
 import { getAllConversations } from "@/libs/actions/messageAction";
 import { useSocket } from "@/libs/contexts/SocketContext";
 
-const Sidebar = ({ sessionUser, user }) => {
+const Sidebar = ({ sessionUser, user , conversation}) => {
   const router = useRouter();
-  const [notifications, setNotifications] = useState(null)
-  const Notifications = useSelector((state) => state.notifications)
-  const dispatch = useDispatch();
+  const [notifications, setNotifications] = useState([])
   const socket = useSocket();
-  //console.log(socket, notifications);
+ 
   
+  useEffect(() => {
+    fetchConversations();
+  }, [conversation?._id]);
+
   useEffect(()=>{
     socketInitializer();
-    //fetchConversations()
+    markMessagesSeen()
     return ()=>{
       socket?.off("notfication");
     }
-  }, [user?._id, socket])
+  }, [user?._id, socket, conversation?._id])
 
-  async function socketInitializer (){
+  
+
+  async function socketInitializer (){   
     if(!socket) return;
-    //console.log(socket);
-    socket?.on("notification",({lastMessage, roomId})=>{
-      console.log("kjbd",lastMessage);
-      if(lastMessage?.receiver_id ===user?._id){
-        setNotifications(lastMessage)
+
+    socket?.on("notification",(chat)=>{
+      if(chat?.conversation?.at(-1)?.receiver_id ===user?._id){
+        if(notifications?.some(notification=>notification?._id===chat?._id)){
+          console.log("no change"); 
+        }
+        else setNotifications(prevNotifications => [...prevNotifications, chat]); 
       }
     } )
+    
   }
 
   const fetchConversations = async()=>{
@@ -50,19 +55,16 @@ const Sidebar = ({ sessionUser, user }) => {
       } 
       else return false;
     })
-    console.log(unseen);
-
-    dispatch({type: "SET_NOTIFICATIONS", payload: unseen});
+    setNotifications(unseen)
   }
 
-  // useEffect(()=>{
-  //   const unseen = Notifications
-  //     ?.filter((notification) => {
-  //       return notification?.sender_id !== user?._id
-  //   })
-  //   setUnseenNotifications(unseen)
-  //   console.log(unseenNotifications);
-  // }, [user, Notifications])
+  const markMessagesSeen = async ()=>{
+    socket?.on("marked-as-seen", ({ conversationId, messageIds }) => {
+      const unseen = notifications?.filter(notification=>notification?._id!=conversationId)
+      setNotifications(unseen)
+    });
+  }
+ 
   return (
     <div className={styles["container"]}>
       <div
@@ -81,8 +83,7 @@ const Sidebar = ({ sessionUser, user }) => {
 
         <div onClick={() => router.push(`/messages`)} className={styles["relative-container"]}>
           <SidebarLink text="Messages" Icon={AiOutlineInbox} />
-          {/* {Notifications?.length > 0 && ( */}
-          {notifications && (
+          {notifications?.length>0 && (
           <div className={styles["notifications"]}>?</div>
           )} 
         </div>

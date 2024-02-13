@@ -1,19 +1,13 @@
 import React, { useState } from "react";
-import Comment from "../Comment/Comment";
-import { FaRegEdit, FaRetweet } from "react-icons/fa";
-import { BsArrowLeft, BsChat } from "react-icons/bs";
-import Modal from "../Modal/Modal";
+import { FaRetweet } from "react-icons/fa";
+import { BsChat } from "react-icons/bs";
 import UpdateModal from "../UpdateModal/UpdateModal";
 import { RiDeleteBin5Line } from "react-icons/ri";
 import { AiFillHeart, AiOutlineHeart, AiOutlineShareAlt } from "react-icons/ai";
 import styles from "./ViewPost.module.css";
 import Moment from "react-moment";
-import { useSession } from "next-auth/react";
-import { useRouter } from "next/router";
 
 const ViewPost = ({ user, post }) => {
-  const router = useRouter();
-  const { data: session } = useSession();
   const [liked, setLiked] = useState(false);
   const [toggle, setToggle] = useState(false);
 
@@ -22,37 +16,15 @@ const ViewPost = ({ user, post }) => {
   };
   return (
     <section className={styles["main-container"]}>
-      {/* <div className={styles["back-arrow"]}>
-        <BsArrowLeft
-          className={styles["back-icon"]}
-          onClick={(e) => {
-            router.push(`/home`);
-            e.stopPropagation();
-          }}
-        />
-        Post
-      </div> */}
       <div className={styles["container"]}>
         <div className={styles["user-container"]}>
           <div>
-            <img
-              src={user?.image}
-              alt=""
-              className={styles["user-img"]}
-            />
+            <img src={user?.image} alt="" className={styles["user-img"]} />
           </div>
 
           <div>
             <div className={styles["user-details"]}>
-              <h3 className={styles["user-name"]}>
-                {user?.name}
-                {/* <span>
-                  <FaRegEdit
-                    className={styles["edit-post"]}
-                    onClick={() => toggleModal(post._id, true)}
-                  />
-                </span> */}
-              </h3>
+              <h3 className={styles["user-name"]}>{user?.name}</h3>
 
               {toggle && (
                 <UpdateModal
@@ -77,23 +49,15 @@ const ViewPost = ({ user, post }) => {
           </div>
         </div>
 
-        {/* {post.comments?.length > 0 && <hr />} */}
         <div className={styles["icons-container"]}>
           <div className={styles["comments"]}>
             <BsChat
               className={styles["icon"]}
               onClick={(e) => {
                 e.stopPropagation();
-                //toggleModal(post._id, true);
               }}
             />
-            {/* {post?.showModal && (
-              <Modal
-                post={post}
-                user={user}
-                // onClose={() => toggleModal(post._id, false)}
-              />
-            )} */}
+
             {post.comments.length > 0 && (
               <span className={styles["comment-text"]}>
                 {post.comments.length}
@@ -108,7 +72,6 @@ const ViewPost = ({ user, post }) => {
               className={styles["icon"]}
               onClick={(e) => {
                 e.stopPropagation();
-                //handleDelete(post._id);
               }}
             />
           )}
@@ -117,7 +80,6 @@ const ViewPost = ({ user, post }) => {
             className={styles["post-like"]}
             onClick={(e) => {
               e.stopPropagation();
-              //likePost(post._id, post.likes);
             }}
           >
             {post?.likes?.includes(user?.email) ? (
@@ -135,16 +97,6 @@ const ViewPost = ({ user, post }) => {
 
           <AiOutlineShareAlt className={styles["icon"]} />
         </div>
-        {/* {post.comments?.length > 0 && (
-          <div>
-            <hr />
-            <div className={styles["view-cmnts"]}>View comments</div>
-          </div>
-        )} */}
-        {/* {post.comments?.length > 0 &&
-          post.comments.map((comment) => (
-            <Comment key={comment._id} comment={comment} user={user} />
-          ))} */}
       </div>
     </section>
   );

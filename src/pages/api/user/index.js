@@ -1,5 +1,5 @@
 import connectDB from "@/config/connectDB";
-import { createUser , getUser, getAllUsers, updateUser} from "@/libs/services/user-service";
+import { createUser, getAllUsers, updateUser} from "@/libs/services/user-service";
 
 export default async function handler(req, res){
     try{

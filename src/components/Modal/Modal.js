@@ -8,16 +8,12 @@ import { IoCalendarNumberOutline } from "react-icons/io5";
 import { MdClose } from "react-icons/md"
 import { RiBarChart2Line } from "react-icons/ri";
 import Moment from "react-moment";
-import { createComment, getAllPosts , createReply} from "@/libs/actions/postAction";
-import { useDispatch } from "react-redux";
-import { useSession } from "next-auth/react";
+import { createComment, getAllPosts , createReply, uploadImage} from "@/libs/actions/postAction";
 
 const Modal = ({ post, user, onClose, comment, onUpdate, users}) => {
   const [input, setInput] = useState("")
   const [selectedFile, setSelectedFile] = useState(null);
   const [selectedImage, setSelectedImage] = useState(null);
-  const dispatch = useDispatch()
-  const {data: session} = useSession()
 
   const addImageToComment = (e) => {
     const reader = new FileReader();
@@ -40,14 +36,11 @@ const Modal = ({ post, user, onClose, comment, onUpdate, users}) => {
       if (selectedImage) {
         const body = new FormData();
         body.append("file", selectedImage);
-        const res = await fetch("/api/upload", {
-          method: "POST",
-          body,
-        });
-        if (!res.ok) {
-          throw new Error("Failed to upload image!");
+        try {
+          Url = await uploadImage(body)
+        } catch (error) {
+          console.error("Failed to upload image!");
         }
-        Url = await res.json();
       }
       if(comment){
         if(Url)
@@ -66,8 +59,6 @@ const Modal = ({ post, user, onClose, comment, onUpdate, users}) => {
             newComment: {userId: user._id,name:user.name, userImage:user.image,username:user.username, email:user.email, text:input}}))
       }
 
-      //const updatedPosts= await getAllPosts(user?.email)
-      //dispatch({ type: 'SET_POSTS', payload: updatedPosts })
       onUpdate()
     } catch (error) {
       console.error("Error fetching posts:", error);

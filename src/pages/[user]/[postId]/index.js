@@ -1,14 +1,11 @@
 import Head from "next/head";
 import Sidebar from "@/components/Sidebar/Sidebar";
-import Feed from "@/components/Feed/Feed";
 import React from "react";
 import styles from "@/styles/Post.module.css";
-import { getSession } from "next-auth/react";
 import ViewPost from "@/components/ViewPost/ViewPost";
 import { getPost } from "@/libs/actions/postAction";
 
 const index = ({ user, post }) => {
-  //console.log(user, post);
   return (
     <>
       <Head>

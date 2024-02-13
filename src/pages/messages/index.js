@@ -1,4 +1,3 @@
-import Conversation from "@/components/Conversation/Conversation";
 import { getUser } from "@/libs/services/user-service";
 import { getSession } from "next-auth/react";
 import styles from "@/styles/Home.module.css";
@@ -7,8 +6,8 @@ import Sidebar from "@/components/Sidebar/Sidebar";
 import { useRouter } from "next/router";
 import MessageUsers from "@/components/MessageUsers/MessageUsers";
 
-const index = ({ sessionUser, user }) => {
-  const router = useRouter()
+const Index = ({ sessionUser, user }) => {
+  const router = useRouter();
   useEffect(() => {
     const fetchData = async () => {
       if (!sessionUser) {
@@ -23,15 +22,14 @@ const index = ({ sessionUser, user }) => {
       <main className={styles["main"]}>
         <Sidebar sessionUser={sessionUser} user={user} />
         <div className={styles["feed"]}>
-          <MessageUsers sessionUser={sessionUser} user={user}/>
-          {/* <Conversation sessionUser={sessionUser} user={user} /> */}
+          <MessageUsers sessionUser={sessionUser} user={user} />
         </div>
       </main>
     </div>
   );
 };
 
-export default index;
+export default Index;
 
 export async function getServerSideProps(context) {
   const session = await getSession(context);

@@ -1,7 +1,6 @@
 import { createUser } from "@/libs/actions/userAction";
 import React, { useState } from "react";
 import styles from "./SignupForm.module.css";
-import { signIn, useSession } from "next-auth/react";
 
 const SignupForm = ({ onClose }) => {
   const [name, setName] = useState("");
@@ -9,16 +8,11 @@ const SignupForm = ({ onClose }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
-  const {data: session} = useSession()
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await createUser({name, username, email, password });
-      // const status = await signIn("credentials", {
-      //   email: email,
-      //   password: password,
-      // });
+      await createUser({name, username, email, password });
       setError("Check Email & Verify Account!");
     } catch (error) {
       setError(error.message);
