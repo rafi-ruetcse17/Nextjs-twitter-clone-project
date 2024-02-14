@@ -12,7 +12,10 @@ const SignupForm = ({ onClose }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await createUser({name, username, email, password });
+      const image = '/images/blank_user.jpg';
+      const cover = '/images/cover.png'
+      const location = 'default location'
+      await createUser({name, username, email, password, image, cover, location });
       setError("Check Email & Verify Account!");
     } catch (error) {
       setError(error.message);

@@ -24,7 +24,7 @@ const getPost = async (data) => {
     throw new Error(error.message);
   }
 };
-const getAllPosts = async (data) => {
+const getAllPosts = async () => {
   try {
     const response = await Post.find().sort({ timestamp: -1 });
     return response;
@@ -136,7 +136,6 @@ const updateCommentLikes = async ({ postId, commentId, likesArray }) => {
 };
 
 const createReply = async ({ _id, commentId, newReply }) => {
-  console.log(_id, commentId, newReply);
   try {
     const updatedPost = await Post.findByIdAndUpdate(
       _id,

@@ -7,7 +7,6 @@ const userSchema = new mongoose.Schema({
   },
   name:{
     type:String,
-    default: "New User",
   },
   email: {
     type: String,
@@ -19,15 +18,12 @@ const userSchema = new mongoose.Schema({
   },
   image: {
     type:String,
-    default: "/images/blank_user.jpg",
   },
   cover:{
     type: String,
-    default: "/images/cover.png",
   },
   location:{
     type: String,
-    default: "Shellbeehaken",
   },
   following:{
     type:[String],

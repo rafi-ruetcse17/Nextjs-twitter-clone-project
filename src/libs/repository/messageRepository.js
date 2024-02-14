@@ -41,7 +41,6 @@ const getConversation = async (_id) => {
   const { messageId } = _id;
   try {
     return await Chat.findOne({ _id: messageId });
-    return await Chat.find();
   } catch (error) {
     throw new Error(error.message);
   }

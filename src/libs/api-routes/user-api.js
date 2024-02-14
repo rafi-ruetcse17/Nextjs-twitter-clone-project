@@ -29,7 +29,7 @@ export const updateExistingUser = (payload) =>API.patch(api_endpoint, payload)
 export const createNewPost = (payload) =>API.post(post_endpoint, payload)
 export const updatePrevPost = (payload) =>API.patch(post_endpoint, payload)
 export const getPrevPost = (payload) =>API.get(`api/post/${payload}`, {params:{id: payload}})
-export const getAllPrevPosts = (payload) =>API.get(post_endpoint, {params:{email: payload}})
+export const getAllPrevPosts = () =>API.get(post_endpoint)
 export const deleteClickedPost = (payload) =>API.delete(post_endpoint, {params:{_id: payload}})
 export const uploadImageToPulic =(payload) =>API.post("/api/upload", payload);
 

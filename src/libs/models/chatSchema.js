@@ -1,28 +1,5 @@
 const mongoose = require("mongoose");
-
-const conversationSchema = new mongoose.Schema({
-  sender_id:{
-    type: String,
-    // required: true,
-  },
-  receiver_id:{
-    type: String,
-    // required: true,
-  },
-  message:{
-    type:String,
-    // required: true,
-  },
-
-  seen :{
-    type:Boolean,
-    default:false,
-  },
-  timestamp: {
-    type: Date,
-    default: Date.now,
-  },
-});
+const conversationSchema = require("./sub-schema/conversationSchema")
 
 const chatSchema = new mongoose.Schema({
   userOne: {

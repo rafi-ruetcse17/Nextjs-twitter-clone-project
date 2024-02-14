@@ -1,19 +1,9 @@
-import { getSession } from "next-auth/react";
 import AuthPage from "@/components/AuthPage/AuthPage";
 
-export default function Home({ user }) {
+export default function Home() {
   return (
     <>
-      <AuthPage user={user} />
+      <AuthPage />
     </>
   );
-}
-
-export async function getServerSideProps(context) {
-  const session = await getSession(context);
-  return {
-    props: {
-      user: session?.user || null,
-    },
-  };
 }

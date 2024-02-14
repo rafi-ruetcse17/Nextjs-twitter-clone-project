@@ -48,7 +48,7 @@ const Profile = ({ sessionUser, profile_user }) => {
 
   const getPostsFromDatabase = async () => {
     try {
-      const response = await getAllPosts(user?.email);
+      const response = await getAllPosts();
       const filteredPosts = response?.filter(
         (post) => post?.userId === profile_user._id
       );

@@ -86,7 +86,7 @@ const Input = ({ user }) => {
 
   const getPostsFromDatabase = async () => {
     try {
-      const response = await getAllPosts(user?.email);
+      const response = await getAllPosts();
       const filteredPosts = response?.filter(
         (post) =>
           user?.following?.includes(post?.userId) || post?.userId === user._id

@@ -1,5 +1,5 @@
 import connectDB from "@/config/connectDB";
-import { verifyUser} from "@/libs/controllers/userController";
+import { verifyUser } from "@/libs/services/verificationService";
 
 export default async function handler(req, res){
     try{
@@ -8,6 +8,6 @@ export default async function handler(req, res){
         const token = user.verificationToken;
         res.redirect(`http://localhost:3000/redirecting/${token}`)
     } catch(error){
-        return res.status(500).json({ error });
+        return res.status(500).json({ error: error.message });
     }
 }

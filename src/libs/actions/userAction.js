@@ -33,7 +33,6 @@ async function getAllUsers() {
     const response = await getAllExistingUsers();
     return response.data;
   } catch (error) {
-    console.log("res", error);
     throw Error(error.response.data);
   }
 }

@@ -16,7 +16,6 @@ export const sendEmail = async (email, verificationToken) => {
     to: email,
     subject: "Verify your account for twitter-clone app!",
     html: `<a href="http://localhost:3000/api/user/${verificationToken}">Click Here To Verify</a>`
-    // html: `Click <a href="http://localhost:3000/api/user/${verificationToken}" target="_blank">here</a> to verify your account. Thanks`,
   };
 
   Transport.sendMail(mailOptions, function (error, response) {

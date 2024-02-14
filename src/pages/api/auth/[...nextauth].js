@@ -3,8 +3,7 @@ import GithubProvider from "next-auth/providers/github";
 import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
 import connectDB from "@/config/connectDB";
-import { LoginWithSNS } from "@/libs/services/user-service";
-import { findOne } from "@/libs/controllers/userController";
+import { loginUser, loginWithSNS } from "@/libs/services/user-service";
 
 export const authOptions = {
   providers: [
@@ -23,7 +22,7 @@ export const authOptions = {
       async authorize(credentials, req) {
         await connectDB();
         try {
-          const user = await LoginWithSNS(credentials);
+          const user = await loginUser(credentials);
           return user;
         } catch (error) {
           throw Error(error.message);
@@ -34,7 +33,8 @@ export const authOptions = {
 
   callbacks: {
     async session({ session }) {
-      const res = await findOne({
+      await connectDB();
+      const res = await loginWithSNS({
         name: session?.user?.name,
         email: session?.user?.email,
         image: session?.user?.image,

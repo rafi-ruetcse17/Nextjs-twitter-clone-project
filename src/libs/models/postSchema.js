@@ -1,79 +1,5 @@
 const mongoose = require("mongoose");
-
-const replySchema = new mongoose.Schema({
-  userId:{
-    type: String,
-  },
-  name:{
-    type:String,
-  },
-  username: {
-    type: String,
-    required: true,
-  },
-  email: {
-    type: String,
-    required: true,
-  },
-  userImage:{
-    type: String,
-    default: '/images/blank_user.jpg'
-  },
-  text: {
-    type: String,
-  },
-  image: {
-    type: String,
-  },
-  likes: {
-    type: [String],
-    default: [],
-  },
-  timestamp: {
-    type: Date,
-    default: Date.now,
-  },
-});
-
-const commentSchema = new mongoose.Schema({
-  userId:{
-    type: String,
-  },
-  name:{
-    type:String,
-  },
-  username: {
-    type: String,
-    required: true,
-  },
-  email: {
-    type: String,
-    required: true,
-  },
-  userImage:{
-    type: String,
-    default: '/images/blank_user.jpg'
-  },
-  text: {
-    type: String,
-  },
-  image: {
-    type: String,
-  },
-  likes: {
-    type: [String], 
-    default: [],
-  },
-  showModal: {
-    type: Boolean,
-    default: false,
-  },
-  timestamp: {
-    type: Date,
-    default: Date.now,
-  },
-  replies: [replySchema], // Array of replies
-});
+const commentSchema = require("./sub-schema/commentSchema")
 
 const postSchema = new mongoose.Schema({
   userId:{
@@ -95,7 +21,6 @@ const postSchema = new mongoose.Schema({
   },
   userImage:{
     type: String,
-    default: '/images/blank_user.jpg'
   },
   ReTweetedBy:{
     type: String,
@@ -118,7 +43,7 @@ const postSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
-  comments: [commentSchema], // Array of comments
+  comments: [commentSchema],
   timestamp: {
     type: Date,
     default: Date.now,

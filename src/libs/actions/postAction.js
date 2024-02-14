@@ -40,9 +40,9 @@ async function getPost(data) {
   }
 }
 
-async function getAllPosts(data) {
+async function getAllPosts() {
   try {
-    const response = await getAllPrevPosts(data);
+    const response = await getAllPrevPosts();
     return response.data;
   } catch (error) {
     throw Error(error.response.data);

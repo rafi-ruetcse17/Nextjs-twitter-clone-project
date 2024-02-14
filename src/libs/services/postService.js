@@ -29,7 +29,7 @@ export const getPost = async (req, res) => {
 
 export const getAllPosts = async(req , res) =>{
   try {
-    const response = await postRepository.getAllPosts(req.query.email);
+    const response = await postRepository.getAllPosts();
     return res.status(200).json(response);
   } catch (error) {
     return res.status(500).json(error.message);

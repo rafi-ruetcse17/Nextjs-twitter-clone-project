@@ -2,21 +2,23 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import Login from "../Login/Login";
+import { useSession } from "next-auth/react";
 
-const AuthPage = ({user}) => {
+const AuthPage = () => {
+  const { data: session } = useSession();
   const router = useRouter();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
-      if (user) {
+      if (session) {
         await router.push("/home");
       }
       setLoading(false);
     };
 
     fetchData();
-  }, [user, router]);
+  }, [session, router]);
   if (loading) return <div>loading...</div>;
 
   return (
