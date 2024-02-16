@@ -43,7 +43,8 @@ const UpdateModal = ({ post, user, onClose, comment, onUpdate, commentId, posts}
     }
     
     if(selectedImage!=post.image && input!=post.text){
-      await updatePost({ _id: post._id,text:input, image: Url });
+      const response = await updatePost({ _id: post._id,text:input, image: Url });
+      console.log(response);
     }
     else if(selectedImage!=post.image){
       await updatePost({ _id: post._id, image: Url });

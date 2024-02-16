@@ -70,7 +70,7 @@ const Input = ({ user }) => {
       body.append("file", selectedImage);
       try {
         const Url = await uploadImage(body);
-        await updatePost({ _id: response, image: Url });
+        await updatePost({ _id: response?._id, image: Url });
       } catch (error) {
         console.error("Failed to upload image!");
       }
