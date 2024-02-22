@@ -13,7 +13,7 @@ import {
   deleteClickedReply,
   updateClickedReply,
   uploadImageToPulic,
-} from "../api-routes/user-api";
+} from "../api-routes/api-routes";
 
 async function createPost(data) {
   try {
@@ -108,7 +108,7 @@ async function updateReply(data) {
     throw Error(error.response.data);
   }
 }
-async function updateReplyLikes(data){
+async function updateReplyLikes(data) {
   try {
     const response = await likeClickedReply(data);
     return response.data;
@@ -117,7 +117,7 @@ async function updateReplyLikes(data){
   }
 }
 
-async function deleteReply(data){
+async function deleteReply(data) {
   try {
     const response = await deleteClickedReply(data);
     return response.data;
@@ -126,7 +126,7 @@ async function deleteReply(data){
   }
 }
 
-async function uploadImage(data){
+async function uploadImage(data) {
   try {
     const response = await uploadImageToPulic(data);
     return response.data;
@@ -134,7 +134,6 @@ async function uploadImage(data){
     throw Error(error.response.data);
   }
 }
-
 
 export {
   createPost,

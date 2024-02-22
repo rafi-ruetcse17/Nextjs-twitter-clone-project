@@ -1,15 +1,20 @@
-import { createNewConversation, markMessagesAsSeen ,getAllClickedConversations} from "../api-routes/user-api";
+import {
+  createNewChat,
+  markMessagesAsSeen,
+  getAllClickedChats,
+  connectNewSocket,
+} from "../api-routes/api-routes";
 
-async function createConversation(data) {
+async function createChat(data) {
   try {
-    const response = await createNewConversation(data);
+    const response = await createNewChat(data);
     return response.data;
   } catch (error) {
     throw Error(error.response.data);
   }
 }
 
-async function markMessagesSeen(data){
+async function markMessagesSeen(data) {
   try {
     const response = await markMessagesAsSeen(data);
     return response.data;
@@ -17,17 +22,20 @@ async function markMessagesSeen(data){
     throw Error(error.response.data);
   }
 }
-async function getAllConversations(){
+async function getAllChats() {
   try {
-    const response = await getAllClickedConversations();
+    const response = await getAllClickedChats();
     return response.data;
   } catch (error) {
     throw Error(error.response.data);
   }
 }
-
-export{
-    createConversation,
-    markMessagesSeen,
-    getAllConversations,
+async function connectSocket(){
+  try{
+    const response = await connectNewSocket();
+    return response;
+  }catch(error){
+    throw Error(error.message.data)
+  }
 }
+export { createChat, markMessagesSeen, getAllChats,connectSocket };

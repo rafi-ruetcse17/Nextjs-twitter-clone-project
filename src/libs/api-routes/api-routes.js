@@ -1,14 +1,17 @@
 import axios from "axios";
 
-const api_endpoint = '/api/user';
+const user_endpoint = '/api/user';
 const post_endpoint = '/api/post';
 const comment_endpoint = '/api/post/comments'
 const reply_endpoint = '/api/post/reply'
 const message_endpoint = '/api/message'
 const image_upload_endpoint = '/api/upload'
+const socket_endpoint = 'api/socket'
 const API = axios.create({ baseURL: "http://localhost:3000" })
 
 API.interceptors.request.use((req)=>{
+    if(req.url.includes(socket_endpoint))
+        return req;
     if(!req.url.includes(comment_endpoint) &&
     !req.url.includes(image_upload_endpoint))
         req.headers["Content-Type"] = "application/json";
@@ -21,10 +24,10 @@ API.interceptors.response.use((res) => {
     return res
 });
 
-export const createNewUser = (payload) =>API.post(api_endpoint, payload);
-export const getExistingUser = (payload) =>API.get(api_endpoint, payload);
-export const getAllExistingUsers = () =>API.get(api_endpoint);
-export const updateExistingUser = (payload) =>API.patch(api_endpoint, payload)
+export const createNewUser = (payload) =>API.post(user_endpoint, payload);
+export const getExistingUser = (payload) =>API.get(user_endpoint, payload);
+export const getAllExistingUsers = () =>API.get(user_endpoint);
+export const updateExistingUser = (payload) =>API.patch(`${user_endpoint}/${payload._id}`, payload)
 
 export const createNewPost = (payload) =>API.post(post_endpoint, payload)
 export const updatePrevPost = (payload) =>API.patch(`${post_endpoint}/${payload._id}`, payload)
@@ -43,6 +46,7 @@ export const likeClickedReply =(payload) => API.patch(`${reply_endpoint}/2`, pay
 export const updateClickedReply =(payload) =>API.patch(`${reply_endpoint}/3`, payload)
 export const deleteClickedReply = (payload)=>API.patch(reply_endpoint, payload)
 
-export const createNewConversation =(payload)=>API.post(message_endpoint, payload)
-export const markMessagesAsSeen =(payload) =>API.patch(message_endpoint, payload)
-export const getAllClickedConversations =() =>API.get(message_endpoint)
+export const createNewChat =(payload)=>API.post(message_endpoint, payload)
+export const getAllClickedChats =() =>API.get(message_endpoint)
+
+export const connectNewSocket =() =>API.get(socket_endpoint)

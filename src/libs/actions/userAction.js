@@ -3,7 +3,7 @@ import {
   getExistingUser,
   getAllExistingUsers,
   updateExistingUser,
-} from "../api-routes/user-api";
+} from "../api-routes/api-routes";
 async function createUser(credentials) {
   try {
     const response = await createNewUser(credentials);
@@ -37,4 +37,4 @@ async function getAllUsers() {
   }
 }
 
-export { createUser, getUser, getAllUsers , updateUser};
+export { createUser, getUser, getAllUsers, updateUser };

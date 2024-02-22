@@ -1,21 +1,20 @@
 const mongoose = require("mongoose");
-const conversationSchema = require("./sub-schema/conversationSchema")
+const messageSchema = require("./sub-schema/messageSchema");
 
-const chatSchema = new mongoose.Schema({
-  userOne: {
-    type: String,
-    required: true,
+const chatSchema = new mongoose.Schema(
+  {
+    userOne: {
+      type: String,
+      required: true,
+    },
+    userTwo: {
+      type: String,
+      required: true,
+    },
+    messages: [messageSchema],
   },
-  userTwo: {
-    type: String,
-    required: true,
-  },
-  conversation: [conversationSchema],
-  timestamp: {
-    type: Date,
-    default: Date.now,
-  },
-});
+  { timestamps: true }
+);
 
 const Chat = mongoose.models?.Chat || mongoose.model("Chat", chatSchema);
 module.exports = Chat;

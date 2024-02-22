@@ -1,6 +1,6 @@
 import Chat from "../models/chatSchema";
 
-const createConversation = async (data) => {
+const createChat = async (data) => {
   const { sender_id, receiver_id } = data;
   try {
     const existingChat = await Chat.findOne({
@@ -22,12 +22,12 @@ const createConversation = async (data) => {
 };
 
 const markMessagesSeen = async (data) => {
-  const { conversationId, messageIds } = data;
+  const { chatId, messageIds } = data;
 
   try {
     const response = await Chat.updateOne(
-      { _id: conversationId, "conversation._id": { $in: messageIds } },
-      { $set: { "conversation.$[elem].seen": true } },
+      { _id: chatId, "messages._id": { $in: messageIds } },
+      { $set: { "messages.$[elem].seen": true } },
       { arrayFilters: [{ "elem._id": { $in: messageIds } }] }
     );
 
@@ -36,8 +36,18 @@ const markMessagesSeen = async (data) => {
     throw new Error(error.message);
   }
 };
+const findOneAndUpdate = async ({ query, update }) => {
+  try {
+    return await Chat.findOneAndUpdate(query, update, {
+      upsert: true,
+      new: true,
+    });
+  } catch (error) {
+    throw new Error(error.message);
+  }
+};
 
-const getConversation = async (_id) => {
+const getChat = async (_id) => {
   const { messageId } = _id;
   try {
     return await Chat.findOne({ _id: messageId });
@@ -46,7 +56,7 @@ const getConversation = async (_id) => {
   }
 };
 
-const getAllConversations = async () => {
+const getAllChats = async () => {
   try {
     return await Chat.find();
   } catch (error) {
@@ -54,12 +64,12 @@ const getAllConversations = async () => {
   }
 };
 
-
 const messageRepository = {
-  createConversation,
-  getConversation,
+  createChat,
+  getChat,
   markMessagesSeen,
-  getAllConversations,
+  getAllChats,
+  findOneAndUpdate,
 };
 
 export default messageRepository;

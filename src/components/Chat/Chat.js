@@ -1,15 +1,14 @@
 import React, { useEffect, useRef, useState } from "react";
-import styles from "./Conversation.module.css";
+import styles from "./Chat.module.css";
 import { LuSendHorizonal } from "react-icons/lu";
 import { useSocket } from "@/libs/contexts/SocketContext";
-import { markMessagesSeen } from "@/libs/actions/messageAction";
 import { BsCheck2All } from "react-icons/bs";
 
-export default function Conversation({
+export default function Chat({
   sessionUser,
   user,
   receiver,
-  conversation,
+  chat,
 }) {
   const [message, setMessage] = useState("");
   const [allMessages, setAllMessages] = useState(null);
@@ -17,24 +16,24 @@ export default function Conversation({
   const socket = useSocket();
 
   useEffect(() => {
-    setAllMessages(conversation?.conversation);
+    setAllMessages(chat?.messages);
     socketInitializer();
     markMessagesAsSeen();
 
     return () => {
       if (socket) cleanupSocketListeners();
     };
-  }, [conversation?._id, socket, user?._id]);
+  }, [chat?._id, socket, user?._id]);
 
   useEffect(() => {
     scrollToBottom();
   }, [allMessages]);
 
   useEffect(() => {
-    socket?.on("marked-as-seen", ({ conversationId, messageIds }) => {
+    socket?.on("marked-as-seen", ({ chatId, messageIds }) => {
       let flag = false;
 
-      if (conversationId === conversation?._id) {
+      if (chatId === chat?._id) {
         setAllMessages((prev) => {
           const updatedMessages = prev.map((message) => {
             if (!message?.seen && message?.sender_id === user?._id) {
@@ -51,14 +50,14 @@ export default function Conversation({
         });
       }
     });
-  }, [socket, conversation?._id, allMessages, user?._id]);
+  }, [socket, chat?._id, allMessages, user?._id]);
 
   async function socketInitializer() {
     if (!socket) return;
 
     cleanupSocketListeners();
     socket.on("receive-message", ({ lastMessage, roomId }) => {
-      if (roomId == conversation._id)
+      if (roomId == chat._id)
         setAllMessages((pre) => [...pre, lastMessage]);
 
       const lastMessageIsFromOtherUser =
@@ -68,7 +67,7 @@ export default function Conversation({
 
       if (lastMessageIsFromOtherUser) {
         socket?.emit("mark-as-seen", {
-          conversationId: conversation._id,
+          chatId: chat._id,
           messageIds,
         });
       }
@@ -77,11 +76,11 @@ export default function Conversation({
       console.log("user disconnected");
     });
 
-    socket.emit("join-room", { roomId: conversation?._id });
+    socket.emit("join-room", { roomId: chat?._id });
   }
 
   const markMessagesAsSeen = async () => {
-    const temp = conversation?.conversation;
+    const temp = chat?.messages;
     const unseenMessages = temp?.filter((message) => {
       return message.sender_id === receiver._id && !message.seen;
     });
@@ -89,12 +88,8 @@ export default function Conversation({
     const Ids = unseenMessages?.map((message) => message._id);
 
     if (Ids?.length > 0) {
-      await markMessagesSeen({
-        conversationId: conversation?._id,
-        messageIds: Ids,
-      });
       socket?.emit("mark-as-seen", {
-        conversationId: conversation?._id,
+        chatId: chat?._id,
         messageIds: Ids,
       });
     }
@@ -103,7 +98,6 @@ export default function Conversation({
   function cleanupSocketListeners() {
     socket.off("receive-message");
     socket.off("send-message");
-    socket.off("disconnect");
     socket.off("join-room");
   }
 
@@ -112,7 +106,7 @@ export default function Conversation({
     const receiver_id = receiver?._id;
 
     socket.emit("send-message", {
-      conversation: conversation?._id,
+      chatId: chat?._id,
       sender_id,
       receiver_id,
       message,
@@ -130,7 +124,7 @@ export default function Conversation({
       <div className={styles["receiver-container"]}>
         <div className={styles["receiver"]}>
           <img src={receiver?.image} />
-          <div className={styles["receiver-name"]}>{user?.name}</div>
+          <div className={styles["receiver-name"]}>{receiver?.name}</div>
           <div>@{receiver?.username}</div>
         </div>
       </div>

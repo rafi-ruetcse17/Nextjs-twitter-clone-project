@@ -1,10 +1,9 @@
 import { Server } from "socket.io";
-import Chat from "@/libs/models/chatSchema";
-import messageRepository from "@/libs/repository/messageRepository";
+import { markMessagesSeen } from "@/libs/services/messageService";
+import { sendMessage } from "@/libs/services/messageService";
 
 export default function SocketHandler(req, res) {
   if (res.socket.server.io) {
-    console.log("Already set up");
     res.end();
     return;
   }
@@ -14,40 +13,39 @@ export default function SocketHandler(req, res) {
 
   io.on("connection", (socket) => {
     socket.on("send-message", async (messageData) => {
-      const { conversation, sender_id, receiver_id, message } = messageData;
-      const chat = await Chat.findOneAndUpdate(
-        {
-          _id: conversation,
-        },
-        {
+      const { chatId, sender_id, receiver_id, message } = messageData;
+      const chat = await sendMessage({
+        query: { _id: chatId },
+        update: {
           $push: {
-            conversation: {
+            messages: {
               sender_id,
               receiver_id,
               message,
             },
           },
         },
-        { upsert: true, new: true }
-      );
+      });
 
-      if (chat){
-        const lastMessage = chat.conversation[chat.conversation.length-1];
-        io.to(conversation).emit("receive-message", {lastMessage, roomId: conversation});
+      if (chat) {
+        const lastMessage = chat.messages[chat.messages.length - 1];
+        io.to(chatId).emit("receive-message", {
+          lastMessage,
+          roomId: chatId,
+        });
         io.emit("notification", chat);
       }
     });
 
-    socket.on("mark-as-seen", async ({ conversationId, messageIds }) => {
-      const updatedChat = await messageRepository.markMessagesSeen({
-        conversationId,
+    socket.on("mark-as-seen", async ({ chatId, messageIds }) => {
+      const updatedChat = await markMessagesSeen({
+        chatId,
         messageIds,
       });
-      
 
       if (updatedChat) {
-        io.to(conversationId).emit("marked-as-seen", {
-          conversationId,
+        io.to(chatId).emit("marked-as-seen", {
+          chatId,
           messageIds,
         });
       }
@@ -56,12 +54,6 @@ export default function SocketHandler(req, res) {
     socket.on("join-room", ({ roomId }) => {
       socket.join(roomId);
     });
-
-    socket.on("disconnect", function () {
-      console.log("user disconnected");
-    });
   });
-
-  console.log("Setting up socket");
   res.end();
 }

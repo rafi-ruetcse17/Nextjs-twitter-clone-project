@@ -8,7 +8,7 @@ import { IoCalendarNumberOutline } from "react-icons/io5";
 import { MdClose } from "react-icons/md"
 import { RiBarChart2Line } from "react-icons/ri";
 import Moment from "react-moment";
-import { createComment, getAllPosts , createReply, uploadImage} from "@/libs/actions/postAction";
+import { createComment, createReply, uploadImage} from "@/libs/actions/postAction";
 
 const Modal = ({ post, user, onClose, comment, onUpdate, users}) => {
   const [input, setInput] = useState("")

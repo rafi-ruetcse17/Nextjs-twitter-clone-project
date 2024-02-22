@@ -75,8 +75,10 @@ const EditProfileModal = ({ sessionUser, onClose, getUsersFromDatabase }) => {
       } catch (error) {
         console.error("Failed to upload image!");
       }
-    } else
-      await updateUser({ _id: sessionUser?._id, name, username, location });
+    } else{
+      const res = await updateUser({ _id: sessionUser?._id, name, username, location });
+      console.log(res);
+    }
     getUsersFromDatabase();
     onClose();
     router.push(`/${username}`);

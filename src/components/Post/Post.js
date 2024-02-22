@@ -16,15 +16,16 @@ import { AiFillHeart, AiOutlineHeart, AiOutlineShareAlt } from "react-icons/ai";
 import { useDispatch, useSelector } from "react-redux";
 import Comment from "../Comment/Comment";
 import UpdateModal from "../UpdateModal/UpdateModal";
-import { getAllUsers} from "@/libs/actions/userAction";
+import { getAllUsers } from "@/libs/actions/userAction";
 import ImageComp from "../ImageComp/ImageComp";
 import NameComp from "../NameComp/NameComp";
 import Username from "../UsernameComp/Username";
 
 const Post = ({ sessionUser, user }) => {
   const [loading, setLoading] = useState(true);
+  const [postModalStates, setPostModalStates] = useState({});
   const Posts = useSelector((state) => state.posts);
-  const Users = useSelector((state) => state.users)
+  const Users = useSelector((state) => state.users);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -35,7 +36,7 @@ const Post = ({ sessionUser, user }) => {
   const getUsersFromDatabase = async () => {
     try {
       const response = await getAllUsers();
-      dispatch({type: "SET_USERS", payload: response});
+      dispatch({ type: "SET_USERS", payload: response });
     } catch (error) {
       console.error("Error fetching users:", error);
     }
@@ -44,14 +45,15 @@ const Post = ({ sessionUser, user }) => {
   const getPostsFromDatabase = async () => {
     try {
       const response = await getAllPosts();
-      const filteredPosts = response?.filter((post) =>
-      user?.following?.includes(post?.userId) || post?.userId===user._id
-    );
+      const filteredPosts = response?.filter(
+        (post) =>
+          user?.following?.includes(post?.userId) || post?.userId === user._id
+      );
 
-    if (filteredPosts) {
-      dispatch({ type: "SET_POSTS", payload: filteredPosts });
-    }
-    setLoading(false)
+      if (filteredPosts) {
+        dispatch({ type: "SET_POSTS", payload: filteredPosts });
+      }
+      setLoading(false);
     } catch (error) {
       console.error("Error fetching posts:", error);
     }
@@ -62,7 +64,7 @@ const Post = ({ sessionUser, user }) => {
       const updatedLikes = postLikes.filter((email) => email !== user?.email);
       try {
         await updatePost({ _id: postId, likes: updatedLikes });
-        getPostsFromDatabase()
+        getPostsFromDatabase();
       } catch (error) {
         console.error("Error fetching posts:", error);
       }
@@ -73,7 +75,7 @@ const Post = ({ sessionUser, user }) => {
       let likes_array = response.likes;
       likes_array.push(user.email);
       await updatePost({ _id: postId, likes: likes_array });
-      getPostsFromDatabase()
+      getPostsFromDatabase();
     } catch (error) {
       console.error("Error fetching posts:", error);
     }
@@ -82,107 +84,114 @@ const Post = ({ sessionUser, user }) => {
   const handleDelete = async (postId) => {
     try {
       await deletePost(postId);
-      Posts?.map(async(post)=>{
-        if(post.postId===postId){
-          await deletePost(post._id)
-          getPostsFromDatabase()
+      Posts?.map(async (post) => {
+        if (post.retweetedPostId === postId) {
+          await deletePost(post._id);
+          getPostsFromDatabase();
         }
-      })
-      getPostsFromDatabase()
-    } catch (error) {
-      console.error("Error fetching posts:", error);
-    }
-  };
-  const toggleModal = async (postId, state, modal_to_show) => {
-    try {
-      modal_to_show === "update"
-        ? await updatePost({ _id: postId, showUpdateModal: state })
-        : await updatePost({ _id: postId, showModal: state });
-      getPostsFromDatabase()
+      });
+      getPostsFromDatabase();
     } catch (error) {
       console.error("Error fetching posts:", error);
     }
   };
 
-  const handleReTweet = async(post)=>{
-    const user = Users.find((user)=>user._id===post.userId)
+  const toggleModal = (postId, modalType) => {
+    setPostModalStates((prev) => ({
+      ...prev,
+      [postId]: {
+        ...prev[postId],
+        [modalType]: !prev[postId]?.[modalType],
+      },
+    }));
+  };
+
+  const handleReTweet = async (post) => {
+    const user = Users.find((user) => user._id === post.userId);
     const repostedPost = {
       userId: user._id,
-      postId: post._id,
-      username: user.username,
-      name: user.name,
-      email: user.email,
-      userImage: user.image,
-      ReTweetedBy: sessionUser._id,
+      isRetweeted: true,
+      retweetedPostId: post._id,
+      retweetedBy: sessionUser._id,
       text: post.text,
       image: post.image,
     };
     await createPost(repostedPost);
-    alert(`You successfully Shared the post of @${user.username}!`)
+    alert(`You successfully Shared the post of @${user.username}!`);
     getPostsFromDatabase();
+  };
 
-  }
-
-  if(loading){
-    return (
-      <div>loading....</div>
-    )
+  if (loading) {
+    return <div>loading....</div>;
   }
 
   return (
     <>
-      {Posts?.map((post) => ( 
+      {Posts?.map((post) => (
         <div
           key={post?._id}
           className={styles["container"]}
           // onClick={() => router.push(`/${user.email}/${post._id}`)}
         >
-          {post.ReTweetedBy && <div className={styles["retweet-container"]}>
-            <div><FaRetweet/></div>
-            {post.ReTweetedBy===user._id ? 
-            <div>You retweeted this post.</div>
-            : <div>@{Users.find(user => user._id === post.ReTweetedBy)?.username} retweeted this post. </div>}
-            
-          </div>}
-          
+          {post.retweetedBy && (
+            <div className={styles["retweet-container"]}>
+              <div>
+                <FaRetweet />
+              </div>
+              {post.retweetedBy === user._id ? (
+                <div>You retweeted this post.</div>
+              ) : (
+                <div>
+                  @
+                  {
+                    Users.find((user) => user._id === post.retweetedBy)
+                      ?.username
+                  }{" "}
+                  retweeted this post.{" "}
+                </div>
+              )}
+            </div>
+          )}
+
           <div className={styles["user-container"]}>
             <div>
-              <ImageComp users={Users} post={post}/>
+              <ImageComp users={Users} post={post} />
             </div>
 
             <div>
               <div className={styles["user-details"]}>
                 <div className={styles["name-edit"]}>
                   <h3 className={styles["user-name"]}>
-                    <NameComp users={Users} post={post}/></h3>
-                  
+                    <NameComp users={Users} post={post} />
+                  </h3>
                 </div>
-                {post?.showUpdateModal && (
+                {postModalStates[post._id]?.update && (
                   <UpdateModal
                     post={post}
                     user={user}
-                    onClose={() => toggleModal(post._id, false, "update")}
+                    onClose={() => toggleModal(post._id, "update")}
                     comment={null}
-                    onUpdate ={()=>getPostsFromDatabase()}
-                    posts ={Posts}
+                    onUpdate={getPostsFromDatabase}
+                    posts={Posts}
                   />
                 )}
 
                 <div className={styles["user-id"]}>
-                  <Username users={Users} post={post}/>
+                  <Username users={Users} post={post} />
                   <p className={styles["post-tag"]}>
-                    <Moment fromNow>{post?.timestamp}</Moment>
+                    <Moment fromNow>{post?.createdAt}</Moment>
                   </p>
-                  {post?.userId===user?._id  && !post?.ReTweetedBy && <span>
-                    <FaRegEdit
-                      className={styles["edit-icon"]}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        toggleModal(post._id, true, "update");
-                      }}
-                    />
-                  </span>
-                  }
+                  {post?.userId === user?._id && !post?.retweetedBy && (
+                    <span>
+                      <FaRegEdit
+                        className={styles["edit-icon"]}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          toggleModal(post._id, "update");
+                        }}
+                      />
+                    </span>
+                  )}
                 </div>
               </div>
 
@@ -198,16 +207,16 @@ const Post = ({ sessionUser, user }) => {
                 className={styles["icon"]}
                 onClick={(e) => {
                   e.stopPropagation();
-                  toggleModal(post._id, true, "comment");
+                  toggleModal(post._id, "comment");
                 }}
               />
-              {post?.showModal && (
+              {postModalStates[post._id]?.comment && (
                 <Modal
                   post={post}
                   user={user}
-                  onClose={() => toggleModal(post._id, false, "comment")}
+                  onClose={() => toggleModal(post._id, "comment")}
                   comment={null}
-                  onUpdate ={()=>getPostsFromDatabase()}
+                  onUpdate={getPostsFromDatabase}
                   users={Users}
                 />
               )}
@@ -218,8 +227,8 @@ const Post = ({ sessionUser, user }) => {
               )}
             </div>
 
-            {(user?.email === post?.email && !post?.ReTweetedBy) || post?.ReTweetedBy==user?._id?
-            (
+            {(user?.email === post?.email && !post?.retweetedBy) ||
+            post?.retweetedBy == user?._id ? (
               <RiDeleteBin5Line
                 className={styles["icon"]}
                 onClick={(e) => {
@@ -227,9 +236,11 @@ const Post = ({ sessionUser, user }) => {
                   handleDelete(post._id);
                 }}
               />
-              )  : (
-              <FaRetweet className={styles["icon"]} 
-              onClick = {()=> handleReTweet(post)}/>
+            ) : (
+              <FaRetweet
+                className={styles["icon"]}
+                onClick={() => handleReTweet(post)}
+              />
             )}
 
             <div
@@ -279,7 +290,7 @@ const Post = ({ sessionUser, user }) => {
                   user={user}
                   isReply={null}
                   users={Users}
-                  onUpdate ={()=>getPostsFromDatabase()}
+                  onUpdate={() => getPostsFromDatabase()}
                 />
 
                 {comment?.replies?.length > 0 && (
@@ -297,7 +308,7 @@ const Post = ({ sessionUser, user }) => {
                         user={user}
                         isReply={comment._id}
                         users={Users}
-                        onUpdate ={()=>getPostsFromDatabase()}
+                        onUpdate={() => getPostsFromDatabase()}
                       />
                     ))}
                   </div>

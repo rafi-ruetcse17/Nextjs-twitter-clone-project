@@ -5,14 +5,12 @@ import { BsImage, BsEmojiSmile } from "react-icons/bs";
 import { RiBarChart2Line } from "react-icons/ri";
 import { IoCalendarNumberOutline } from "react-icons/io5";
 import { HiOutlineLocationMarker } from "react-icons/hi";
-import { useSession } from "next-auth/react";
 
 import data from "@emoji-mart/data";
 import Picker from "@emoji-mart/react";
 import {
   createPost,
   getAllPosts,
-  getPost,
   updatePost,
   uploadImage,
 } from "@/libs/actions/postAction";
@@ -20,7 +18,6 @@ import { useDispatch } from "react-redux";
 
 const Input = ({ user }) => {
   const dispatch = useDispatch();
-  const { data: session } = useSession();
   const [loading, setLoading] = useState(false);
   const [input, setInput] = useState("");
   const [showEmojis, setShowEmojis] = useState(false);
@@ -50,20 +47,13 @@ const Input = ({ user }) => {
     if (loading) return;
     setLoading(true);
     const userId = user?._id;
-    const userImage = user?.image;
-    const username = user?.username;
-    const name = user?.name;
-    const email = user?.email;
     const text = input;
 
     let response = await createPost({
       userId,
-      name,
-      username,
-      email,
-      userImage,
       text,
     });
+    console.log(response);
 
     if (selectedImage) {
       const body = new FormData();

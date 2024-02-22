@@ -83,7 +83,7 @@ const Comment = ({ post, comment, postId, user, isReply, users, onUpdate }) => {
       console.error("Error fetching posts:", error);
     }
   };
-  const toggleModal = async (postId, state, operation) => {
+  const toggleModal = async (state, operation) => {
     if (operation == "reply") {
       setShowReplyModal(state);
     } else {
@@ -110,7 +110,7 @@ const Comment = ({ post, comment, postId, user, isReply, users, onUpdate }) => {
               <div className={styles["user-id"]}>
                 <Username users={users} post={comment} />
                 <p className={styles["post-tag"]}>
-                  <Moment fromNow>{comment?.timestamp}</Moment>
+                  <Moment fromNow>{comment?.createdAt}</Moment>
                 </p>
               </div>
             </div>
@@ -124,7 +124,7 @@ const Comment = ({ post, comment, postId, user, isReply, users, onUpdate }) => {
                     className={styles["icon"]}
                     onClick={(e) => {
                       e.stopPropagation();
-                      toggleModal(comment._id, true, "reply");
+                      toggleModal(true, "reply");
                     }}
                   />
                   {comment?.replies?.length > 0 && (
@@ -136,7 +136,7 @@ const Comment = ({ post, comment, postId, user, isReply, users, onUpdate }) => {
                     <Modal
                       post={post}
                       user={user}
-                      onClose={() => toggleModal(comment._id, false, "reply")}
+                      onClose={() => toggleModal(false, "reply")}
                       comment={comment}
                       onUpdate={onUpdate}
                       users={users}
@@ -184,7 +184,7 @@ const Comment = ({ post, comment, postId, user, isReply, users, onUpdate }) => {
                   className={styles["icon"]}
                   onClick={(e) => {
                     e.stopPropagation();
-                    toggleModal(comment._id, true, "edit");
+                    toggleModal(true, "edit");
                   }}
                 />
               )}
@@ -192,7 +192,7 @@ const Comment = ({ post, comment, postId, user, isReply, users, onUpdate }) => {
                 <UpdateModal
                   post={post}
                   user={user}
-                  onClose={() => toggleModal(comment._id, false, "edit")}
+                  onClose={() => toggleModal(false, "edit")}
                   comment={comment}
                   onUpdate={onUpdate}
                   commentId={isReply}

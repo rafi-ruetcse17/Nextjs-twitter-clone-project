@@ -8,18 +8,18 @@ import {HiOutlineClipboardList,HiOutlineDotsCircleHorizontal} from "react-icons/
 import { signOut} from "next-auth/react";
 import { useRouter } from "next/router";
 import { FaSignOutAlt } from "react-icons/fa";
-import { getAllConversations } from "@/libs/actions/messageAction";
+import { getAllChats } from "@/libs/actions/messageAction";
 import { useSocket } from "@/libs/contexts/SocketContext";
 
-const Sidebar = ({ sessionUser, user , conversation}) => {
+const Sidebar = ({ sessionUser, user , chat}) => {
   const router = useRouter();
   const [notifications, setNotifications] = useState([])
   const socket = useSocket();
  
   
   useEffect(() => {
-    fetchConversations();
-  }, [conversation?._id]);
+    fetchChats();
+  }, [chat?._id]);
 
   useEffect(()=>{
     socketInitializer();
@@ -27,7 +27,7 @@ const Sidebar = ({ sessionUser, user , conversation}) => {
     return ()=>{
       socket?.off("notfication");
     }
-  }, [user?._id, socket, conversation?._id])
+  }, [user?._id, socket, chat?._id])
 
   
 
@@ -35,7 +35,7 @@ const Sidebar = ({ sessionUser, user , conversation}) => {
     if(!socket) return;
 
     socket?.on("notification",(chat)=>{
-      if(chat?.conversation?.at(-1)?.receiver_id ===user?._id){
+      if(chat?.messages?.at(-1)?.receiver_id ===user?._id){
         if(notifications?.some(notification=>notification?._id===chat?._id)){
           console.log("no change"); 
         }
@@ -45,12 +45,12 @@ const Sidebar = ({ sessionUser, user , conversation}) => {
     
   }
 
-  const fetchConversations = async()=>{
-    const response = await getAllConversations();
+  const fetchChats = async()=>{
+    const response = await getAllChats();
 
-    const unseen = response?.filter((conversation)=>{
-      const message = conversation?.conversation?.at(-1);
-      if(conversation?.userOne==user?._id || conversation?.userTwo==user?._id){
+    const unseen = response?.filter((chat)=>{
+      const message = chat?.messages?.at(-1);
+      if(chat?.userOne==user?._id || chat?.userTwo==user?._id){
         return message && !message?.seen && message?.sender_id!=user?._id
       } 
       else return false;
@@ -59,8 +59,8 @@ const Sidebar = ({ sessionUser, user , conversation}) => {
   }
 
   const markMessagesSeen = async ()=>{
-    socket?.on("marked-as-seen", ({ conversationId, messageIds }) => {
-      const unseen = notifications?.filter(notification=>notification?._id!=conversationId)
+    socket?.on("marked-as-seen", ({ chatId, messageIds }) => {
+      const unseen = notifications?.filter(notification=>notification?._id!=chatId)
       setNotifications(unseen)
     });
   }

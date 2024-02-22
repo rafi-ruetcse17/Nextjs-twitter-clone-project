@@ -45,15 +45,10 @@ const deletePost = async (data) => {
 const createComment = async (data) => {
   const { _id, newComment } = data;
   try {
-    const post = await Post.findById(_id);
-
-    if (!post) {
-      throw new Error("Post not found");
-    }
-    post.comments.push(newComment);
-
-    const updatedPost = await post.save();
-
+    const updatedPost = await Post.updateOne(
+      { _id },
+      { $push: { comments: newComment } }
+    );
     return updatedPost;
   } catch (error) {
     throw new Error(error.message);
@@ -69,18 +64,13 @@ const deleteComment = async ({ postId, commentId }) => {
       },
       { new: true }
     );
-
-    if (!updatedPost) {
-      throw new Error("Post not found");
-    }
-
     return updatedPost;
   } catch (error) {
     throw new Error(error.message);
   }
 };
 
-const updateComment = async ({_id, commentId, updateData}) => {
+const updateComment = async ({ _id, commentId, updateData }) => {
   try {
     const { text, image } = updateData;
 
@@ -98,14 +88,9 @@ const updateComment = async ({_id, commentId, updateData}) => {
       { new: true }
     );
 
-    if (!updatedPost) {
-      throw new Error("Post not found or comment not updated");
-    }
-
     const updatedComment = updatedPost.comments.find((comment) =>
       comment._id.equals(commentId)
     );
-
     return updatedComment;
   } catch (error) {
     throw new Error(error.message);
@@ -128,7 +113,6 @@ const updateCommentLikes = async ({ postId, commentId, likesArray }) => {
     if (!updatedPost) {
       throw new Error("Post not found");
     }
-
     return updatedPost;
   } catch (error) {
     throw new Error(error.message);
@@ -151,17 +135,20 @@ const createReply = async ({ _id, commentId, newReply }) => {
     if (!updatedPost) {
       throw new Error("Post not found");
     }
-
     return updatedPost;
   } catch (error) {
     throw new Error(error.message);
   }
 };
 
-const updateReplyLikes = async ({postId, commentId, replyId, likesArray}) => {
+const updateReplyLikes = async ({ postId, commentId, replyId, likesArray }) => {
   try {
     const updatedPost = await Post.findOneAndUpdate(
-      { _id: postId, "comments._id": commentId, "comments.replies._id": replyId },
+      {
+        _id: postId,
+        "comments._id": commentId,
+        "comments.replies._id": replyId,
+      },
       { $set: { "comments.$[comment].replies.$[reply].likes": likesArray } },
       {
         arrayFilters: [{ "comment._id": commentId }, { "reply._id": replyId }],
@@ -173,36 +160,37 @@ const updateReplyLikes = async ({postId, commentId, replyId, likesArray}) => {
       throw new Error("Post not found or reply not updated");
     }
 
-    const updatedComment = updatedPost.comments.find(comment => comment._id.equals(commentId));
-    const updatedReply = updatedComment.replies.find(reply => reply._id.equals(replyId));
+    const updatedComment = updatedPost.comments.find((comment) =>
+      comment._id.equals(commentId)
+    );
 
+    const updatedReply = updatedComment.replies.find((reply) =>
+      reply._id.equals(replyId)
+    );
     return updatedReply;
   } catch (error) {
     throw new Error(error.message);
   }
 };
 
-const deleteReply = async ({postId, commentId, replyId}) => {
+const deleteReply = async ({ postId, commentId, replyId }) => {
   try {
     const updatedPost = await Post.findOneAndUpdate(
-      { "_id": postId, "comments._id": commentId },
+      { _id: postId, "comments._id": commentId },
       { $pull: { "comments.$.replies": { _id: replyId } } },
       { new: true }
     );
 
-    if (!updatedPost) {
-      throw new Error("Post not found or reply not deleted");
-    }
-
-    const updatedComment = updatedPost.comments.find(comment => comment._id.equals(commentId));
-
+    const updatedComment = updatedPost.comments.find((comment) =>
+      comment._id.equals(commentId)
+    );
     return updatedComment.replies;
   } catch (error) {
     throw new Error(error.message);
   }
 };
 
-const updateReply = async ({ postId ,commentId, replyId, updateData }) => {
+const updateReply = async ({ postId, commentId, replyId, updateData }) => {
   try {
     const { text, image } = updateData;
 
@@ -215,20 +203,17 @@ const updateReply = async ({ postId ,commentId, replyId, updateData }) => {
     }
 
     const updatedPost = await Post.findOneAndUpdate(
-      { "_id":postId, "comments._id": commentId, "comments.replies._id": replyId },
+      {
+        _id: postId,
+        "comments._id": commentId,
+        "comments.replies._id": replyId,
+      },
       { $set: updateFields },
       {
-        arrayFilters: [
-          { "comment._id": commentId },
-          { "reply._id": replyId },
-        ],
+        arrayFilters: [{ "comment._id": commentId }, { "reply._id": replyId }],
         new: true,
       }
     );
-
-    if (!updatedPost) {
-      throw new Error("Post not found or reply not updated");
-    }
 
     const updatedComment = updatedPost.comments.find((comment) =>
       comment._id.equals(commentId)
@@ -236,13 +221,11 @@ const updateReply = async ({ postId ,commentId, replyId, updateData }) => {
     const updatedReply = updatedComment.replies.find((reply) =>
       reply._id.equals(replyId)
     );
-
     return updatedReply;
   } catch (error) {
     throw new Error(error.message);
   }
 };
-
 
 const postRepository = {
   createPost,

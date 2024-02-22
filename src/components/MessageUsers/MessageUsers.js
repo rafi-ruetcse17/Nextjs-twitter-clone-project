@@ -6,12 +6,12 @@ import { FiSearch } from "react-icons/fi";
 import { getAllUsers } from "@/libs/actions/userAction";
 import { useRouter } from "next/router";
 import {
-  createConversation,
-  getAllConversations,
+  createChat,
+  getAllChats,
 } from "@/libs/actions/messageAction";
 import { useSocket } from "@/libs/contexts/SocketContext";
 
-const MessageUsers = ({ sessionUser, user, conversation }) => {
+const MessageUsers = ({ sessionUser, user, chat }) => {
   const [notifications, setNotifications] = useState([]);
   const router = useRouter();
   const dispatch = useDispatch();
@@ -20,8 +20,8 @@ const MessageUsers = ({ sessionUser, user, conversation }) => {
 
   useEffect(() => {
     getUsersFromDatabase();
-    fetchConversations();
-  }, [conversation?._id]);
+    fetchChats();
+  }, [chat?._id]);
 
   useEffect(() => {
     socketInitializer();
@@ -29,13 +29,13 @@ const MessageUsers = ({ sessionUser, user, conversation }) => {
     return () => {
       socket?.off("notfication");
     };
-  }, [user?._id, socket, conversation?._id]);
+  }, [user?._id, socket, chat?._id]);
 
   async function socketInitializer() {
     if (!socket) return;
 
     socket?.on("notification", (chat) => {
-      if (chat?.conversation?.at(-1)?.receiver_id === user?._id) {
+      if (chat?.messages?.at(-1)?.receiver_id === user?._id) {
         if (
           !notifications?.some(
             (notification) => notification?._id === chat?._id
@@ -47,14 +47,14 @@ const MessageUsers = ({ sessionUser, user, conversation }) => {
     });
   }
 
-  const fetchConversations = async () => {
-    const response = await getAllConversations();
+  const fetchChats = async () => {
+    const response = await getAllChats();
 
-    const unseen = response?.filter((conversation) => {
-      const message = conversation?.conversation?.at(-1);
+    const unseen = response?.filter((chat) => {
+      const message = chat?.messages?.at(-1);
       if (
-        conversation?.userOne == user?._id ||
-        conversation?.userTwo == user?._id
+        chat?.userOne == user?._id ||
+        chat?.userTwo == user?._id
       ) {
         return message && !message?.seen && message?.sender_id != user?._id;
       } else return false;
@@ -63,9 +63,9 @@ const MessageUsers = ({ sessionUser, user, conversation }) => {
   };
 
   const markMessagesSeen = async () => {
-    socket?.on("marked-as-seen", ({ conversationId, messageIds }) => {
+    socket?.on("marked-as-seen", ({ chatId, messageIds }) => {
       const unseen = notifications?.filter(
-        (notification) => notification?._id != conversationId
+        (notification) => notification?._id != chatId
       );
       setNotifications(unseen);
     });
@@ -80,12 +80,12 @@ const MessageUsers = ({ sessionUser, user, conversation }) => {
     }
   };
 
-  const handleConversation = async ({ receiver }) => {
-    const conversation = await createConversation({
+  const handleChat = async ({ receiver }) => {
+    const chat = await createChat({
       sender_id: user?._id,
       receiver_id: receiver?._id,
     });
-    router.push(`/messages/${conversation._id}`);
+    router.push(`/messages/${chat._id}`);
   };
   return (
     <section className={styles["container"]}>
@@ -110,19 +110,19 @@ const MessageUsers = ({ sessionUser, user, conversation }) => {
               key={user?._id}
               className={
                 styles[
-                  conversation?.userOne === user?._id ||
-                  conversation?.userTwo === user?._id
+                  chat?.userOne === user?._id ||
+                  chat?.userTwo === user?._id
                     ? "user-container"
                     : "non-colored"
                 ]
               }
-              onClick={() => handleConversation({ receiver: user })}
+              onClick={() => handleChat({ receiver: user })}
             >
               <div className={styles["user-image"]}>
                 <img src={user?.image} alt="" />
                 {notifications?.some(
                   (notification) =>
-                    notification?.conversation?.at(-1).sender_id === user?._id
+                    notification?.messages?.at(-1).sender_id === user?._id
                 ) && <div className={styles["notifications"]}>?</div>}
               </div>
               <div className={styles["message"]}>
