@@ -7,7 +7,7 @@ const reply_endpoint = '/api/post/reply'
 const message_endpoint = '/api/message'
 const image_upload_endpoint = '/api/upload'
 const socket_endpoint = 'api/socket'
-const API = axios.create({ baseURL: "http://localhost:3000" })
+const API = axios.create({ baseURL: "the-ultimate-twitter-clone.vercel.app" })
 
 API.interceptors.request.use((req)=>{
     if(req.url.includes(socket_endpoint))

@@ -6,7 +6,7 @@ export default async function handler(req, res) {
     await connectDB();
     const user = await verifyUser(req.query.verifyId);
     const token = user.verificationToken;
-    res.redirect(`http://localhost:3000/redirecting/${token}`);
+    res.redirect(`the-ultimate-twitter-clone.vercel.app/redirecting/${token}`);
   } catch (error) {
     return res.status(500).json({ error: error.message });
   }
