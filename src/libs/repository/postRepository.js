@@ -26,7 +26,7 @@ const getPost = async (data) => {
 };
 const getAllPosts = async () => {
   try {
-    const response = await Post.find().sort({ timestamp: -1 });
+    const response = await Post.find().sort({ createdAt: -1 });
     return response;
   } catch (error) {
     throw new Error(error.message);
