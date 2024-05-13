@@ -15,7 +15,7 @@ export const sendEmail = async (email, verificationToken) => {
     from: sender,
     to: email,
     subject: "Verify your account for twitter-clone app!",
-    html: `<a href="the-ultimate-twitter-clone.vercel.app/api/verifyUser/${verificationToken}">Click Here To Verify</a>`
+    html: `<a href="http://localhost:3000/api/verifyUser/${verificationToken}">Click Here To Verify</a>`
   };
 
   Transport.sendMail(mailOptions, function (error, response) {
